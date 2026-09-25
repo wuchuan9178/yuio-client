@@ -1,0 +1,44 @@
+{
+  "targets": {
+    "yuio_blur_a": {},
+    "yuio_blur_b": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/box_blur",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "minecraft:main",
+          "bilinear": true
+        }
+      ],
+      "output": "yuio_blur_a",
+      "uniforms": {
+        "BlurConfig": [
+          { "name": "BlurDir", "type": "vec2", "value": [ 1.0, 0.0 ] },
+          { "name": "Radius", "type": "float", "value": 3.0 }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/box_blur",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "yuio_blur_a",
+          "bilinear": true
+        }
+      ],
+      "output": "yuio_blur_b",
+      "uniforms": {
+        "BlurConfig": [
+          { "name": "BlurDir", "type": "vec2", "value": [ 0.0, 1.0 ] },
+          { "name": "Radius", "type": "float", "value": 3.0 }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "package": "com.example.addon.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ExampleMixin",
+    "LivingEntityRendererMixin",
+    "PlayerListHudMixin",
+    "ChestBlockEntityAccessor",
+    "BarrelBlockEntityAccessor",
+    "AbstractTextureAccessor",
+    "PostEffectProcessorAccessor",
+    "ChatHudMixin",
+    "InGameHudScoreboardMixin",
+    "DrawContextMixin",
+    "SplashSoundMixin",
+    "MinecraftClientMixin",
+    "TitleScreenMixin",
+    "HeldItemRendererMixin",
+    "FontManagerMixin",
+    "TotemParticleMixin",
+    "CameraMixin",
+    "ShaderLoaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>yuio ClickGui</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+          height: 100%;
+          overflow: hidden;
+          font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+          color: #ffffff;
+          background: transparent;
+          user-select: none;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-video {
+          position: fixed;
+          inset: 0;
+          width: 100vw;
+          height: 100vh;
+          object-fit: cover;
+          z-index: 0;
+          pointer-events: none;
+          filter: brightness(0.8) saturate(120%);
+        }
+        .bg-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+            radial-gradient(circle at 15% 15%, rgba(10,132,255,0.10), transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(191,90,242,0.08), transparent 50%),
+            linear-gradient(135deg, rgba(5,8,18,0.25), rgba(10,5,25,0.35));
+        }
+
+        .shell {
+          display: flex;
+          height: 100vh;
+          padding: 14px;
+          gap: 14px;
+          position: relative;
+          z-index: 2;
+          transition: filter 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
+        }
+        .shell.blurred {
+          filter: blur(10px) brightness(0.7);
+          transform: scale(0.985);
+          pointer-events: none;
+          opacity: 0.85;
+        }
+
+        .glass {
+          background: rgba(30, 30, 36, 0.28);
+          backdrop-filter: blur(10px) saturate(160%);
+          -webkit-backdrop-filter: blur(10px) saturate(160%);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 20px;
+          box-shadow:
+            0 12px 48px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar {
+          width: 236px;
+          padding: 20px 12px;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          overflow: hidden;
+        }
+        .title {
+          font-size: 19px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+          padding: 0 10px 14px;
+          background: linear-gradient(
+            90deg,
+            #ff3b30, #ff9500, #ffcc00, #34c759,
+            #00c7be, #0a84ff, #5e5ce6, #bf5af2,
+            #ff2d55, #ff3b30
+          );
+          background-size: 300% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          animation: rainbowFlow 4s linear infinite;
+        }
+
+        @keyframes rainbowFlow {
+          0%   { background-position:   0% 50%; }
+          100% { background-position: 300% 50%; }
+        }
+
+        .search-input {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+          color: #ffffff;
+          padding: 9px 12px;
+          font-size: 13px;
+          font-family: inherit;
+          outline: none;
+          margin-bottom: 12px;
+          transition: border-color 0.2s, background 0.2s;
+          width: 100%;
+        }
+        .search-input:focus {
+          border-color: rgba(10, 132, 255, 0.7);
+          background: rgba(255, 255, 255, 0.12);
+        }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+        .cats-scroll {
+          overflow-y: auto;
+          flex: 1;
+          padding-right: 4px;
+        }
+        .cats-scroll::-webkit-scrollbar { width: 6px; }
+        .cats-scroll::-webkit-scrollbar-thumb {
+          background: rgba(10, 132, 255, 0.3);
+          border-radius: 3px;
+        }
+
+        .addon-group { margin-bottom: 12px; }
+        .addon-title {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.8px;
+          padding: 8px 12px 4px;
+          background: linear-gradient(90deg, #0A84FF, #BF5AF2);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+        .cat {
+          padding: 8px 14px;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.65);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+          margin-bottom: 2px;
+        }
+        .cat:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+        .cat.active {
+          background: linear-gradient(135deg, rgba(10,132,255,0.3), rgba(191,90,242,0.22));
+          color: #fff;
+          box-shadow: inset 0 0 0 1px rgba(10, 132, 255, 0.5);
+        }
+        .cat .count { font-size: 11px; opacity: 0.6; }
+
+        .content {
+          flex: 1;
+          padding: 20px;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        .content::-webkit-scrollbar { width: 8px; }
+        .content::-webkit-scrollbar-thumb {
+          background: rgba(10, 132, 255, 0.28);
+          border-radius: 4px;
+        }
+
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 14px;
+          align-items: start;
+        }
+        @keyframes gridFade {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: none; }
+        }
+        .grid.switching { animation: gridFade 0.25s ease; }
+
+        .mod {
+          background: rgba(40, 40, 46, 0.32);
+          backdrop-filter: blur(8px) saturate(160%);
+          -webkit-backdrop-filter: blur(8px) saturate(160%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 14px;
+          cursor: pointer;
+          transition: background 0.22s ease, transform 0.22s ease,
+                      border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+        .mod:hover {
+          background: rgba(50, 50, 56, 0.45);
+          transform: translateY(-2px);
+          border-color: rgba(255, 255, 255, 0.18);
+        }
+        .mod.on {
+          background: linear-gradient(135deg, rgba(10,132,255,0.28), rgba(191,90,242,0.2));
+          border-color: rgba(10, 132, 255, 0.5);
+          box-shadow: 0 0 24px rgba(10, 132, 255, 0.25);
+        }
+
+        .mod-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .mod-name { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+        .mod-desc {
+          font-size: 11px; color: rgba(255, 255, 255, 0.55);
+          margin-top: 4px; line-height: 1.4;
+        }
+        .mod-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+        .bind-badge {
+          font-size: 10px;
+          padding: 3px 8px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: rgba(255, 255, 255, 0.8);
+          cursor: pointer;
+          transition: all 0.2s;
+          white-space: nowrap;
+          font-family: "SF Mono", monospace;
+          letter-spacing: 0.3px;
+        }
+        .bind-badge:hover {
+          background: rgba(10, 132, 255, 0.3);
+          border-color: rgba(10, 132, 255, 0.6);
+          color: #fff;
+        }
+        .bind-badge.empty { opacity: 0.5; }
+
+        .switch {
+          width: 44px; height: 26px;
+          background: rgba(120, 120, 128, 0.4);
+          border-radius: 13px;
+          position: relative;
+          flex-shrink: 0;
+          transition: background 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .switch::after {
+          content: '';
+          position: absolute;
+          width: 22px; height: 22px;
+          background: #fff;
+          border-radius: 50%;
+          top: 2px; left: 2px;
+          transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+        }
+        .switch.on { background: #30D158; }
+        .switch.on::after { transform: translateX(18px); }
+
+        .settings {
+          max-height: 0;
+          overflow: hidden;
+          padding-top: 0;
+          border-top: 1px solid rgba(255,255,255,0);
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          transition: max-height 0.32s ease, padding-top 0.32s ease,
+                      border-color 0.32s ease, margin-top 0.32s ease;
+          margin-top: 0;
+        }
+        .mod.expanded .settings {
+          max-height: 280px;
+          overflow-y: auto;
+          padding-top: 14px;
+          padding-right: 6px;
+          margin-top: 14px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .settings::-webkit-scrollbar { width: 4px; }
+        .settings::-webkit-scrollbar-thumb {
+          background: rgba(10, 132, 255, 0.4);
+          border-radius: 2px;
+        }
+        .settings::-webkit-scrollbar-track { background: transparent; }
+
+        .setting { display: flex; flex-direction: column; gap: 6px; }
+        .setting-label {
+          font-size: 11px;
+          color: rgba(255, 255, 255, 0.75);
+          letter-spacing: 0.3px;
+        }
+
+        .slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+        }
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px; height: 16px;
+          background: #ffffff;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+          transition: transform 0.15s;
+        }
+        .slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        .slider::-moz-range-thumb {
+          width: 16px; height: 16px;
+          background: #ffffff;
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .text-input {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 8px;
+          color: #ffffff;
+          padding: 8px 12px;
+          font-size: 13px;
+          font-family: inherit;
+          outline: none;
+          transition: border-color 0.2s, background 0.2s;
+          width: 100%;
+        }
+        .text-input:focus {
+          border-color: rgba(10, 132, 255, 0.7);
+          background: rgba(255, 255, 255, 0.12);
+        }
+
+        .bool-row { display: flex; justify-content: space-between; align-items: center; }
+
+        .keyboard-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 100;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          background: rgba(5, 8, 18, 0.3);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+        }
+        .keyboard-overlay.open { display: flex; }
+
+        .keyboard {
+          padding: 18px;
+          border-radius: 22px;
+          background: rgba(30, 30, 36, 0.55);
+          backdrop-filter: blur(18px) saturate(160%);
+          -webkit-backdrop-filter: blur(18px) saturate(160%);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.55),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          transform-origin: center;
+          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+          transform: scale(0.85);
+          opacity: 0;
+          max-width: 96vw;
+          max-height: 96vh;
+          overflow: auto;
+        }
+        .keyboard-overlay.open .keyboard { transform: scale(1); opacity: 1; }
+        .keyboard-overlay.closing .keyboard { transform: scale(0.85); opacity: 0; }
+
+        .kb-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 6px 14px;
+        }
+        .kb-title { font-size: 14px; font-weight: 600; }
+        .kb-title span {
+          background: linear-gradient(90deg, #0A84FF, #BF5AF2);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+        .kb-btn {
+          padding: 6px 14px;
+          border-radius: 8px;
+          font-size: 12px;
+          cursor: pointer;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #ffffff;
+          transition: all 0.2s;
+        }
+        .kb-btn:hover { background: rgba(10, 132, 255, 0.3); }
+        .kb-btn.close {
+          background: rgba(255, 69, 58, 0.2);
+          border-color: rgba(255, 69, 58, 0.4);
+        }
+        .kb-btn.close:hover { background: rgba(255, 69, 58, 0.35); }
+
+        .kb-body { display: flex; gap: 14px; align-items: flex-start; }
+        .kb-region { display: flex; flex-direction: column; gap: 5px; }
+        .kb-row { display: flex; gap: 5px; }
+        .kb-row.fn { margin-bottom: 6px; }
+
+        .kb-key {
+          height: 42px;
+          min-width: 42px;
+          padding: 0 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 9px;
+          cursor: pointer;
+          transition: background 0.15s, transform 0.1s, border-color 0.15s;
+          animation: keyPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+          animation-delay: var(--d, 0ms);
+          will-change: transform, opacity;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        .kb-key:hover {
+          background: rgba(10, 132, 255, 0.35);
+          border-color: rgba(10, 132, 255, 0.6);
+          transform: translateY(-2px);
+        }
+        .kb-key:active {
+          transform: translateY(0) scale(0.95);
+          background: rgba(10, 132, 255, 0.55);
+        }
+        .kb-key.wide-label { font-size: 10px; letter-spacing: 0.3px; }
+
+        @keyframes keyPop {
+          0% { opacity: 0; transform: scale(0.3) translateY(15px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .keyboard-overlay.closing .kb-key {
+          animation: keyClose 0.28s ease forwards;
+          animation-delay: var(--cd, 0ms);
+        }
+        @keyframes keyClose {
+          0% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(0.3) translateY(15px); }
+        }
+    </style>
+</head>
+<body>
+<video class="bg-video" autoplay loop muted playsinline preload="auto"></video>
+<div class="bg-overlay"></div>
+
+<div class="shell" id="shell">
+    <div class="sidebar glass">
+        <div class="title">yuio Gui</div>
+        <input id="search" class="search-input" placeholder="搜索模块..." autocomplete="off">
+        <div class="cats-scroll" id="cats"></div>
+    </div>
+    <div class="content glass">
+        <div class="grid" id="grid"></div>
+    </div>
+</div>
+
+<div class="keyboard-overlay" id="kb-overlay">
+    <div class="keyboard">
+        <div class="kb-header">
+            <div class="kb-title">绑定快捷键 - <span id="kb-mod-name"></span></div>
+            <div style="display:flex; gap:8px;">
+                <div class="kb-btn" onclick="clearBind()">清除</div>
+                <div class="kb-btn close" onclick="closeKeyboard()">关闭</div>
+            </div>
+        </div>
+        <div class="kb-body" id="kb-body"></div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const v = document.querySelector('.bg-video');
+      if (!v) { console.error('bg-video element not found'); return; }
+      v.src = '/bg';
+      v.load();
+      v.addEventListener('loadeddata', () => console.log('[bg] loaded'));
+      v.addEventListener('error', () => console.error('[bg] error', v.error));
+      const p = v.play();
+      if (p && p.catch) p.catch((e) => console.warn('[bg] play failed', e));
+    });
+
+    const cardMap = new Map();
+    const catMap = new Map();
+    let currentKey = null;
+    let searchQuery = '';
+    let modulesList = [];
+    let bindingModule = null;
+
+    const ev = new EventSource('/events');
+    ev.onmessage = (e) => {
+      if (e.data === '__close__') return;
+      try {
+        const data = JSON.parse(e.data);
+        modulesList = data.modules || [];
+        syncAll();
+      } catch (err) { console.error(err); }
+    };
+
+    function syncAll() {
+      const cats = new Map();
+      for (const m of modulesList) {
+        const key = m.addon + '|' + m.cat;
+        cats.set(key, (cats.get(key) || 0) + 1);
+      }
+      if (!currentKey && cats.size) currentKey = cats.keys().next().value;
+      renderCats(cats);
+      syncCards();
+    }
+
+    function renderCats(cats) {
+      const container = document.getElementById('cats');
+      const seen = new Set();
+
+      const groups = new Map();
+      for (const key of cats.keys()) {
+        const [addon, cat] = key.split('|');
+        if (!groups.has(addon)) groups.set(addon, []);
+        groups.get(addon).push(cat);
+      }
+
+      for (const [addon, catList] of groups) {
+        let groupEl = container.querySelector(`[data-addon="${cssEsc(addon)}"]`);
+        if (!groupEl) {
+          groupEl = document.createElement('div');
+          groupEl.className = 'addon-group';
+          groupEl.dataset.addon = addon;
+          groupEl.innerHTML = `<div class="addon-title">${escapeHtml(addon)}</div>`;
+          container.appendChild(groupEl);
+        }
+
+        for (const cat of catList) {
+          const key = addon + '|' + cat;
+          seen.add(key);
+          let entry = catMap.get(key);
+          if (!entry) {
+            const catEl = document.createElement('div');
+            catEl.className = 'cat';
+            catEl.dataset.key = key;
+            catEl.addEventListener('click', () => switchCat(key));
+            groupEl.appendChild(catEl);
+            entry = { el: catEl, addon, cat };
+            catMap.set(key, entry);
+          }
+          entry.el.innerHTML =
+            `<span>${escapeHtml(cat)}</span>` +
+            `<span class="count">${cats.get(key)}</span>`;
+          entry.el.classList.toggle('active', !searchQuery && key === currentKey);
+        }
+      }
+
+      for (const [key, entry] of catMap) {
+        if (!seen.has(key)) { entry.el.remove(); catMap.delete(key); }
+      }
+    }
+
+    function switchCat(key) {
+      if (key === currentKey && !searchQuery) return;
+      currentKey = key;
+      searchQuery = '';
+      document.getElementById('search').value = '';
+      for (const [k, entry] of catMap) entry.el.classList.toggle('active', k === key);
+      syncCards();
+      const grid = document.getElementById('grid');
+      grid.classList.remove('switching');
+      void grid.offsetWidth;
+      grid.classList.add('switching');
+    }
+
+    function syncCards() {
+      const grid = document.getElementById('grid');
+
+      const sorted = [...modulesList].sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
+      const seen = new Set();
+      let prevEl = null;
+
+      for (const m of sorted) {
+        seen.add(m.name);
+        let entry = cardMap.get(m.name);
+        if (!entry) {
+          entry = createCard(m);
+          cardMap.set(m.name, entry);
+        }
+        updateCard(entry, m);
+
+        if (prevEl == null) {
+          if (grid.firstElementChild !== entry.el) grid.prepend(entry.el);
+        } else if (prevEl.nextElementSibling !== entry.el) {
+          prevEl.after(entry.el);
+        }
+        prevEl = entry.el;
+
+        entry.el.style.display = isVisible(m) ? '' : 'none';
+      }
+
+      for (const [name, entry] of cardMap) {
+        if (!seen.has(name)) { entry.el.remove(); cardMap.delete(name); }
+      }
+    }
+
+    function isVisible(m) {
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return m.name.toLowerCase().includes(q)
+            || (m.desc || '').toLowerCase().includes(q);
+      }
+      return (m.addon + '|' + m.cat) === currentKey;
+    }
+
+    function createCard(m) {
+      const el = document.createElement('div');
+      el.className = 'mod';
+
+      const head = document.createElement('div');
+      head.className = 'mod-head';
+
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      info.style.minWidth = '0';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'mod-name';
+      const descEl = document.createElement('div');
+      descEl.className = 'mod-desc';
+      info.appendChild(nameEl);
+      info.appendChild(descEl);
+
+      const right = document.createElement('div');
+      right.className = 'mod-right';
+
+      const bind = document.createElement('div');
+      bind.className = 'bind-badge empty';
+      bind.textContent = '+';
+      bind.title = '点击绑定快捷键';
+      bind.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openKeyboard(m.name);
+      });
+
+      const sw = document.createElement('div');
+      sw.className = 'switch';
+
+      right.appendChild(bind);
+      right.appendChild(sw);
+      head.appendChild(info);
+      head.appendChild(right);
+      el.appendChild(head);
+
+      const settingsEl = document.createElement('div');
+      settingsEl.className = 'settings';
+      el.appendChild(settingsEl);
+
+      const entry = {
+        el, sw, bind, nameEl, descEl, settingsEl,
+        on: false, expanded: false,
+        settings: new Map(),
+        mname: m.name, key: ''
+      };
+
+      sw.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const next = !entry.on;
+        entry.on = next;
+        applyOn(entry, next);
+        fetch('/toggle?module=' + encodeURIComponent(m.name)).catch(() => {});
+      });
+
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.settings')) return;
+        if (e.target.closest('.switch')) return;
+        if (e.target.closest('.bind-badge')) return;
+        entry.expanded = !entry.expanded;
+        el.classList.toggle('expanded', entry.expanded);
+      });
+
+      return entry;
+    }
+
+    function applyOn(entry, on) {
+      entry.el.classList.toggle('on', on);
+      entry.sw.classList.toggle('on', on);
+    }
+
+    function updateCard(entry, m) {
+      if (entry.nameEl.textContent !== m.name) entry.nameEl.textContent = m.name;
+      if (entry.descEl.textContent !== (m.desc || '')) entry.descEl.textContent = m.desc || '';
+      if (entry.on !== !!m.on) { entry.on = !!m.on; applyOn(entry, entry.on); }
+
+      const keyName = m.key ? (KEY_NAMES[m.key] || ('K' + m.key)) : '';
+      if (entry.key !== keyName) {
+        entry.key = keyName;
+        entry.bind.textContent = keyName || '+';
+        entry.bind.classList.toggle('empty', !keyName);
+      }
+
+      syncSettings(entry, m.settings || []);
+    }
+
+    function syncSettings(entry, list) {
+      const seen = new Set();
+      for (const s of list) {
+        seen.add(s.name);
+        let se = entry.settings.get(s.name);
+        if (!se) {
+          se = createSetting(entry.mname, s);
+          entry.settings.set(s.name, se);
+          entry.settingsEl.appendChild(se.el);
+        }
+        updateSetting(se, s);
+      }
+      for (const [name, se] of entry.settings) {
+        if (!seen.has(name)) { se.el.remove(); entry.settings.delete(name); }
+      }
+    }
+
+    function createSetting(modName, s) {
+      const wrap = document.createElement('div');
+      wrap.className = 'setting';
+      wrap.addEventListener('click', (e) => e.stopPropagation());
+
+      const label = document.createElement('div');
+      label.className = 'setting-label';
+      label.textContent = s.name;
+      wrap.appendChild(label);
+
+      const t = s.type;
+      const entry = { el: wrap, label, type: t, input: null };
+
+      if (t === 'BoolSetting') {
+        const row = document.createElement('div');
+        row.className = 'bool-row';
+        const sw = document.createElement('div');
+        sw.className = 'switch';
+        sw.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const next = !sw.classList.contains('on');
+          sw.classList.toggle('on', next);
+          postSet(modName, s.name, next ? 'true' : 'false');
+        });
+        row.appendChild(sw);
+        wrap.appendChild(row);
+        entry.input = sw;
+      } else if (t === 'IntSetting' || t === 'DoubleSetting') {
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.className = 'slider';
+        slider.min = 0;
+        slider.max = t === 'DoubleSetting' ? 10 : 100;
+        slider.step = t === 'DoubleSetting' ? 0.01 : 1;
+        slider.addEventListener('input', () => {
+          label.textContent = s.name + ' : ' + slider.value;
+        });
+        slider.addEventListener('change', () => postSet(modName, s.name, slider.value));
+        wrap.appendChild(slider);
+        entry.input = slider;
+      } else {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'text-input';
+        input.addEventListener('change', () => postSet(modName, s.name, input.value));
+        wrap.appendChild(input);
+        entry.input = input;
+      }
+
+      return entry;
+    }
+
+    function updateSetting(se, s) {
+      if (document.activeElement === se.input) return;
+      const t = se.type;
+      if (t === 'BoolSetting') {
+        se.input.classList.toggle('on', String(s.value) === 'true');
+      } else if (t === 'IntSetting' || t === 'DoubleSetting') {
+        const v = parseFloat(s.value);
+        if (!isNaN(v) && parseFloat(se.input.value) !== v) se.input.value = v;
+        se.label.textContent = s.name + ' : ' + s.value;
+      } else {
+        if (se.input.value !== String(s.value)) se.input.value = s.value;
+      }
+    }
+
+    function postSet(mod, set, val) {
+      fetch('/set?module=' + encodeURIComponent(mod)
+          + '&setting=' + encodeURIComponent(set)
+          + '&value=' + encodeURIComponent(val)).catch(() => {});
+    }
+
+    document.getElementById('search').addEventListener('input', (e) => {
+      searchQuery = e.target.value.trim();
+      if (searchQuery) {
+        for (const [, entry] of catMap) entry.el.classList.remove('active');
+      } else {
+        for (const [k, entry] of catMap) entry.el.classList.toggle('active', k === currentKey);
+      }
+      syncCards();
+    });
+
+    const KEY_NAMES = {
+      32: 'Space', 39: 'Apostrophe', 44: 'Comma', 45: 'Minus', 46: 'Period', 47: 'Slash',
+      48: '0', 49: '1', 50: '2', 51: '3', 52: '4', 53: '5', 54: '6', 55: '7', 56: '8', 57: '9',
+      59: 'Semicolon', 61: 'Equal',
+      65: 'A', 66: 'B', 67: 'C', 68: 'D', 69: 'E', 70: 'F', 71: 'G', 72: 'H', 73: 'I',
+      74: 'J', 75: 'K', 76: 'L', 77: 'M', 78: 'N', 79: 'O', 80: 'P', 81: 'Q', 82: 'R',
+      83: 'S', 84: 'T', 85: 'U', 86: 'V', 87: 'W', 88: 'X', 89: 'Y', 90: 'Z',
+      91: '[', 92: '\\', 93: ']', 96: '`',
+      256: 'Esc', 257: 'Enter', 258: 'Tab', 259: 'Backspace',
+      260: 'Insert', 261: 'Delete',
+      262: 'Right', 263: 'Left', 264: 'Down', 265: 'Up',
+      266: 'PgUp', 267: 'PgDn', 268: 'Home', 269: 'End',
+      280: 'CapsLock', 281: 'ScrollLock', 282: 'NumLock', 283: 'PrintScreen', 284: 'Pause',
+      290: 'F1', 291: 'F2', 292: 'F3', 293: 'F4', 294: 'F5', 295: 'F6',
+      296: 'F7', 297: 'F8', 298: 'F9', 299: 'F10', 300: 'F11', 301: 'F12',
+      320: 'Num0', 321: 'Num1', 322: 'Num2', 323: 'Num3', 324: 'Num4',
+      325: 'Num5', 326: 'Num6', 327: 'Num7', 328: 'Num8', 329: 'Num9',
+      330: 'Num.', 331: 'Num/', 332: 'Num*', 333: 'Num-', 334: 'Num+', 335: 'NumEnter',
+      340: 'LShift', 341: 'LCtrl', 342: 'LAlt', 343: 'LSuper',
+      344: 'RShift', 345: 'RCtrl', 346: 'RAlt', 347: 'RSuper', 348: 'Menu'
+    };
+
+    const KB_MAIN = [
+      [
+        [256, 'Esc', 1.25], [0, '', 0.5],
+        [290, 'F1'], [291, 'F2'], [292, 'F3'], [293, 'F4'], [0, '', 0.5],
+        [294, 'F5'], [295, 'F6'], [296, 'F7'], [297, 'F8'], [0, '', 0.5],
+        [298, 'F9'], [299, 'F10'], [300, 'F11'], [301, 'F12'], [0, '', 0.5],
+        [283, 'PrtSc', 0.9], [281, 'ScrLk', 0.9], [284, 'Pause', 0.9],
+      ],
+      [
+        [96, '`'], [49, '1'], [50, '2'], [51, '3'], [52, '4'], [53, '5'], [54, '6'],
+        [55, '7'], [56, '8'], [57, '9'], [48, '0'], [45, '-'], [61, '='],
+        [259, 'Backspace', 2],
+      ],
+      [
+        [258, 'Tab', 1.5], [81, 'Q'], [87, 'W'], [69, 'E'], [82, 'R'], [84, 'T'], [89, 'Y'],
+        [85, 'U'], [73, 'I'], [79, 'O'], [80, 'P'], [91, '['], [93, ']'],
+        [92, '\\', 1.5],
+      ],
+      [
+        [280, 'Caps', 1.75], [65, 'A'], [83, 'S'], [68, 'D'], [70, 'F'], [71, 'G'], [72, 'H'],
+        [74, 'J'], [75, 'K'], [76, 'L'], [59, ';'], [39, "'"],
+        [257, 'Enter', 2.25],
+      ],
+      [
+        [340, 'Shift', 2.25], [90, 'Z'], [88, 'X'], [67, 'C'], [86, 'V'], [66, 'B'], [78, 'N'],
+        [77, 'M'], [44, ','], [46, '.'], [47, '/'],
+        [344, 'Shift', 2.75],
+      ],
+      [
+        [341, 'Ctrl', 1.25], [343, 'Win', 1.25], [342, 'Alt', 1.25],
+        [32, 'Space', 6.25],
+        [346, 'Alt', 1.25], [347, 'Win', 1.25], [348, 'Menu', 1.25], [345, 'Ctrl', 1.25],
+      ],
+    ];
+
+    const KB_MID = [
+      [],
+      [[260, 'Ins', 0.9], [268, 'Home', 0.9], [266, 'PgUp', 0.9]],
+      [[261, 'Del', 0.9], [269, 'End', 0.9], [267, 'PgDn', 0.9]],
+      [], [],
+      [[0, '', 0.9], [265, 'Up', 0.9], [0, '', 0.9]],
+      [[263, 'Left', 0.9], [264, 'Down', 0.9], [262, 'Right', 0.9]],
+    ];
+
+    const KB_NUM = [
+      [[282, 'Num', 0.9], [331, 'N/', 0.9], [332, 'N*', 0.9], [333, 'N-', 0.9]],
+      [[327, 'N7', 0.9], [328, 'N8', 0.9], [329, 'N9', 0.9], [334, 'N+', 0.9, 2]],
+      [[324, 'N4', 0.9], [325, 'N5', 0.9], [326, 'N6', 0.9]],
+      [[321, 'N1', 0.9], [322, 'N2', 0.9], [323, 'N3', 0.9], [335, 'NEnt', 0.9, 2]],
+      [[320, 'N0', 0.9, 1, 1.9], [330, 'N.', 0.9]],
+    ];
+
+    function openKeyboard(moduleName) {
+      bindingModule = moduleName;
+      document.getElementById('kb-mod-name').textContent = moduleName;
+
+      const overlay = document.getElementById('kb-overlay');
+      const body = document.getElementById('kb-body');
+      body.innerHTML = '';
+
+      const allKeys = [];
+      buildRegion(body, 'kb-main', KB_MAIN, allKeys);
+      buildRegion(body, 'kb-mid', KB_MID, allKeys);
+      buildRegion(body, 'kb-num', KB_NUM, allKeys);
+
+      allKeys.forEach(k => {
+        k.style.setProperty('--d', Math.floor(Math.random() * 500) + 'ms');
+      });
+
+      overlay.classList.add('open');
+      document.getElementById('shell').classList.add('blurred');
+    }
+
+    function closeKeyboard() {
+      const overlay = document.getElementById('kb-overlay');
+      const allKeys = overlay.querySelectorAll('.kb-key');
+
+      allKeys.forEach(k => {
+        const r = k.getBoundingClientRect();
+        const dx = (r.left + r.width / 2) - (window.innerWidth / 2);
+        const dy = (r.top + r.height / 2) - (window.innerHeight / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const delay = Math.min(dist / 20, 300);
+        k.style.setProperty('--cd', delay + 'ms');
+      });
+
+      overlay.classList.add('closing');
+      document.getElementById('shell').classList.remove('blurred');
+
+      setTimeout(() => {
+        overlay.classList.remove('open', 'closing');
+        bindingModule = null;
+      }, 450);
+    }
+
+    function buildRegion(parent, cls, layout, collect) {
+      const region = document.createElement('div');
+      region.className = 'kb-region ' + cls;
+      for (const row of layout) {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'kb-row';
+        if (cls === 'kb-main' && row.length && row[0][0] === 256) rowEl.classList.add('fn');
+        for (const key of row) {
+          const code = key[0];
+          const label = key[1];
+          const u = key[2] || 1;
+          const el = document.createElement('div');
+          el.className = 'kb-key';
+          if (label.length > 4) el.classList.add('wide-label');
+          el.textContent = label;
+          el.style.minWidth = (42 * u + 5 * (u - 1)) + 'px';
+          if (code === 0) {
+            el.style.visibility = 'hidden';
+            el.style.pointerEvents = 'none';
+          } else {
+            el.addEventListener('click', () => selectKey(code));
+            collect.push(el);
+          }
+          rowEl.appendChild(el);
+        }
+        region.appendChild(rowEl);
+      }
+      parent.appendChild(region);
+    }
+
+    function selectKey(code) {
+      if (!bindingModule) return;
+      fetch('/bind?module=' + encodeURIComponent(bindingModule)
+          + '&key=' + code).catch(() => {});
+      closeKeyboard();
+    }
+
+    function clearBind() {
+      if (!bindingModule) return;
+      fetch('/bind?module=' + encodeURIComponent(bindingModule)
+          + '&key=-1').catch(() => {});
+      closeKeyboard();
+    }
+
+    function cssEsc(s) {
+      return s.replace(/[^a-zA-Z0-9_-]/g, c => '\\' + c);
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c =>
+        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    }
+</script>
+</body>
+</html>
