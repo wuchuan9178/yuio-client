@@ -4,24 +4,33 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-            persist-credentials: false
+          persist-credentials: false
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 21
 
+      - name: Fix Gradle wrapper
+        run: |
+          chmod +x gradlew
+          sed -i 's/\r$//' gradlew
+
       - name: Build with Gradle
-        run: ./gradlew build
+        run: bash gradlew build
+
+      - name: Remove sources jar
+        run: rm -f build/libs/*-sources.jar
 
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -31,4 +40,4 @@ jobs:
           prerelease: true
           title: Dev Build
           files: |
-            ./build/libs/*.jar
+            build/libs/*.jar
