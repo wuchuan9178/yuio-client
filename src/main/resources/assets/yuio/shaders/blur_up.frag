@@ -1,4 +1,3 @@
-// 升采样: 8 点 tent 核。同样避免 lowp。
 #version 330 core
 
 in vec2 uv;
@@ -7,7 +6,7 @@ out vec4 fragColor;
 uniform sampler2D u_Texture;
 
 layout (std140) uniform BlurData {
-    vec4 u_Data;    // xy = 半 texel, z = 偏移, w 未用
+    vec4 u_Data;
 };
 
 void main() {

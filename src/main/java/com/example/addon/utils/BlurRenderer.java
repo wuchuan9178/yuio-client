@@ -41,6 +41,29 @@ public final class BlurRenderer {
     private static int builtHeight = -1;
     private static boolean ready;
 
+    private static volatile int requestedStrength;
+    private static volatile boolean requested;
+    private static boolean hooked;
+
+    private static final meteordevelopment.orbit.listeners.ConsumerListener<
+        meteordevelopment.meteorclient.events.render.Render2DEvent> CAPTURE =
+        new meteordevelopment.orbit.listeners.ConsumerListener<>(
+            meteordevelopment.meteorclient.events.render.Render2DEvent.class, event -> {
+                if (!requested) return;
+                requested = false;
+                capture(requestedStrength);
+            });
+
+    public static void request(int strength) {
+        requestedStrength = strength;
+        requested = true;
+
+        if (!hooked) {
+            hooked = true;
+            meteordevelopment.meteorclient.MeteorClient.EVENT_BUS.subscribe(CAPTURE);
+        }
+    }
+
     static {
         for (int i = 0; i < LEVELS; i++) {
             CHAIN[i] = new BlurFbo("yuio - blur L" + i);
@@ -69,6 +92,14 @@ public final class BlurRenderer {
         builtWidth = width;
         builtHeight = height;
         ready = true;
+    }
+
+    public static int width() {
+        return builtWidth;
+    }
+
+    public static int height() {
+        return builtHeight;
     }
 
     public static boolean isReady() {
@@ -189,3 +220,4 @@ public final class BlurRenderer {
         }
     }
 }
+

@@ -11,6 +11,8 @@ import net.minecraft.client.MinecraftClient;
 public class CustomFonts extends Module {
     public static CustomFonts INSTANCE;
 
+    private static final long DEBOUNCE_MS = 1500;
+
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     public final Setting<FontWeight> weight = sgGeneral.add(new EnumSetting.Builder<FontWeight>()
@@ -46,36 +48,54 @@ public class CustomFonts extends Module {
 
     public final Setting<Boolean> persistent = sgGeneral.add(new BoolSetting.Builder()
         .name("persistent")
-        .description("Auto re-enable after world reload.")
+        .description("Turn the font back on once when you join a world.")
         .defaultValue(true)
         .build());
 
-    private volatile boolean dirty = false;
-    private long lastChange = 0;
+    public volatile boolean applied;
 
-    //全局hook
+    private volatile boolean dirty;
+    private long lastChange;
+
     private static CustomFontsHook hook;
+
+    private volatile boolean pendingReload;
+
+    private void requestReload() {
+        pendingReload = true;
+    }
 
     public CustomFonts() {
         super(AddonTemplate.OTHER, "custom-fonts",
             "Replace all the fonts in the game with HarmonyOS fonts.");
         INSTANCE = this;
+
         if (hook == null) {
             hook = new CustomFontsHook();
             MeteorClient.EVENT_BUS.subscribe(hook);
         }
     }
 
-    //监听
     public static class CustomFontsHook {
+        private Object lastWorld;
+
         @EventHandler
         private void onTick(TickEvent.Post event) {
-            CustomFonts cf = INSTANCE;
-            if (cf == null) return;
-            if (!cf.persistent.get()) return;
-            if (cf.isActive()) return;
-            if (MinecraftClient.getInstance().world == null) return;
-            cf.toggle();
+            CustomFonts fonts = INSTANCE;
+            if (fonts == null || !fonts.persistent.get()) return;
+
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (fonts.pendingReload && mc.world != null && mc.currentScreen == null && mc.player != null) { fonts.pendingReload = false; fonts.reloadFonts(); return; }
+
+            if (mc.world == null) {
+                lastWorld = null;
+                return;
+            }
+
+            if (mc.world == lastWorld) return;
+            lastWorld = mc.world;
+
+            if (!fonts.isActive()) fonts.toggle();
         }
     }
 
@@ -86,21 +106,27 @@ public class CustomFonts extends Module {
 
     @Override
     public void onActivate() {
-        reloadFonts();
+        dirty = false;
+        requestReload();
     }
 
     @Override
     public void onDeactivate() {
         dirty = false;
+
+        if (applied) {
+            applied = false;
+            requestReload();
+        }
     }
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (!dirty) return;
-        if (!isActive()) return;
-        if (System.currentTimeMillis() - lastChange < 600) return;
+        if (!dirty || !isActive()) return;
+        if (System.currentTimeMillis() - lastChange < DEBOUNCE_MS) return;
+
         dirty = false;
-        reloadFonts();
+        requestReload();
     }
 
     private void reloadFonts() {
@@ -123,3 +149,4 @@ public class CustomFonts extends Module {
         }
     }
 }
+

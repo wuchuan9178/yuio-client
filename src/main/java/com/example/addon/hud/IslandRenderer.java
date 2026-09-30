@@ -151,3 +151,4 @@ public final class IslandRenderer {
         return new Color(color.r, color.g, color.b, alpha);
     }
 }
+

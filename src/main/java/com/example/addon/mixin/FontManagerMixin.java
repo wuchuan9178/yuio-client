@@ -39,6 +39,8 @@ public class FontManagerMixin {
             + ",\"skip\":\"\"}"
             + "]}";
 
+        mod.applied = true;
+
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
         InputSupplier<InputStream> supplier = () -> new ByteArrayInputStream(bytes);
 
@@ -47,3 +49,4 @@ public class FontManagerMixin {
         return newList;
     }
 }
+

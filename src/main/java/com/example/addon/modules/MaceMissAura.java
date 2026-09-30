@@ -2063,7 +2063,7 @@ public final class MaceMissAura extends AModule {
          (Setting)((meteordevelopment.meteorclient.settings.IntSetting.Builder)var37.visible(() -> (Boolean)tpTarget.get())).build()
       );
       var10000 = sgMace;
-      DoubleListSetting.Builder var38 = ((DoubleListSetting.Builder)new DoubleListSetting.Builder().name("VClip")).min(0.0).sliderRange(0.0, 1000.0);
+      DoubleListSetting.Builder var38 = ((DoubleListSetting.Builder)new DoubleListSetting.Builder().name("miss-clip")).min(0.0).sliderRange(0.0, 1000.0);
       Double[] var1 = new Double[]{40.0, 80.0, 100.0};
       missVClip = (DoubleListSetting)var10000.add(((DoubleListSetting.Builder)var38.defaultValue(var1).visible(MaceMissAura::missVClip$lambda$0)).build());
       var10000 = sgMace;

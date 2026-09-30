@@ -40,6 +40,10 @@ public final class BlurFbo implements AutoCloseable {
         return view;
     }
 
+    public GpuTexture texture() {
+        return texture;
+    }
+
     public int width() {
         return width;
     }

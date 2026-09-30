@@ -3,11 +3,14 @@ package com.example.addon.hud;
 import com.example.addon.AddonTemplate;
 import com.example.addon.mixin.BarrelBlockEntityAccessor;
 import com.example.addon.mixin.ChestBlockEntityAccessor;
-import com.example.addon.qq.AvatarCache;
-import com.example.addon.qq.NapCatConfig;
-import com.example.addon.qq.QqClient;
-import com.example.addon.qq.QqMessage;
-import com.example.addon.qq.QqSegment;
+import com.example.addon.music.CdpReader;
+import com.example.addon.music.CoverCache;
+import com.example.addon.music.MusicReader;
+import com.example.addon.music.NeteaseCache;
+import com.example.addon.notify.AvatarCache;
+import com.example.addon.notify.NotifyMessage;
+import com.example.addon.notify.NotifyReader;
+import com.example.addon.notify.NotifySegment;
 import com.example.addon.utils.BlurRenderer;
 import com.example.addon.utils.RoundRectRenderer;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -92,6 +95,7 @@ public class YuioIsland extends HudElement {
     private final SettingGroup sgFood = settings.createGroup("Food");
     private final SettingGroup sgTab = settings.createGroup("Tab");
     private final SettingGroup sgQq = settings.createGroup("QQ");
+    private final SettingGroup sgMusic = settings.createGroup("Music");
 
     private final Setting<Vector3d> positionOffset = sgPosition.add(new Vector3dSetting.Builder()
         .name("position-offset")
@@ -200,32 +204,8 @@ public class YuioIsland extends HudElement {
 
     private final Setting<Boolean> qqEnabled = sgQq.add(new BoolSetting.Builder()
         .name("qq-enabled")
-        .description("Show QQ messages. Requires NapCat / LLOneBot attached to the official QQ.")
+        .description("Show QQ messages. They are read straight out of the Windows notification database, so no plugin and no extra process is needed.")
         .defaultValue(false)
-        .build());
-
-    private final Setting<String> qqUrl = sgQq.add(new StringSetting.Builder()
-        .name("qq-ws-url").description("OneBot WebSocket URL.").defaultValue("ws://127.0.0.1:3001").build());
-
-    private final Setting<String> qqToken = sgQq.add(new StringSetting.Builder()
-        .name("qq-token").description("Access token, empty if none.").defaultValue("").build());
-
-    private final Setting<String> qqHttpUrl = sgQq.add(new StringSetting.Builder()
-        .name("qq-http-url")
-        .description("OneBot HTTP API, used to look up group names. NapCat default is port 3000.")
-        .defaultValue("http://127.0.0.1:3000")
-        .build());
-
-    private final Setting<String> qqGroupAvatar = sgQq.add(new StringSetting.Builder()
-        .name("qq-group-avatar")
-        .description("Group avatar URL template. {group} is replaced with the group id.")
-        .defaultValue("https://p.qlogo.cn/gh/{group}/{group}/100")
-        .build());
-
-    private final Setting<String> qqUserAvatar = sgQq.add(new StringSetting.Builder()
-        .name("qq-user-avatar")
-        .description("User avatar URL template. {qq} is replaced with the sender QQ number.")
-        .defaultValue("https://q1.qlogo.cn/g?b=qq&nk={qq}&s=100")
         .build());
 
     private final Setting<Integer> qqDuration = sgQq.add(new IntSetting.Builder()
@@ -238,52 +218,61 @@ public class YuioIsland extends HudElement {
         .name("qq-max-width").description("Width of the text area before it gets trimmed with an ellipsis.")
         .defaultValue(220).min(80).sliderRange(80, 400).build());
 
+    private final Setting<String> qqAccount = sgQq.add(new StringSetting.Builder()
+        .name("qq-account").description("Only show notifications of this QQ number. Empty means every account.")
+        .defaultValue("")
+        .build());
+
     private final Setting<Boolean> qqOnlyMention = sgQq.add(new BoolSetting.Builder()
         .name("qq-only-mention")
-        .description("Group messages are only shown when they mention you. QQ's own do-not-disturb flag lives in QQ and never reaches the API, so this is the closest thing to it.")
+        .description("Only show group messages that mention you.")
         .defaultValue(false)
         .build());
 
     private final Setting<String> qqIgnore = sgQq.add(new StringSetting.Builder()
         .name("qq-ignore")
-        .description("Groups to drop, separated by commas. A plain number is matched against the group id (the id is printed to the log), anything else against the group name.")
+        .description("Groups to drop, separated by commas. A plain number is matched against the group id, anything else against the group name.")
         .defaultValue("")
         .build());
 
     private final Setting<Boolean> qqStatus = sgQq.add(new BoolSetting.Builder()
-        .name("qq-status").description("Show a card while QQ is connecting or disconnected, so silence is never ambiguous.")
+        .name("qq-status").description("Show a card when the notification database cannot be read, so silence is never ambiguous.")
         .defaultValue(true)
         .build());
 
-    private final Setting<String> napcatDir = sgQq.add(new StringSetting.Builder()
-        .name("napcat-dir")
-        .description("Folder of NapCat.Shell. Empty or 'auto' finds it by itself, 'off' disables all of this. The addon then fixes onebot11_<qq>.json for every account, so the WebUI never has to be opened.")
-        .defaultValue("auto")
+    private final Setting<Boolean> musicEnabled = sgMusic.add(new BoolSetting.Builder()
+        .name("music-enabled")
+        .description("Show what NetEase Cloud Music is playing. Read from its window title, no network.")
+        .defaultValue(false)
         .build());
 
-    private final Setting<Boolean> qqAutoLaunch = sgQq.add(new BoolSetting.Builder()
-        .name("qq-auto-launch")
-        .description("Start the injected QQ when it is not running. Windows asks for admin once.")
+    private final Setting<Integer> musicWidth = sgMusic.add(new IntSetting.Builder()
+        .name("music-max-width").defaultValue(200).min(80).sliderRange(80, 400).build());
+
+    private final Setting<Boolean> musicLyrics = sgMusic.add(new BoolSetting.Builder()
+        .name("music-lyrics")
+        .description("Show the current line. Lyrics come from <game folder>/yuio-lyrics/<song> - <artist>.lrc.")
         .defaultValue(true)
         .build());
 
-    private final Setting<Boolean> qqHidden = sgQq.add(new BoolSetting.Builder()
-        .name("qq-hidden-launch")
-        .description("Start QQ without its console window. Only applied when a quick login account is known, otherwise the QR code has to stay visible.")
-        .defaultValue(true)
-        .build());
+    private final Setting<Integer> musicCdpPort = sgMusic.add(new IntSetting.Builder()
+        .name("music-cdp-port")
+        .description("NetEase DevTools port. Launch NetEase with --remote-debugging-port=<port> and the lyric line follows the real playback position, so pausing and seeking no longer drift. 0 turns it off.")
+        .defaultValue(9222).min(0).sliderRange(0, 9333).build());
 
-    private final Setting<String> qqAccount = sgQq.add(new StringSetting.Builder()
-        .name("qq-account")
-        .description("QQ number passed to launcher.bat as -q, so it logs in without a QR scan. Empty means take the account from NapCat's config.")
-        .defaultValue("")
-        .build());
+    private final Setting<Integer> musicOffset = sgMusic.add(new IntSetting.Builder()
+        .name("music-lyric-offset")
+        .description("Milliseconds to shift the lyrics. There is no playback position to read, so the timeline is our own clock.")
+        .defaultValue(0).min(-10000).sliderRange(-10000, 10000).build());
 
-    private final Setting<Boolean> qqForceRestart = sgQq.add(new BoolSetting.Builder()
-        .name("qq-force-restart")
-        .description("QQ allows only one PC session per account, so a QQ started without NapCat blocks it. Close that one and start it injected instead.")
-        .defaultValue(true)
-        .build());
+    private final Setting<SettingColor> musicTitleColor = sgMusic.add(new ColorSetting.Builder()
+        .name("music-title-color").defaultValue(new SettingColor(255, 255, 255)).build());
+
+    private final Setting<SettingColor> musicArtistColor = sgMusic.add(new ColorSetting.Builder()
+        .name("music-artist-color").defaultValue(new SettingColor(170, 170, 170)).build());
+
+    private final Setting<SettingColor> musicLyricColor = sgMusic.add(new ColorSetting.Builder()
+        .name("music-lyric-color").defaultValue(new SettingColor(120, 200, 255)).build());
 
     private final Setting<SettingColor> qqNameColor = sgQq.add(new ColorSetting.Builder()
         .name("qq-name-color")
@@ -307,15 +296,15 @@ public class YuioIsland extends HudElement {
     private final Anim tab = new Anim(0, 10);
     private final Anim content = new Anim(0, 10);
     private final Anim food = new Anim(0, 10);
+    private final Anim lyricFade = new Anim(0, 12);
+    private String lyricNow = "";
 
     private final List<TimedContent> notifications = new ArrayList<>();
     private final List<Module> lastActive = new ArrayList<>();
 
     private final List<QqEntry> qqMessages = new ArrayList<>();
-    private final Queue<QqMessage> incomingQq = new ConcurrentLinkedQueue<>();
-    private QqClient qqClient;
-    private boolean qqConnected;
-    private boolean napcatManaged;
+    private final List<NotifyMessage> incomingQq = new ArrayList<>();
+    private boolean qqStarted;
 
     private List<ItemStack> previewStacks;
     private String previewTitle;
@@ -341,9 +330,6 @@ public class YuioIsland extends HudElement {
             lastActive.addAll(active);
         });
 
-    private final ConsumerListener<Render2DEvent> captureListener =
-        new ConsumerListener<>(Render2DEvent.class, event -> BlurRenderer.capture(blurStrength.get()));
-
     private final ConsumerListener<ResolutionChangedEvent> resizeListener =
         new ConsumerListener<>(ResolutionChangedEvent.class, event -> {
             BlurRenderer.close();
@@ -355,14 +341,12 @@ public class YuioIsland extends HudElement {
     public YuioIsland() {
         super(INFO);
         MeteorClient.EVENT_BUS.subscribe(activeModulesListener);
-        MeteorClient.EVENT_BUS.subscribe(captureListener);
         MeteorClient.EVENT_BUS.subscribe(resizeListener);
     }
 
     @Override
     public void remove() {
         MeteorClient.EVENT_BUS.unsubscribe(activeModulesListener);
-        MeteorClient.EVENT_BUS.unsubscribe(captureListener);
         MeteorClient.EVENT_BUS.unsubscribe(resizeListener);
         BlurRenderer.close();
         super.remove();
@@ -571,7 +555,9 @@ public class YuioIsland extends HudElement {
         IslandRenderer.beginFrame();
         IslandRenderer.setVanillaFont(fontMode.get() == FontMode.Game);
         BlurRenderer.init();
+        BlurRenderer.request(blurStrength.get());
         AvatarCache.poll();
+        CoverCache.poll();
         updateQq(delta);
 
         tabActive = wantsTab();
@@ -580,6 +566,7 @@ public class YuioIsland extends HudElement {
 
         updateFood(delta);
         updatePreview();
+        updateLyric(delta);
 
         for (TimedContent notification : new ArrayList<>(notifications)) {
             if (notification.isExpired(now)) notifications.remove(notification);
@@ -598,10 +585,9 @@ public class YuioIsland extends HudElement {
     private void renderCompactMode(HudRenderer renderer, float delta, double baseScale) {
         List<Content> contents = new ArrayList<>();
         if (previewStacks != null) contents.add(containerContent(renderer, baseScale));
-        if (foodStack != null) contents.add(foodContent(renderer, baseScale));
+        if (foodStack != null) contents.add(foodContent(renderer, baseScale));;
         for (QqEntry entry : qqMessages) contents.add(qqContent(renderer, entry, baseScale));
-        if (qqStatus.get() && qqEnabled.get() && qqClient != null
-            && qqClient.state() != QqClient.State.CONNECTED) {
+        if (qqStatus.get() && qqEnabled.get() && !NotifyReader.available()) {
             contents.add(qqStatusContent(renderer, baseScale));
         }
         for (TimedContent notification : notifications) {
@@ -624,6 +610,10 @@ public class YuioIsland extends HudElement {
             }
             targetWidth = widest;
             targetHeight = total - gap;
+        } else if (musicIdle()) {
+            double[] idle = measureMusicIdle(renderer, baseScale);
+            targetWidth = idle[0];
+            targetHeight = idle[1];
         } else {
             double[] idle = measureIdle(renderer, baseScale);
             targetWidth = idle[0];
@@ -654,7 +644,8 @@ public class YuioIsland extends HudElement {
             IslandRenderer.glass(panelX, panelY, panelWidth, panelHeight, radius,
                 blurStrength.get(), backgroundAlpha.get(), tintStrength.get(),
                 border.get(), highlight.get());
-            drawIdle(renderer, panelX, panelY, panelWidth, panelHeight, baseScale);
+            if (musicIdle()) drawMusicIdle(renderer, panelX, panelY, panelWidth, panelHeight, baseScale);
+            else drawIdle(renderer, panelX, panelY, panelWidth, panelHeight, baseScale);
         } else {
             double alpha = content.get();
             double cursorY = panelY;
@@ -818,7 +809,6 @@ public class YuioIsland extends HudElement {
         }
     }
 
-    /** 逐字上色做一个流动的彩虹; 首尾相接, 时间驱动。 */
     private void drawRainbow(HudRenderer renderer, String text, double x, double y, double textScale) {
         double cursor = x;
         double phase = (System.currentTimeMillis() % 100000L) / 1000.0 * rainbowSpeed.get();
@@ -831,30 +821,29 @@ public class YuioIsland extends HudElement {
         }
     }
 
-    /** 一条 QQ 消息 + 它自己的滑入/淡入动画。 */
     private static final class QqEntry {
-        final QqMessage message;
+        final NotifyMessage message;
         final Anim fade = new Anim(0, 9);
         final Anim slide = new Anim(0, 11);
         boolean leaving;
 
-        QqEntry(QqMessage message) {
+        QqEntry(NotifyMessage message) {
             this.message = message;
         }
     }
 
-    /**
-     * 群免打扰是 QQ 客户端的本地设置, 接口不会告诉我们,
-     * 所以只能靠忽略列表和"只显示@我"来达到同样的效果。
-     */
-    private boolean accepts(QqMessage message) {
+    private boolean accepts(NotifyMessage message) {
+        String account = qqAccount.get();
+        if (account != null && !account.isBlank() && !account.trim().equals(String.valueOf(message.account()))) {
+            return false;
+        }
+
         if (message.groupId() < 0) return true;
         if (qqOnlyMention.get() && !message.mention()) return false;
 
         String id = String.valueOf(message.groupId());
         for (String part : qqIgnore.get().split("[,，;；\\s]+")) {
             if (part.isEmpty()) continue;
-            // 纯数字当群号, 其它当群名的一部分
             if (part.chars().allMatch(Character::isDigit)
                 ? part.equals(id)
                 : message.title().contains(part)) return false;
@@ -863,39 +852,12 @@ public class YuioIsland extends HudElement {
         return true;
     }
 
-    /**
-     * NapCat 是注入进 QQ 的插件, 配置按账号存, 换号就是一份默认配置。
-     * 给了路径就替用户把这些配置补好 (顺便在 QQ 没跑时点起来), 一局只做一次。
-     */
-    private void manageNapcat() {
-        if (napcatManaged) return;
-        napcatManaged = true;
-
-        String account = qqAccount.get();
-
-        NapCatConfig.manage(napcatDir.get(), qqUrl.get(), qqHttpUrl.get(), qqToken.get(),
-            account, qqAutoLaunch.get(), qqForceRestart.get(), qqHidden.get());
-    }
-
-    /** WebSocket 线程调进来的, 所以只入队, 渲染线程再取。 */
-    private void onQqMessage(QqMessage message) {
-        incomingQq.add(message);
-        while (incomingQq.size() > 8) incomingQq.poll();
-    }
-
     private void updateQq(float delta) {
         boolean enabled = qqEnabled.get();
 
-        if (enabled != qqConnected) {
-            qqConnected = enabled;
-            if (enabled) {
-                if (qqClient == null) qqClient = new QqClient(this::onQqMessage);
-                qqClient.connect(qqUrl.get(), qqToken.get(), qqHttpUrl.get(), qqGroupAvatar.get(), qqUserAvatar.get());
-                manageNapcat();
-            } else if (qqClient != null) {
-                qqClient.disconnect();
-                napcatManaged = false;
-            }
+        if (enabled && !qqStarted) {
+            qqStarted = true;
+            NotifyReader.start();
         }
 
         if (!enabled) {
@@ -904,14 +866,10 @@ public class YuioIsland extends HudElement {
             return;
         }
 
-        // 掉线自己重连, 不然 QQ 一重登灵动岛就永久静默
-        if (qqClient != null) {
-            qqClient.tick();
-            if (qqClient.state() == QqClient.State.CONNECTED) NapCatConfig.hint = "";
-        }
+        incomingQq.clear();
+        NotifyReader.drain(incomingQq);
 
-        QqMessage fresh;
-        while ((fresh = incomingQq.poll()) != null) {
+        for (NotifyMessage fresh : incomingQq) {
             if (!accepts(fresh)) continue;
             qqMessages.add(new QqEntry(fresh));
             while (qqMessages.size() > qqMax.get()) qqMessages.remove(0);
@@ -931,16 +889,12 @@ public class YuioIsland extends HudElement {
         }
     }
 
-    /**
-     * 把消息分段按最大宽度裁好, 超长就用省略号收尾。
-     * 裁的时候保留每段自己的颜色, 所以 @全体成员 / @你 的红字不会丢。
-     */
-    private List<QqSegment> fitSegments(HudRenderer renderer, List<QqSegment> segments,
-                                        double maxWidth, double textScale) {
-        List<QqSegment> out = new ArrayList<>();
+    private List<NotifySegment> fitSegments(HudRenderer renderer, List<NotifySegment> segments,
+                                            double maxWidth, double textScale) {
+        List<NotifySegment> out = new ArrayList<>();
         double used = 0;
 
-        for (QqSegment segment : segments) {
+        for (NotifySegment segment : segments) {
             String text = segment.text();
             double width = IslandRenderer.textWidth(renderer, text, textScale);
 
@@ -961,8 +915,8 @@ public class YuioIsland extends HudElement {
                 builder.append(text.charAt(i));
             }
 
-            if (!builder.isEmpty()) out.add(new QqSegment(builder.toString(), segment.rgb()));
-            out.add(new QqSegment("...", segment.rgb()));
+            if (!builder.isEmpty()) out.add(new NotifySegment(builder.toString(), segment.rgb()));
+            out.add(new NotifySegment("...", segment.rgb()));
             return out;
         }
 
@@ -970,20 +924,19 @@ public class YuioIsland extends HudElement {
     }
 
     private Content qqContent(HudRenderer renderer, QqEntry entry, double baseScale) {
-        QqMessage message = entry.message;
+        NotifyMessage message = entry.message;
 
         double avatar = 26 * baseScale;
         double gap = 6 * baseScale;
         double titleScale = 0.9 * baseScale;
         double textScale = 0.95 * baseScale;
 
-        // 标题和正文都按同一个上限裁, 卡片宽度才不会撑出屏幕
         double maxWidth = qqMaxWidth.get() * baseScale;
         String titleText = ellipsis(renderer, message.title(), maxWidth, titleScale);
-        List<QqSegment> fitted = fitSegments(renderer, message.segments(), Math.max(maxWidth - avatar - gap, 24 * baseScale), textScale);
+        List<NotifySegment> fitted = fitSegments(renderer, message.segments(), Math.max(maxWidth - avatar - gap, 24 * baseScale), textScale);
 
         double textWidth = 0;
-        for (QqSegment segment : fitted) {
+        for (NotifySegment segment : fitted) {
             textWidth += IslandRenderer.textWidth(renderer, segment.text(), textScale);
         }
 
@@ -998,7 +951,6 @@ public class YuioIsland extends HudElement {
             double a = alpha * entry.fade.get();
             if (a <= 0.01) return;
 
-            // 滑入: 从下方一点点挪上来
             double baseY = originY + (1.0 - entry.slide.get()) * 8 * baseScale;
 
             IslandRenderer.text(r, titleText, originX, baseY,
@@ -1006,9 +958,8 @@ public class YuioIsland extends HudElement {
 
             double rowY = baseY + titleHeight + 3 * baseScale;
 
-            GpuTextureView avatarView = AvatarCache.get(message.avatarUrl());
+            GpuTextureView avatarView = AvatarCache.get(message.avatarPath());
             if (avatarView != null) {
-                // 圆 = 四角半径取一半; tint 的 alpha 是混合强度, 0 表示保留原色
                 RoundRectRenderer.textured(originX, rowY, avatar, avatar,
                     avatar * 0.5, avatar * 0.5, avatar * 0.5, avatar * 0.5,
                     avatarView, 0f, 0f, 1f, 1f, new Color(255, 255, 255, 0), (int) (255 * a));
@@ -1020,7 +971,7 @@ public class YuioIsland extends HudElement {
             double cursor = originX + avatar + gap;
             double textY = rowY + (avatar - textHeight) * 0.5;
 
-            for (QqSegment segment : fitted) {
+            for (NotifySegment segment : fitted) {
                 int rgb = segment.rgb();
                 Color color = IslandRenderer.alpha(
                     new Color((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, 255), (int) (255 * a));
@@ -1029,21 +980,16 @@ public class YuioIsland extends HudElement {
         }, contentWidth, contentHeight);
     }
 
-    /** QQ 没连上时给一张提示卡, 免得"没消息"和"没连上"分不清。 */
     private Content qqStatusContent(HudRenderer renderer, double baseScale) {
         double titleScale = 0.9 * baseScale;
         double textScale = 0.95 * baseScale;
         double dot = 7 * baseScale;
         double maxWidth = qqMaxWidth.get() * baseScale;
 
-        boolean connecting = qqClient.state() == QqClient.State.CONNECTING;
-        String detail = qqClient.detail();
-        if (detail.isBlank()) detail = connecting ? qqUrl.get() : "qq-ws-url is empty";
-        // NapCat 那边的一句结论比异常原文有用: "QQ is running without NapCat" 之类
-        if (!NapCatConfig.hint.isBlank()) detail = NapCatConfig.hint;
+        String detail = NotifyReader.problem();
+        if (detail == null || detail.isBlank()) detail = "waiting for the Windows notification database";
 
-        String titleText = ellipsis(renderer, connecting ? "QQ connecting" : "QQ offline",
-            maxWidth - dot - 6 * baseScale, titleScale);
+        String titleText = ellipsis(renderer, "QQ unavailable", maxWidth - dot - 6 * baseScale, titleScale);
         String detailText = ellipsis(renderer, detail, maxWidth, textScale);
 
         double titleHeight = IslandRenderer.textHeight(renderer, titleScale);
@@ -1052,7 +998,7 @@ public class YuioIsland extends HudElement {
             IslandRenderer.textWidth(renderer, titleText, titleScale) + dot + 6 * baseScale,
             IslandRenderer.textWidth(renderer, detailText, textScale));
         double contentHeight = titleHeight + 3 * baseScale + textHeight;
-        Color accent = connecting ? new Color(255, 190, 80, 255) : new Color(255, 95, 95, 255);
+        Color accent = new Color(255, 190, 80, 255);
 
         return new Content((r, originX, originY, alpha) -> {
             if (alpha <= 0.01) return;
@@ -1064,6 +1010,141 @@ public class YuioIsland extends HudElement {
             IslandRenderer.text(r, detailText, originX, originY + titleHeight + 3 * baseScale,
                 IslandRenderer.alpha(TEXT_TERTIARY, (int) (255 * alpha)), true, textScale);
         }, contentWidth, contentHeight);
+    }
+
+    private boolean musicIdle() {
+        return musicEnabled.get() && MusicReader.track().playing();
+    }
+
+    private void updateLyric(float delta) {
+        if (!musicEnabled.get()) {
+            lyricNow = "";
+            return;
+        }
+
+        MusicReader.start();
+
+        MusicReader.Track track = MusicReader.track();
+        if (track.playing()) NeteaseCache.request(track.title(), track.artist());
+
+        long elapsed = System.currentTimeMillis() - track.since() + musicOffset.get();
+        String line = "";
+
+        if (musicCdpPort.get() > 0) {
+            CdpReader.port(musicCdpPort.get());
+            if (musicLyrics.get() && CdpReader.available()) line = CdpReader.line();
+        }
+
+        if (line.isEmpty() && track.playing() && musicLyrics.get() && elapsed >= 0) {
+            List<MusicReader.Line> netease = NeteaseCache.lines(track.title(), track.artist());
+
+            if (netease.isEmpty()) {
+                line = MusicReader.lineAt(elapsed);
+            } else {
+                for (MusicReader.Line candidate : netease) {
+                    if (candidate.time() > elapsed) break;
+                    line = candidate.text();
+                }
+            }
+        }
+
+        if (!line.equals(lyricNow)) {
+            lyricNow = line;
+            lyricFade.reset(0.0);
+        }
+
+        lyricFade.set(1.0);
+        lyricFade.update(delta);
+    }
+
+    private record MusicLayout(double width, double height, double padding, double ball, double gap,
+                               double titleScale, double artistScale, double lyricScale,
+                               String title, String artist, String lyric) {
+    }
+
+    private MusicLayout layoutMusicIdle(HudRenderer renderer, double baseScale) {
+        double padding = 12 * baseScale;
+        double ball = 30 * baseScale;
+        double gap = 9 * baseScale;
+        double titleScale = 1.02 * baseScale;
+        double artistScale = 0.72 * baseScale;
+        double lyricScale = 0.92 * baseScale;
+        double maxWidth = musicWidth.get() * baseScale;
+
+        MusicReader.Track track = MusicReader.track();
+        String title = ellipsis(renderer, track.title(), maxWidth, titleScale);
+        String artist = ellipsis(renderer, track.artist().isEmpty() ? "NetEase Cloud Music" : track.artist(),
+            maxWidth, artistScale);
+        String lyric = lyricNow.isEmpty() ? "" : ellipsis(renderer, lyricNow, maxWidth, lyricScale);
+
+        double text = Math.max(IslandRenderer.textWidth(renderer, title, titleScale),
+            Math.max(IslandRenderer.textWidth(renderer, artist, artistScale),
+                IslandRenderer.textWidth(renderer, lyric, lyricScale)));
+
+        double textHeight = IslandRenderer.textHeight(renderer, titleScale) + 2 * baseScale
+            + IslandRenderer.textHeight(renderer, artistScale);
+
+        if (!lyric.isEmpty()) textHeight += 4 * baseScale + IslandRenderer.textHeight(renderer, lyricScale);
+
+        double width = padding * 2 + ball + gap + text;
+        double height = padding * 2 + Math.max(ball, textHeight);
+
+        return new MusicLayout(width, height, padding, ball, gap, titleScale, artistScale, lyricScale,
+            title, artist, lyric);
+    }
+
+    private double[] measureMusicIdle(HudRenderer renderer, double baseScale) {
+        MusicLayout layout = layoutMusicIdle(renderer, baseScale);
+        return new double[]{layout.width(), layout.height()};
+    }
+
+    private void drawMusicIdle(HudRenderer renderer, double panelX, double panelY,
+                               double panelWidth, double panelHeight, double baseScale) {
+        MusicLayout layout = layoutMusicIdle(renderer, baseScale);
+        double centerY = panelY + panelHeight * 0.5;
+
+        MusicReader.Track track = MusicReader.track();
+        double ballX = panelX + layout.padding();
+        double ballY = centerY - layout.ball() * 0.5;
+
+        String cover = track.playing() ? NeteaseCache.coverUrl(track.title(), track.artist()) : null;
+        GpuTextureView coverView = cover == null ? null : CoverCache.get(cover);
+
+        if (coverView != null) {
+            RoundRectRenderer.textured(ballX, ballY, layout.ball(), layout.ball(),
+                layout.ball() * 0.5, layout.ball() * 0.5, layout.ball() * 0.5, layout.ball() * 0.5,
+                coverView, 0f, 0f, 1f, 1f, new Color(255, 255, 255, 0), 255);
+        } else {
+            IslandRenderer.round(ballX, ballY, layout.ball(), layout.ball(), layout.ball() * 0.5,
+                new Color(22, 24, 32, 235));
+
+            double inner = layout.ball() * 0.22;
+            IslandRenderer.round(ballX + (layout.ball() - inner) * 0.5, ballY + (layout.ball() - inner) * 0.5,
+                inner, inner, inner * 0.5, new Color(58, 62, 76, 235));
+        }
+
+        double x = ballX + layout.ball() + layout.gap();
+
+        double titleHeight = IslandRenderer.textHeight(renderer, layout.titleScale());
+        double artistHeight = IslandRenderer.textHeight(renderer, layout.artistScale());
+        double lyricHeight = IslandRenderer.textHeight(renderer, layout.lyricScale());
+
+        double block = titleHeight + 2 * baseScale + artistHeight;
+        if (!layout.lyric().isEmpty()) block += 4 * baseScale + lyricHeight;
+
+        double top = centerY - block * 0.5;
+
+        IslandRenderer.text(renderer, layout.title(), x, top, musicTitleColor.get(), true, layout.titleScale());
+
+        double artistY = top + titleHeight + 2 * baseScale;
+        IslandRenderer.text(renderer, layout.artist(), x, artistY, musicArtistColor.get(), true, layout.artistScale());
+
+        if (!layout.lyric().isEmpty()) {
+            double fade = lyricFade.get();
+            double lyricY = artistY + artistHeight + 4 * baseScale + (1.0 - fade) * 5 * baseScale;
+            IslandRenderer.text(renderer, layout.lyric(), x, lyricY,
+                IslandRenderer.alpha(musicLyricColor.get(), (int) (255 * fade)), true, layout.lyricScale());
+        }
     }
 
     private Content containerContent(HudRenderer renderer, double baseScale) {
@@ -1437,7 +1518,6 @@ public class YuioIsland extends HudElement {
             return fade.get();
         }
 
-        /** 每次都按模块当前状态算, 不在构造时冻结。 */
         private String stateWord() {
             if (module == null || stateStyle == null) return null;
 
@@ -1525,3 +1605,4 @@ public class YuioIsland extends HudElement {
         }
     }
 }
+

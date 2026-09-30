@@ -80,6 +80,31 @@ public class YuioRender {
 
     // ---------- 文本 / 物品 ----------
 
+    // 1px 圆角描边: 四条直边 + 四角逐行一个像素
+    public void roundBorder(double x, double y, double w, double h, double rad, int argb) {
+        int r = (int) Math.min(rad, Math.min(w, h) / 2);
+        if (r <= 0) {
+            lineH(x, y, w, argb);
+            lineH(x, y + h - 1, w, argb);
+            lineV(x, y, h, argb);
+            lineV(x + w - 1, y, h, argb);
+            return;
+        }
+
+        ctx.fill((int) (x + r), (int) y, (int) (x + w - r), (int) y + 1, argb);
+        ctx.fill((int) (x + r), (int) (y + h - 1), (int) (x + w - r), (int) (y + h), argb);
+        ctx.fill((int) x, (int) (y + r), (int) x + 1, (int) (y + h - r), argb);
+        ctx.fill((int) (x + w - 1), (int) (y + r), (int) (x + w), (int) (y + h - r), argb);
+
+        for (int i = 0; i <= r; i++) {
+            int dx = (int) (r - Math.sqrt(Math.max(0, r * r - (r - i) * (r - i))));
+            ctx.fill((int) (x + dx), (int) (y + i), (int) (x + dx) + 1, (int) (y + i) + 1, argb);
+            ctx.fill((int) (x + w - dx - 1), (int) (y + i), (int) (x + w - dx), (int) (y + i) + 1, argb);
+            ctx.fill((int) (x + dx), (int) (y + h - i - 1), (int) (x + dx) + 1, (int) (y + h - i), argb);
+            ctx.fill((int) (x + w - dx - 1), (int) (y + h - i - 1), (int) (x + w - dx), (int) (y + h - i), argb);
+        }
+    }
+
     public void text(String s, double x, double y, int argb, boolean shadow) {
         ctx.drawText(mc.textRenderer, s, (int) x, (int) y, argb, shadow);
     }

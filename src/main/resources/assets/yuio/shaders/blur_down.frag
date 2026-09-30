@@ -1,5 +1,3 @@
-// 降采样: 5 点箱式滤波。刻意不写 precision lowp —— texel 偏移只有 1e-3 量级,
-// lowp 会把它量化成 0, 整条链就退化成原样拷贝。
 #version 330 core
 
 in vec2 uv;
@@ -8,7 +6,7 @@ out vec4 fragColor;
 uniform sampler2D u_Texture;
 
 layout (std140) uniform BlurData {
-    vec4 u_Data;    // xy = 半 texel, z = 偏移, w 未用
+    vec4 u_Data;
 };
 
 void main() {
