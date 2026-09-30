@@ -280,10 +280,40 @@ public class YuioIsland extends HudElement {
         .defaultValue(new SettingColor(255, 255, 255))
         .build());
 
+    private final Setting<Double> fontScale = sgAppearance.add(new DoubleSetting.Builder()
+        .name("font-scale")
+        .description("Multiplier for every text size inside the island. Capsule size keeps using its own scale setting.")
+        .defaultValue(1)
+        .min(0.5)
+        .sliderRange(0.5, 2)
+        .build());
+
     private final Setting<Boolean> showFood = sgFood.add(new BoolSetting.Builder().name("show-food").defaultValue(true).build());
 
     private final Setting<Double> tabNameScale = sgTab.add(new DoubleSetting.Builder().name("name-scale").defaultValue(1).min(0.5).sliderRange(0.5, 2).build());
     private final Setting<Boolean> tabHeaderFooter = sgTab.add(new BoolSetting.Builder().name("header-footer").defaultValue(true).build());
+    public enum TabMode {
+        Replace("replace"),
+        Below("below");
+
+        private final String label;
+
+        TabMode(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
+    private final Setting<TabMode> tabMode = sgTab.add(new EnumSetting.Builder<TabMode>()
+        .name("tab-mode")
+        .description("replace: the player list takes over the idle island. below: keep the idle island and stack the player list underneath it.")
+        .defaultValue(TabMode.Replace)
+        .build());
+
     private final Setting<Double> tabOffsetX = sgTab.add(new DoubleSetting.Builder()
         .name("tab-offset-x").description("Nudge the tab panel horizontally.").defaultValue(0).sliderRange(-200, 200).build());
     private final Setting<Double> tabOffsetY = sgTab.add(new DoubleSetting.Builder()
@@ -305,6 +335,7 @@ public class YuioIsland extends HudElement {
     private final List<QqEntry> qqMessages = new ArrayList<>();
     private final List<NotifyMessage> incomingQq = new ArrayList<>();
     private boolean qqStarted;
+    private double tabPushY;
 
     private List<ItemStack> previewStacks;
     private String previewTitle;
@@ -574,7 +605,12 @@ public class YuioIsland extends HudElement {
         }
 
         if (tabActive) {
-            renderTabMode(renderer, delta, baseScale);
+                if (tabMode.get() == TabMode.Below) {
+                    renderCompactMode(renderer, delta, baseScale);
+                    tabPushY = height.get() + 6 * baseScale;
+                }
+
+                renderTabMode(renderer, delta, baseScale);
             renderFloatingNotifications(renderer, baseScale);
         } else {
             renderCompactMode(renderer, delta, baseScale);
@@ -680,9 +716,9 @@ public class YuioIsland extends HudElement {
 
     private IdleLayout layoutIdle(HudRenderer renderer, double baseScale) {
         double padding = 12 * baseScale;
-        double nameScale = 1.05 * baseScale;
-        double valueScale = 0.95 * baseScale;
-        double labelScale = 0.70 * baseScale;
+        double nameScale = 1.05 * baseScale * fontScale.get();
+        double valueScale = 0.95 * baseScale * fontScale.get();
+        double labelScale = 0.70 * baseScale * fontScale.get();
         double columnGap = 14 * baseScale;
 
         double iconWidth = iconDrawWidth(baseScale);
@@ -1212,7 +1248,7 @@ public class YuioIsland extends HudElement {
     }
     private Content foodContent(HudRenderer renderer, double baseScale) {
         double iconBox = 30 * baseScale;
-        double nameScale = 1.05 * baseScale;
+        double nameScale = 1.05 * baseScale * fontScale.get();
         double labelScale = 0.75 * baseScale;
         String name = ellipsis(renderer, foodStack.getName().getString(), 150 * baseScale, nameScale);
         double barWidth = Math.max(130 * baseScale, IslandRenderer.textWidth(renderer, name, nameScale) + 10 * baseScale);
@@ -1304,7 +1340,7 @@ public class YuioIsland extends HudElement {
         double originX = x + positionOffset.get().x;
         double originY = y + positionOffset.get().y;
         double centerX = (mc.getWindow().getScaledWidth() - panelWidth) * 0.5 + tabOffsetX.get();
-        double centerY = (mc.getWindow().getScaledHeight() - panelHeight) * 0.5 + tabOffsetY.get();
+        double centerY = (mc.getWindow().getScaledHeight() - panelHeight) * 0.5 + tabOffsetY.get() + tabPushY;
         double panelX = originX + (centerX - originX) * progress;
         double panelY = originY + (centerY - originY) * progress;
 

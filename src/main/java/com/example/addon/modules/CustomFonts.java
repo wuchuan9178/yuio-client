@@ -82,7 +82,7 @@ public class CustomFonts extends Module {
         @EventHandler
         private void onTick(TickEvent.Post event) {
             CustomFonts fonts = INSTANCE;
-            if (fonts == null || !fonts.persistent.get()) return;
+            if (fonts == null) return;
 
             MinecraftClient mc = MinecraftClient.getInstance();
             if (fonts.pendingReload && mc.world != null && mc.currentScreen == null && mc.player != null) { fonts.pendingReload = false; fonts.reloadFonts(); return; }
@@ -95,7 +95,7 @@ public class CustomFonts extends Module {
             if (mc.world == lastWorld) return;
             lastWorld = mc.world;
 
-            if (!fonts.isActive()) fonts.toggle();
+
         }
     }
 

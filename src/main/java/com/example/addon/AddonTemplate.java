@@ -4,6 +4,7 @@ import com.example.addon.commands.CommandExample;
 import com.example.addon.hud.FriendHud;
 import com.example.addon.hud.ImageHud;
 import com.example.addon.hud.KeyListHud;
+import com.example.addon.hud.NotifyHud;
 import com.example.addon.hud.RadarHud;
 import com.example.addon.hud.YuioIsland;
 import com.example.addon.modules.*;
@@ -73,6 +74,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new WebGui());
         Modules.get().add(new AutoElytraMace());
         Modules.get().add(new AutoCopyChat());
+        Modules.get().add(new MotionBlur());
 
         // MaceMissAura依赖
         Modules.get().add(dev.sherii.yuio.modules.settings.TpSetting.INSTANCE);
@@ -87,6 +89,7 @@ public class AddonTemplate extends MeteorAddon {
         Hud.get().register(FriendHud.INFO);
         Hud.get().register(RadarHud.INFO);
         Hud.get().register(KeyListHud.INFO);
+        Hud.get().register(NotifyHud.INFO);
 
     }
 

@@ -65,6 +65,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Position;
 import net.minecraft.util.math.Vec3d;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public final class MaceMissAura extends AModule {
    public static final MaceMissAura INSTANCE = new MaceMissAura();
    private static final SettingGroup sgGeneral = INSTANCE.settings.getDefaultGroup();
