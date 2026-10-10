@@ -6,6 +6,7 @@ import com.example.addon.utils.RoundRectRenderer;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.meteor.ActiveModulesChangedEvent;
+import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
@@ -14,12 +15,19 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
+import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.listeners.ConsumerListener;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class NotifyHud extends HudElement {
@@ -30,6 +38,7 @@ public class NotifyHud extends HudElement {
     private static final int KIND_ON = 1;
     private static final int KIND_OFF = 2;
     private static final int KIND_INFO = 3;
+    private static final int KIND_POP = 4;
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
@@ -114,6 +123,24 @@ public class NotifyHud extends HudElement {
     private final Setting<Boolean> moduleNotifs = sgGeneral.add(new BoolSetting.Builder()
         .name("module-notifications").defaultValue(true).build());
 
+    private final Setting<Boolean> popNotifs = sgGeneral.add(new BoolSetting.Builder()
+        .name("pop-notifications")
+        .description("Show a totem pop card. One card per player name, the count keeps adding to it.")
+        .defaultValue(true).build());
+
+    private final Setting<String> popFormat = sgGeneral.add(new StringSetting.Builder()
+        .name("pop-format")
+        .description("Placeholders: %name% %count%")
+        .defaultValue("%name% pop %count%")
+        .visible(popNotifs::get)
+        .build());
+
+    private final Setting<SettingColor> popColor = sgGeneral.add(new ColorSetting.Builder()
+        .name("pop-color")
+        .defaultValue(new SettingColor(255, 210, 120))
+        .visible(popNotifs::get)
+        .build());
+
     private final Setting<SettingColor> titleColor = sgGeneral.add(new ColorSetting.Builder()
         .name("title-color").defaultValue(new SettingColor(255, 255, 255)).build());
 
@@ -165,9 +192,110 @@ public class NotifyHud extends HudElement {
     }
 
     private static final Queue<Card> INCOMING = new ConcurrentLinkedQueue<>();
+    private static final Map<String, Integer> POP_COUNTS = new ConcurrentHashMap<>();
+    private static final Map<String, List<String>> POP_LINES = new ConcurrentHashMap<>();
+    private static final Map<String, Long> POP_UPDATED = new ConcurrentHashMap<>();
 
     private final List<Card> cards = new ArrayList<>();
     private final List<Module> lastActive = new ArrayList<>();
+
+    @EventHandler
+    private void onPacketReceive(PacketEvent.Receive event) {
+        if (!popNotifs.get()) return;
+        if (!(event.packet instanceof EntityStatusS2CPacket packet)) return;
+        if (packet.getStatus() != 35) return;
+        if (MeteorClient.mc.world == null) return;
+
+        Entity entity = packet.getEntity(MeteorClient.mc.world);
+        if (!(entity instanceof PlayerEntity player)) return;
+
+        String name = player.getName().getString();
+        int pops = POP_COUNTS.merge(name, 1, Integer::sum);
+        POP_UPDATED.put(name, System.currentTimeMillis());
+
+        List<String> lines = POP_LINES.computeIfAbsent(name, key -> java.util.Collections.synchronizedList(new ArrayList<>()));
+
+        synchronized (lines) {
+            lines.add(popFormat.get().replace("%name%", name).replace("%count%", String.valueOf(pops)));
+        }
+    }
+
+    private void rebuildCards() {
+        long now = System.currentTimeMillis();
+        long life = duration.get();
+        List<String> expired = new ArrayList<>();
+
+        for (String name : new ArrayList<>(POP_LINES.keySet())) {
+            Long updated = POP_UPDATED.get(name);
+            if (updated != null && now - updated > life) expired.add(name);
+        }
+
+        for (String name : expired) {
+            POP_LINES.remove(name);
+            POP_COUNTS.remove(name);
+            POP_UPDATED.remove(name);
+        }
+
+        Map<String, Card> old = new HashMap<>();
+
+        for (Card card : cards) {
+            if (card.key.startsWith("pop:")) old.put(card.key, card);
+        }
+
+        List<Card> keep = new ArrayList<>();
+
+        for (Card card : cards) {
+            if (!card.key.startsWith("pop:")) keep.add(card);
+        }
+
+        if (!POP_LINES.isEmpty()) {
+            List<Token> title = List.of(new Token("Totem Pop", KIND_POP));
+            Color accent = new Color(popColor.get().r, popColor.get().g, popColor.get().b);
+
+            for (Map.Entry<String, List<String>> entry : POP_LINES.entrySet()) {
+                String key = "pop:" + entry.getKey();
+                List<Token> body = new ArrayList<>();
+                List<String> lines;
+
+                synchronized (entry.getValue()) {
+                    lines = new ArrayList<>(entry.getValue());
+                }
+
+                for (String line : lines) {
+                    body.addAll(tokens("%text%", line, "", KIND_INFO, "", "", "", line));
+                }
+
+                Card card = old.get(key);
+
+                if (card == null) {
+                    card = new Card(key, title, body, accent, life);
+                } else {
+                    card.title = title;
+                    card.body = body;
+                    card.accent = accent;
+                    card.life = life;
+                }
+
+                keep.add(card);
+            }
+        }
+
+        cards.clear();
+        cards.addAll(keep);
+
+        while (cards.size() > maxCards.get()) {
+            int pop = -1;
+
+            for (int i = 0; i < cards.size(); i++) {
+                if (cards.get(i).key.startsWith("pop:")) {
+                    pop = i;
+                    break;
+                }
+            }
+
+            cards.remove(pop < 0 ? 0 : pop);
+        }
+    }
 
     private final ConsumerListener<ActiveModulesChangedEvent> modulesListener =
         new ConsumerListener<>(ActiveModulesChangedEvent.class, event -> {
@@ -277,6 +405,7 @@ public class NotifyHud extends HudElement {
             case KIND_TITLE -> new Color(titleColor.get().r, titleColor.get().g, titleColor.get().b);
             case KIND_ON -> new Color(onColor.get().r, onColor.get().g, onColor.get().b);
             case KIND_OFF -> new Color(offColor.get().r, offColor.get().g, offColor.get().b);
+            case KIND_POP -> new Color(popColor.get().r, popColor.get().g, popColor.get().b);
             default -> new Color(infoColor.get().r, infoColor.get().g, infoColor.get().b);
         };
     }
@@ -363,6 +492,7 @@ public class NotifyHud extends HudElement {
     @Override
     public void render(HudRenderer renderer) {
         Assets.poll();
+        rebuildCards();
 
         double base = scale.get();
         double font = base * textScale.get();

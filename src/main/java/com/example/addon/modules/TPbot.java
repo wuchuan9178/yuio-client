@@ -48,7 +48,7 @@ public class TPbot extends Module {
     private Vec3d lastSentPos;
 
     public TPbot() {
-        super(AddonTemplate.MAIN, "TP-bot-V2", "auto tracking");
+        super(AddonTemplate.ASSIST, "TP-bot-V2", "auto tracking");
     }
 
     @Override

@@ -26,6 +26,8 @@ import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent.Post;
 import meteordevelopment.meteorclient.events.world.TickEvent.Pre;
+import meteordevelopment.meteorclient.mixin.PlayerMoveC2SPacketAccessor;
+import meteordevelopment.meteorclient.mixininterface.IPlayerMoveC2SPacket;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -47,6 +49,7 @@ import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
+import meteordevelopment.orbit.EventPriority;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -60,6 +63,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Position;
@@ -112,6 +116,10 @@ public final class MaceMissAura extends AModule {
       (Setting)((Builder)((Builder)((Builder)new Builder().name("Fast Render2D")).defaultValue(false)).visible(MaceMissAura::render2DUnlimited$lambda$0)).build()
    );
    private static final BoolSetting debugLog = (BoolSetting)sgDev.add((Setting)((Builder)((Builder)new Builder().name("debug")).defaultValue(false)).build());
+   private static final BoolSetting noGround = (BoolSetting)sgGeneral.add(
+      (Setting)((Builder)((Builder)((Builder)new Builder().name("no-ground")).description("Force every movement packet to report not on ground so the server never sees the landing and no fall damage is applied.")).defaultValue(true))
+         .build()
+   );
    private static final BoolSetting blacklistMode = (BoolSetting)sgBlacklist.add(
       (Setting)((Builder)((Builder)((Builder)new Builder().name("blacklist-mode")).description("Only attack players in the blacklist.")).defaultValue(false))
          .build()
@@ -529,7 +537,7 @@ public final class MaceMissAura extends AModule {
    private static final java.util.Random RANDOM = new java.util.Random();
 
    private MaceMissAura() {
-      super(AddonTemplate.MAIN, "MaceMissAura", "Use Mace Try MissTotem");
+      super(AddonTemplate.ATTACK, "MaceMissAura", "Use Mace Try MissTotem");
    }
 
    public final Set<EntityType<?>> getEntities() {
@@ -1363,6 +1371,25 @@ public final class MaceMissAura extends AModule {
       }
    }
 
+   @EventHandler(priority = EventPriority.LOWEST - 666)
+   private final void onNoGroundSend(Send event) {
+      if (!(Boolean)noGround.get()) {
+         return;
+      }
+
+      Packet packet = event.packet;
+      if (!(packet instanceof PlayerMoveC2SPacket)) {
+         return;
+      }
+
+      PlayerMoveC2SPacket move = (PlayerMoveC2SPacket)packet;
+      if (((IPlayerMoveC2SPacket)move).meteor$getTag() == 1337) {
+         return;
+      }
+
+      ((PlayerMoveC2SPacketAccessor)move).meteor$setOnGround(false);
+   }
+
    @EventHandler
    private final void onSendPacket(Send event) {
       Packet packet = event.packet;
@@ -1729,6 +1756,11 @@ public final class MaceMissAura extends AModule {
 
    public void onDeactivate() {
       super.onDeactivate();
+      if ((Boolean)noGround.get() && this.mc.player != null) {
+         TpUtils.INSTANCE.sendMovePacket(this.mc.player.getX(), this.mc.player.getY() + 1.0E-4, this.mc.player.getZ(), false, null);
+         TpUtils.INSTANCE.sendMovePacket(this.mc.player.getX(), this.mc.player.getY(), this.mc.player.getZ(), true, null);
+      }
+
       APredictUtils.enablePrediction = false;
       renderPredictedPos = null;
       tpRenderPos = null;

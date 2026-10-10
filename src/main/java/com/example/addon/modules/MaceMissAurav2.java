@@ -16,6 +16,8 @@ import java.util.Locale;
 import java.util.Set;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.mixin.PlayerMoveC2SPacketAccessor;
+import meteordevelopment.meteorclient.mixininterface.IPlayerMoveC2SPacket;
 import meteordevelopment.meteorclient.mixininterface.IVec3d;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
@@ -30,6 +32,7 @@ import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.world.TickRate;
 import meteordevelopment.orbit.EventHandler;
+import meteordevelopment.orbit.EventPriority;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -39,6 +42,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -59,6 +63,12 @@ public class MaceMissAurav2 extends AModule {
 
     private final Setting<Boolean> ignoreFriends = sgGeneral.add(new BoolSetting.Builder()
         .name("ignore-friends")
+        .defaultValue(true)
+        .build());
+
+    private final Setting<Boolean> noGround = sgGeneral.add(new BoolSetting.Builder()
+        .name("no-ground")
+        .description("Force every movement packet to report not on ground so the server never sees the landing and no fall damage is applied.")
         .defaultValue(true)
         .build());
 
@@ -185,7 +195,7 @@ public class MaceMissAurav2 extends AModule {
     private boolean dryCacheValid;
 
     public MaceMissAurav2() {
-        super(AddonTemplate.MAIN, "MaceMissAurav2", "skid by puerhx(iaa)");
+        super(AddonTemplate.ATTACK, "MaceMissAurav2", "skid by puerhx(iaa)");
     }
 
     public Set<EntityType<?>> getEntities() {
@@ -477,12 +487,34 @@ public class MaceMissAurav2 extends AModule {
         isSending = false;
     }
 
+    @EventHandler(priority = EventPriority.LOWEST - 666)
+    private void onNoGroundSend(PacketEvent.Send event) {
+        if (!noGround.get()) return;
+
+        Packet<?> packet = event.packet;
+        if (!(packet instanceof PlayerMoveC2SPacket)) return;
+
+        PlayerMoveC2SPacket move = (PlayerMoveC2SPacket) packet;
+        if (((IPlayerMoveC2SPacket) move).meteor$getTag() == 1337) return;
+
+        ((PlayerMoveC2SPacketAccessor) move).meteor$setOnGround(false);
+    }
+
     @Override
     public void onActivate() {
         target = null;
         tickTimer = attackDelay.get();
         isSending = false;
         dryCacheValid = false;
+    }
+
+    @Override
+    public void onDeactivate() {
+        super.onDeactivate();
+        if (noGround.get() && mc.player != null) {
+            TpUtils.INSTANCE.sendMovePacket(mc.player.getX(), mc.player.getY() + 1.0E-4, mc.player.getZ(), false, null);
+            TpUtils.INSTANCE.sendMovePacket(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, null);
+        }
     }
 
     @Override

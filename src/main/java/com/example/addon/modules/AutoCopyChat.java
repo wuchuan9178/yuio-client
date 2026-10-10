@@ -9,13 +9,15 @@ import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.client.font.Alignment;
+import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.text.OrderedText;
+import org.joml.Matrix3x2fc;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AutoCopyChat extends Module {
@@ -31,50 +33,16 @@ public class AutoCopyChat extends Module {
     private final Setting<String> prefix = sgGeneral.add(new StringSetting.Builder()
         .name("prefix")
         .description("Notification prefix shown after copying.")
-        .defaultValue("已复制文本：")
+        .defaultValue("copied: ")
         .visible(showNotification::get)
         .build()
     );
-
-    private static Field visibleMessagesField;
-    private static Field scrolledLinesField;
-    private static Field chatScaleField;
-    private static boolean fieldsScanned = false;
 
     private boolean wasPressed = false;
 
     public AutoCopyChat() {
         super(AddonTemplate.ASSIST, "auto-copy-chat",
             "Hover over a chat message and press Ctrl+C to copy it.");
-    }
-
-    private static void scanFields(ChatHud chat) {
-        if (fieldsScanned) return;
-        fieldsScanned = true;
-
-        for (Field f : ChatHud.class.getDeclaredFields()) {
-            f.setAccessible(true);
-            String n = f.getName();
-
-            if (visibleMessagesField == null && f.getType() == List.class
-                && (n.equals("visibleMessages") || n.toLowerCase().contains("visible"))) {
-                visibleMessagesField = f;
-                continue;
-            }
-            if (scrolledLinesField == null && f.getType() == int.class
-                && (n.equals("scrolledLines") || n.toLowerCase().contains("scroll"))) {
-                scrolledLinesField = f;
-                continue;
-            }
-            if (chatScaleField == null
-                && (f.getType() == double.class || f.getType() == float.class)
-                && Modifier.isPrivate(f.getModifiers())) {
-                try {
-                    double v = f.getDouble(chat);
-                    if (v >= 0.5 && v <= 3.0) chatScaleField = f;
-                } catch (Exception ignored) {}
-            }
-        }
     }
 
     @EventHandler
@@ -93,46 +61,96 @@ public class AutoCopyChat extends Module {
     }
 
     private void tryCopy() {
-        if (!(mc.currentScreen instanceof ChatScreen)) return;
+        if (!(mc.currentScreen instanceof ChatScreen) || mc.player == null) return;
 
         try {
             ChatHud chat = mc.inGameHud.getChatHud();
-            scanFields(chat);
+            Collector collector = new Collector(mc.textRenderer.fontHeight);
+            chat.render(collector, 0, 0, false);
 
-            if (visibleMessagesField == null || scrolledLinesField == null) {
-                error("聊天字段找不到");
+            if (collector.lines.isEmpty()) return;
+
+            double mouseX = mc.mouse.getX() / mc.getWindow().getScaleFactor();
+            double mouseY = mc.mouse.getY() / mc.getWindow().getScaleFactor();
+
+            for (Line line : collector.lines) {
+                double left = Math.min(line.x, line.endX);
+                double right = Math.max(line.x, line.endX);
+                if (mouseY < line.y || mouseY > line.y + line.height) continue;
+                if (mouseX < left - 2 || mouseX > right + 2) continue;
+                if (line.text.isEmpty()) continue;
+
+                mc.keyboard.setClipboard(line.text);
+                if (showNotification.get()) info("%s%s", prefix.get(), line.text);
                 return;
             }
+        } catch (Exception e) {
+            error("copy failed: %s", e.getMessage());
+        }
+    }
 
-            @SuppressWarnings("unchecked")
-            List<ChatHudLine.Visible> visibles = (List<ChatHudLine.Visible>) visibleMessagesField.get(chat);
-            int scrolled = scrolledLinesField.getInt(chat);
-            double chatScale = chatScaleField != null ? chatScaleField.getDouble(chat) : 1.0;
-            if (chatScale <= 0) chatScale = 1.0;
+    private static final class Line {
+        private final int x;
+        private final int y;
+        private final int endX;
+        private final int height;
+        private final String text;
 
-            double mouseY = mc.mouse.getY() / mc.getWindow().getScaleFactor();
-            double chatBottom = (mc.getWindow().getScaledHeight() - 40) / chatScale;
-            double dy = chatBottom - (mouseY / chatScale);
-            if (dy < 0) return;
+        private Line(int x, int y, int endX, int height, String text) {
+            this.x = x;
+            this.y = y;
+            this.endX = endX;
+            this.height = height;
+            this.text = text;
+        }
+    }
 
-            int row = (int) (dy / 9);
-            int index = scrolled + row;
-            if (index < 0 || index >= visibles.size()) return;
+    private static final class Collector implements DrawnTextConsumer {
+        private final List<Line> lines = new ArrayList<>();
+        private final int height;
+        private DrawnTextConsumer.Transformation transformation;
 
-            ChatHudLine.Visible line = visibles.get(index);
-            StringBuilder sb = new StringBuilder();
-            line.content().accept((i, style, cp) -> {
-                sb.appendCodePoint(cp);
+        private Collector(int height) {
+            this.height = height;
+        }
+
+        @Override
+        public DrawnTextConsumer.Transformation getTransformation() {
+            return transformation;
+        }
+
+        @Override
+        public void setTransformation(DrawnTextConsumer.Transformation transformation) {
+            this.transformation = transformation;
+        }
+
+        @Override
+        public void text(Alignment alignment, int x, int y, DrawnTextConsumer.Transformation transformation, OrderedText text) {
+            StringBuilder builder = new StringBuilder();
+            text.accept((index, style, codePoint) -> {
+                builder.appendCodePoint(codePoint);
                 return true;
             });
-            String text = sb.toString();
-            if (text.isEmpty()) return;
 
-            mc.keyboard.setClipboard(text);
-            if (showNotification.get()) info("%s%s", prefix.get(), text);
+            int endX = x + (int) Math.ceil(MeteorClientHolder.width(builder.toString()));
+            lines.add(new Line(x, y, endX, height, builder.toString()));
+        }
 
-        } catch (Exception e) {
-            error("复制失败: %s", e.getMessage());
+        @Override
+        public void text(Alignment alignment, int x, int y, DrawnTextConsumer.Transformation transformation, net.minecraft.text.Text text) {
+            text(alignment, x, y, transformation, net.minecraft.text.OrderedText.of(text.asOrderedText()));
+        }
+
+        @Override
+        public void marqueedText(net.minecraft.text.Text text, int x, int y, int width, int height, int ticks, DrawnTextConsumer.Transformation transformation) {
+            text(Alignment.LEFT, x, y, transformation, text.asOrderedText());
+        }
+
+        @SuppressWarnings("unused")
+        private static final class MeteorClientHolder {
+            private static double width(String text) {
+                return meteordevelopment.meteorclient.MeteorClient.mc.textRenderer.getWidth(text) * 0.5;
+            }
         }
     }
 }

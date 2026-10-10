@@ -84,10 +84,29 @@ public final class RoundRectRenderer {
                                 double topLeft, double topRight, double bottomRight, double bottomLeft,
                                 GpuTextureView texture, double u1, double v1, double u2, double v2,
                                 Color tint, int opacity) {
+        textured(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft,
+            texture, u1, v1, u2, v2, tint, opacity, 0);
+    }
+
+    public static void textured(double x, double y, double w, double h,
+                                double topLeft, double topRight, double bottomRight, double bottomLeft,
+                                GpuTextureView texture, double u1, double v1, double u2, double v2,
+                                Color tint, int opacity, double rotationDegrees) {
         if (texture == null) return;
         submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft,
             tint, new Color(255, 255, 255, (int) clamp(opacity, 0, 255)), YuioPipelines.MODE_TEXTURED, 0,
-            texture, u1, v1, u2, v2);
+            texture, u1, v1, u2, v2, Math.toRadians(rotationDegrees), linearSampler());
+    }
+
+    /** 像素图(皮肤头像/物品图标)必须用 NEAREST, 否则放大后会被插值糊掉。 */
+    public static void texturedPixel(double x, double y, double w, double h,
+                                     double topLeft, double topRight, double bottomRight, double bottomLeft,
+                                     GpuTextureView texture, double u1, double v1, double u2, double v2,
+                                     Color tint, int opacity, double rotationDegrees) {
+        if (texture == null) return;
+        submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft,
+            tint, new Color(255, 255, 255, (int) clamp(opacity, 0, 255)), YuioPipelines.MODE_TEXTURED, 0,
+            texture, u1, v1, u2, v2, Math.toRadians(rotationDegrees), nearestSampler());
     }
 
     public static void glow(double x, double y, double w, double h, double radius, double spread, Color color) {
@@ -104,6 +123,24 @@ public final class RoundRectRenderer {
                                double topLeft, double topRight, double bottomRight, double bottomLeft,
                                Color primary, Color secondary, int mode, double stroke,
                                GpuTextureView texture, double u1, double v1, double u2, double v2) {
+        submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft, primary, secondary, mode, stroke,
+            texture, u1, v1, u2, v2, 0, linearSampler());
+    }
+
+    private static void submit(double x, double y, double w, double h,
+                               double topLeft, double topRight, double bottomRight, double bottomLeft,
+                               Color primary, Color secondary, int mode, double stroke,
+                               GpuTextureView texture, double u1, double v1, double u2, double v2,
+                               double rotation) {
+        submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft, primary, secondary, mode, stroke,
+            texture, u1, v1, u2, v2, rotation, linearSampler());
+    }
+
+    private static void submit(double x, double y, double w, double h,
+                               double topLeft, double topRight, double bottomRight, double bottomLeft,
+                               Color primary, Color secondary, int mode, double stroke,
+                               GpuTextureView texture, double u1, double v1, double u2, double v2,
+                               double rotation, GpuSampler sampler) {
         if (unavailable || w <= 0 || h <= 0) return;
 
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -141,7 +178,7 @@ public final class RoundRectRenderer {
                 (float) topLeft, (float) topRight, (float) bottomRight, (float) bottomLeft,
                 primary, secondary,
                 (float) u1, (float) v1, (float) u2, (float) v2,
-                (float) stroke, mode, 0f, 0f
+                (float) stroke, mode, (float) rotation, 0f
             );
 
             GpuBufferSlice slice = uniforms().write(data);
@@ -152,7 +189,7 @@ public final class RoundRectRenderer {
                 .pipeline(YuioPipelines.ROUNDED)
                 .mesh(mesh)
                 .uniform("RoundedData", slice)
-                .sampler("u_Texture", samplerView, linearSampler())
+                .sampler("u_Texture", samplerView, sampler)
                 .end();
         } catch (Throwable t) {
             if (!unavailable) {
@@ -182,6 +219,10 @@ public final class RoundRectRenderer {
 
     private static GpuSampler linearSampler() {
         return RenderSystem.getSamplerCache().get(FilterMode.LINEAR);
+    }
+
+    private static GpuSampler nearestSampler() {
+        return RenderSystem.getSamplerCache().get(FilterMode.NEAREST);
     }
 
     private static GpuTextureView white() {

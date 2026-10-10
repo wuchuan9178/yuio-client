@@ -64,7 +64,7 @@ public class MaceAura extends Module {
     private long lastAttackTime;
 
     public MaceAura() {
-        super(AddonTemplate.MAIN, "mace-aura", "Auto mace crit aura");
+        super(AddonTemplate.ATTACK, "mace-aura", "Auto mace crit aura");
     }
 
     @Override

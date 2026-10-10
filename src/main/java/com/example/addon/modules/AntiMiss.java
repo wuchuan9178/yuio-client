@@ -26,7 +26,7 @@ public class AntiMiss extends Module {
     private int slot = -1;
 
     public AntiMiss() {
-        super(AddonTemplate.MAIN, "anti-miss", "Locks a hotbar slot to totems, auto-refills.");
+        super(AddonTemplate.ASSIST, "anti-miss", "Locks a hotbar slot to totems, auto-refills.");
     }
 
     @Override

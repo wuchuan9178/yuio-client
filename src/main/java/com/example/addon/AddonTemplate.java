@@ -6,8 +6,10 @@ import com.example.addon.hud.ImageHud;
 import com.example.addon.hud.KeyListHud;
 import com.example.addon.hud.NotifyHud;
 import com.example.addon.hud.RadarHud;
+import com.example.addon.hud.TargetHud;
 import com.example.addon.hud.YuioIsland;
 import com.example.addon.modules.*;
+import com.example.addon.modules.ModelReplace;
 import com.mojang.logging.LogUtils;
 import dev.sherii.yuio.settings.DoubleListSetting;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -27,9 +29,10 @@ public class AddonTemplate extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
 
     // 模块分类
-    public static final Category MAIN = new Category("main");
-    public static final Category ASSIST = new Category("assist");
+    public static final Category ATTACK = new Category("Attack");
+    public static final Category ASSIST = new Category("Assist");
     public static final Category OTHER = new Category("Other");
+    public static final Category SETTINGS = new Category("Settings");
 
     // hud分类
     public static final HudGroup HUD_GROUP = new HudGroup("yuio");
@@ -44,6 +47,9 @@ public class AddonTemplate extends MeteorAddon {
         MeteorClient.EVENT_BUS.registerLambdaFactory("dev.sherii.yuio",
             (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 
+        MeteorClient.EVENT_BUS.registerLambdaFactory("com.example.addon",
+            (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
+
         //Modules
         Modules.get().add(new AutoDick());
         Modules.get().add(new AutoSex());
@@ -53,6 +59,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(MaceMissAura.INSTANCE);
         Modules.get().add(new MaceMissAurav2());
         Modules.get().add(new SpearArmorBreaker());
+        Modules.get().add(new SpearAura());
         Modules.get().add(new AntiMiss());
         Modules.get().add(new Orbit());
         Modules.get().add(new SuperVClip());
@@ -74,11 +81,14 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new WebGui());
         Modules.get().add(new AutoElytraMace());
         Modules.get().add(new AutoCopyChat());
-        Modules.get().add(new MotionBlur());
+        Modules.get().add(new ModelReplace());
+        Modules.get().add(new AutoLandingWater());
+        Modules.get().add(new AimAssist());
 
         // MaceMissAura依赖
         Modules.get().add(dev.sherii.yuio.modules.settings.TpSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.PredictSetting.INSTANCE);
+        Modules.get().add(dev.sherii.yuio.modules.settings.GlobalSettings.INSTANCE);
 
         //Commands
         Commands.add(new CommandExample());
@@ -90,14 +100,16 @@ public class AddonTemplate extends MeteorAddon {
         Hud.get().register(RadarHud.INFO);
         Hud.get().register(KeyListHud.INFO);
         Hud.get().register(NotifyHud.INFO);
+        Hud.get().register(TargetHud.INFO);
 
     }
 
     @Override
     public void onRegisterCategories() {
-        Modules.registerCategory(MAIN);
+        Modules.registerCategory(ATTACK);
         Modules.registerCategory(ASSIST);
         Modules.registerCategory(OTHER);
+        Modules.registerCategory(SETTINGS);
     }
 
     @Override

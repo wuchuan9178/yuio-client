@@ -43,7 +43,7 @@ public class KeepBouncy extends Module {
     private long animationStartTime;
 
     public KeepBouncy() {
-        super(AddonTemplate.MAIN, "keep-bouncy", "Make nearby creatures bouncy");
+        super(AddonTemplate.OTHER, "keep-bouncy", "Make nearby creatures bouncy");
         INSTANCE = this;
     }
 

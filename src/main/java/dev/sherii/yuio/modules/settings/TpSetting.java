@@ -64,7 +64,7 @@ public final class TpSetting extends AModule {
    );
 
    private TpSetting() {
-      super(AddonTemplate.OTHER, "TP Setting", "Tp Setting.");
+      super(AddonTemplate.SETTINGS, "TP Setting", "Tp Setting.");
    }
 
    public final double getMoveDistance() {

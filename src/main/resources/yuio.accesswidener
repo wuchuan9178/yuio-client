@@ -3,3 +3,4 @@ accessible	field	net/minecraft/entity/Entity	pos	Lnet/minecraft/util/math/Vec3d;
 accessible	method	net/minecraft/entity/Entity	adjustMovementForCollisions	(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;
 accessible	method	net/minecraft/entity/Entity	calculateBoundingBox	()Lnet/minecraft/util/math/Box;
 accessible	class	net/minecraft/network/packet/c2s/play/PlayerInteractEntityC2SPacket$InteractType
+accessible	method	net/minecraft/entity/Entity	setWorld	(Lnet/minecraft/world/World;)V

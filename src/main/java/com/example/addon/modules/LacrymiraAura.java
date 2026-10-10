@@ -71,7 +71,7 @@ public class LacrymiraAura extends Module {
     private int timer;
 
     public LacrymiraAura() {
-        super(AddonTemplate.MAIN, "lacrymira-aura", "plagiarism Acid....");
+        super(AddonTemplate.ATTACK, "lacrymira-aura", "plagiarism Acid....");
     }
 
     @Override

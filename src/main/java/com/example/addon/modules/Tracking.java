@@ -117,7 +117,7 @@ public class Tracking extends Module {
     private List<Vec3d> lastPath = new ArrayList<>();
 
     public Tracking() {
-        super(AddonTemplate.MAIN, "TPBot", "Auto trace target");
+        super(AddonTemplate.ASSIST, "TPBot", "Auto trace target");
     }
 
     @Override

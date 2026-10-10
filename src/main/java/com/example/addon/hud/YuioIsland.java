@@ -328,6 +328,12 @@ public class YuioIsland extends HudElement {
     private final Anim food = new Anim(0, 10);
     private final Anim lyricFade = new Anim(0, 12);
     private String lyricNow = "";
+    private String marqueeTitle = "";
+    private String marqueeLyric = "";
+    private double marqueeTitleScroll;
+    private double marqueeTitleHold;
+    private double marqueeLyricScroll;
+    private double marqueeLyricHold;
 
     private final List<TimedContent> notifications = new ArrayList<>();
     private final List<Module> lastActive = new ArrayList<>();
@@ -418,6 +424,62 @@ public class YuioIsland extends HudElement {
             trimmed = trimmed.substring(0, trimmed.length() - 1);
         }
         return trimmed + "...";
+    }
+
+    private static double musicColumn(HudRenderer renderer, String text, double maxWidth, double textScale) {
+        double width = IslandRenderer.textWidth(renderer, text, textScale);
+        return Math.min(width, maxWidth);
+    }
+
+    private void tickMusicMarquee(double delta) {
+        String title = MusicReader.track().title();
+        String lyric = lyricNow;
+
+        if (!title.equals(marqueeTitle)) {
+            marqueeTitle = title;
+            marqueeTitleScroll = 0;
+            marqueeTitleHold = 1.0;
+        } else if (marqueeTitleHold > 0) {
+            marqueeTitleHold = Math.max(0, marqueeTitleHold - delta);
+        } else {
+            marqueeTitleScroll += delta * 28.0;
+        }
+
+        if (!lyric.equals(marqueeLyric)) {
+            marqueeLyric = lyric;
+            marqueeLyricScroll = 0;
+            marqueeLyricHold = 0.8;
+        } else if (marqueeLyricHold > 0) {
+            marqueeLyricHold = Math.max(0, marqueeLyricHold - delta);
+        } else {
+            marqueeLyricScroll += delta * 28.0;
+        }
+    }
+
+    private void drawMusicLine(HudRenderer renderer, String text, double x, double centerY, Color color,
+                               double scale, double columnWidth, double scroll) {
+        if (text.isEmpty()) return;
+
+        double textWidth = IslandRenderer.textWidth(renderer, text, scale);
+        double textHeight = IslandRenderer.textHeight(renderer, scale);
+        double y = centerY - textHeight * 0.5;
+
+        if (scroll <= 0 || textWidth <= columnWidth) {
+            IslandRenderer.text(renderer, text, x, y, color, true, scale);
+            return;
+        }
+
+        double period = textWidth + 26.0 * scale + 14.0;
+        double offset = scroll % period;
+        int left = (int) Math.floor(x);
+        int top = (int) Math.floor(centerY - textHeight);
+        int right = (int) Math.ceil(x + columnWidth);
+        int bottom = (int) Math.ceil(centerY + textHeight);
+
+        renderer.drawContext.enableScissor(left, top, right, bottom);
+        IslandRenderer.text(renderer, text, x - offset, y, color, true, scale);
+        IslandRenderer.text(renderer, text, x - offset + period, y, color, true, scale);
+        renderer.drawContext.disableScissor();
     }
 
 
@@ -662,6 +724,7 @@ public class YuioIsland extends HudElement {
         width.update(delta);
         height.update(delta);
         content.update(delta);
+        tickMusicMarquee(delta);
 
         double panelWidth = width.get();
         double panelHeight = height.get();
@@ -1095,6 +1158,7 @@ public class YuioIsland extends HudElement {
 
     private record MusicLayout(double width, double height, double padding, double ball, double gap,
                                double titleScale, double artistScale, double lyricScale,
+                               double textColumn,
                                String title, String artist, String lyric) {
     }
 
@@ -1108,25 +1172,25 @@ public class YuioIsland extends HudElement {
         double maxWidth = musicWidth.get() * baseScale;
 
         MusicReader.Track track = MusicReader.track();
-        String title = ellipsis(renderer, track.title(), maxWidth, titleScale);
-        String artist = ellipsis(renderer, track.artist().isEmpty() ? "NetEase Cloud Music" : track.artist(),
-            maxWidth, artistScale);
-        String lyric = lyricNow.isEmpty() ? "" : ellipsis(renderer, lyricNow, maxWidth, lyricScale);
+        String title = track.title();
+        String artist = track.artist().isEmpty() ? "NetEase Cloud Music" : track.artist();
+        String lyric = lyricNow;
 
-        double text = Math.max(IslandRenderer.textWidth(renderer, title, titleScale),
-            Math.max(IslandRenderer.textWidth(renderer, artist, artistScale),
-                IslandRenderer.textWidth(renderer, lyric, lyricScale)));
+        double titleColumn = musicColumn(renderer, title, maxWidth, titleScale);
+        double artistColumn = musicColumn(renderer, artist, maxWidth, artistScale);
+        double lyricColumn = musicColumn(renderer, lyric, maxWidth, lyricScale);
+        double textColumn = Math.max(titleColumn, Math.max(artistColumn, lyricColumn));
 
         double textHeight = IslandRenderer.textHeight(renderer, titleScale) + 2 * baseScale
             + IslandRenderer.textHeight(renderer, artistScale);
 
         if (!lyric.isEmpty()) textHeight += 4 * baseScale + IslandRenderer.textHeight(renderer, lyricScale);
 
-        double width = padding * 2 + ball + gap + text;
+        double width = padding * 2 + ball + gap + textColumn;
         double height = padding * 2 + Math.max(ball, textHeight);
 
         return new MusicLayout(width, height, padding, ball, gap, titleScale, artistScale, lyricScale,
-            title, artist, lyric);
+            textColumn, title, artist, lyric);
     }
 
     private double[] measureMusicIdle(HudRenderer renderer, double baseScale) {
@@ -1165,21 +1229,22 @@ public class YuioIsland extends HudElement {
         double artistHeight = IslandRenderer.textHeight(renderer, layout.artistScale());
         double lyricHeight = IslandRenderer.textHeight(renderer, layout.lyricScale());
 
-        double block = titleHeight + 2 * baseScale + artistHeight;
-        if (!layout.lyric().isEmpty()) block += 4 * baseScale + lyricHeight;
+        double rowBlock = titleHeight + 2 * baseScale + artistHeight;
+        double top = centerY - rowBlock * 0.5;
 
-        double top = centerY - block * 0.5;
-
-        IslandRenderer.text(renderer, layout.title(), x, top, musicTitleColor.get(), true, layout.titleScale());
+        drawMusicLine(renderer, layout.title(), x, top + titleHeight * 0.5, musicTitleColor.get(),
+            layout.titleScale(), layout.textColumn(), marqueeTitleScroll);
 
         double artistY = top + titleHeight + 2 * baseScale;
-        IslandRenderer.text(renderer, layout.artist(), x, artistY, musicArtistColor.get(), true, layout.artistScale());
+        drawMusicLine(renderer, layout.artist(), x, artistY + artistHeight * 0.5, musicArtistColor.get(),
+            layout.artistScale(), layout.textColumn(), 0);
 
         if (!layout.lyric().isEmpty()) {
             double fade = lyricFade.get();
-            double lyricY = artistY + artistHeight + 4 * baseScale + (1.0 - fade) * 5 * baseScale;
-            IslandRenderer.text(renderer, layout.lyric(), x, lyricY,
-                IslandRenderer.alpha(musicLyricColor.get(), (int) (255 * fade)), true, layout.lyricScale());
+            double lyricTop = top + rowBlock + 4 * baseScale + (1.0 - fade) * 5 * baseScale;
+            Color lyricColor = IslandRenderer.alpha(musicLyricColor.get(), (int) (255 * fade));
+            drawMusicLine(renderer, layout.lyric(), x, lyricTop + lyricHeight * 0.5, lyricColor,
+                layout.lyricScale(), layout.textColumn(), marqueeLyricScroll);
         }
     }
 

@@ -60,7 +60,7 @@ public class SpearArmorBreaker extends Module {
     private boolean charging = false;
 
     public SpearArmorBreaker() {
-        super(AddonTemplate.MAIN, "spear breaker", "Spear pop pop pop!");
+        super(AddonTemplate.ATTACK, "spear breaker", "Spear pop pop pop!");
     }
 
     @Override

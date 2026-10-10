@@ -46,7 +46,7 @@ public final class PredictSetting extends AModule {
    );
 
    private PredictSetting() {
-      super(AddonTemplate.OTHER, "predict-setting", "Predict Setting.");
+      super(AddonTemplate.SETTINGS, "predict-setting", "Predict Setting.");
    }
 
    public final int getDataSize() {

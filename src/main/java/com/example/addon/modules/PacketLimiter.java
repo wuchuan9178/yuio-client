@@ -2,7 +2,6 @@ package com.example.addon.modules;
 
 import com.example.addon.AddonTemplate;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
-import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
@@ -20,18 +19,10 @@ public class PacketLimiter extends Module {
 
     private final Setting<Integer> maxPps = sgGeneral.add(new IntSetting.Builder()
         .name("max-pps")
-        .description("Maximum outgoing packets per second. 0 = disabled.")
+        .description("Maximum outgoing packets per second. Extra packets are cancelled. 0 = disabled.")
         .defaultValue(200)
         .min(0)
         .sliderMax(1000)
-        .build());
-
-    private final Setting<Integer> maxPerTick = sgGeneral.add(new IntSetting.Builder()
-        .name("max-per-tick")
-        .description("Maximum outgoing packets per tick. 0 = disabled.")
-        .defaultValue(50)
-        .min(0)
-        .sliderMax(200)
         .build());
 
     private final Setting<List<String>> whitelist = sgGeneral.add(new StringListSetting.Builder()
@@ -57,8 +48,8 @@ public class PacketLimiter extends Module {
 
     private final Setting<String> notifyMessage = sgNotify.add(new StringSetting.Builder()
         .name("message")
-        .description("%packet% = packet name, %reason% = reason, %count% = dropped pps")
-        .defaultValue("Dropped %packet% (%reason%, %count% pps)")
+        .description("%packet% = packet name, %count% = dropped pps")
+        .defaultValue("Dropped %packet% (%count% pps)")
         .visible(notify::get)
         .build());
 
@@ -82,12 +73,11 @@ public class PacketLimiter extends Module {
 
     private long secondStart = 0L;
     private int countThisSecond = 0;
-    private int countThisTick = 0;
     private int droppedThisSecond = 0;
     private long lastNotify = 0L;
 
     public PacketLimiter() {
-        super(AddonTemplate.ASSIST, "packet-limiter", "Limit outgoing packets to avoid server kicks.");
+        super(AddonTemplate.ASSIST, "packet-limiter", "Limit outgoing packets per second to avoid server kicks.");
     }
 
     @Override
@@ -95,18 +85,12 @@ public class PacketLimiter extends Module {
         rebuildWhitelist();
         secondStart = System.currentTimeMillis();
         countThisSecond = 0;
-        countThisTick = 0;
         droppedThisSecond = 0;
     }
 
     @Override
     public void onDeactivate() {
         whitelistSet.clear();
-    }
-
-    @EventHandler
-    private void onTick(TickEvent.Post event) {
-        countThisTick = 0;
     }
 
     @EventHandler
@@ -123,25 +107,17 @@ public class PacketLimiter extends Module {
             droppedThisSecond = 0;
         }
 
-        if (maxPerTick.get() > 0 && countThisTick >= maxPerTick.get()) {
-            event.cancel();
-            droppedThisSecond++;
-            maybeNotify(simple, "per-tick");
-            return;
-        }
-
         if (maxPps.get() > 0 && countThisSecond >= maxPps.get()) {
             event.cancel();
             droppedThisSecond++;
-            maybeNotify(simple, "pps");
+            maybeNotify(simple);
             return;
         }
 
         countThisSecond++;
-        countThisTick++;
     }
 
-    private void maybeNotify(String packetName, String reason) {
+    private void maybeNotify(String packetName) {
         if (!notify.get()) return;
         long now = System.currentTimeMillis();
         if (now - lastNotify < notifyInterval.get()) return;
@@ -149,7 +125,6 @@ public class PacketLimiter extends Module {
 
         String body = notifyMessage.get()
             .replace("%packet%", packetName)
-            .replace("%reason%", reason)
             .replace("%count%", String.valueOf(droppedThisSecond));
 
         Text text = showPrefix.get()

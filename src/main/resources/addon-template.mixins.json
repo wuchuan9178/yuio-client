@@ -17,7 +17,8 @@
     "FontManagerMixin",
     "TotemParticleMixin",
     "CameraMixin",
-    "ShaderLoaderMixin"
+    "ShaderLoaderMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
