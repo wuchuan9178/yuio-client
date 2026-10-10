@@ -16,7 +16,7 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/wuchuan9178/yuio-meteor-addon/releases) 下载最新的 `yuio-x.x.x.jar`
+1. 从 [Releases](https://github.com/wuchuan9178/yuio-client/releases) 下载最新的 `yuio-x.x.x.jar`
 2. 丢进 `.minecraft/mods/`
 3. 和 Meteor Client 一起启动
 
@@ -140,8 +140,8 @@
 ## 编译
 
 ```bash
-git clone https://github.com/wuchuan9178/yuio-meteor-addon.git
-cd yuio-meteor-addon
+git clone https://github.com/wuchuan9178/yuio-client.git
+cd yuio-client
 ./gradlew build
 ```
 

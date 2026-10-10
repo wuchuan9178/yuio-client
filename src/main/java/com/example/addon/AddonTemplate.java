@@ -119,6 +119,6 @@ public class AddonTemplate extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("MeteorDevelopment", "meteor-addon-yuio");
+        return new GithubRepo("wuchuan9178", "yuio-client");
     }
 }
