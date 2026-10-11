@@ -11,8 +11,8 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Vec3d;
 
-import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,10 +92,11 @@ public class AntiLag extends Module {
     }
 
     private void handlePositionLook(PacketEvent.Receive event, PlayerPositionLookS2CPacket packet) {
-        int id = (int) invokeAny(packet, "teleportId", "getTeleportId", "comp_398");
-        double px = toDouble(invokeAny(packet, "x", "getX", "comp_399"));
-        double py = toDouble(invokeAny(packet, "y", "getY", "comp_400"));
-        double pz = toDouble(invokeAny(packet, "z", "getZ", "comp_401"));
+        int id = packet.teleportId();
+        Vec3d target = packet.change().position();
+        double px = target.x;
+        double py = target.y;
+        double pz = target.z;
 
         if (antiFake.get()) {
             cleanup();
@@ -133,12 +134,12 @@ public class AntiLag extends Module {
     }
 
     private void handleVelocity(PacketEvent.Receive event, EntityVelocityUpdateS2CPacket packet) {
-        int entityId = (int) invokeAny(packet, "getEntityId", "entityId", "comp_1254");
-        if (entityId != mc.player.getId()) return;
+        if (packet.getEntityId() != mc.player.getId()) return;
 
-        double vx = toDouble(invokeAny(packet, "getVelocityX", "velocityX", "comp_1255"));
-        double vy = toDouble(invokeAny(packet, "getVelocityY", "velocityY", "comp_1256"));
-        double vz = toDouble(invokeAny(packet, "getVelocityZ", "velocityZ", "comp_1257"));
+        Vec3d velocity = packet.getVelocity();
+        double vx = velocity.x;
+        double vy = velocity.y;
+        double vz = velocity.z;
 
         if (Math.abs(vx) + Math.abs(vy) + Math.abs(vz) < 0.5) return;
 
@@ -150,22 +151,6 @@ public class AntiLag extends Module {
                 .replace("%z%", String.format("%.2f", vz));
             notifyChat(msg, Formatting.YELLOW);
         }
-    }
-
-    private static Object invokeAny(Object target, String... names) {
-        for (String name : names) {
-            try {
-                Method m = target.getClass().getMethod(name);
-                m.setAccessible(true);
-                return m.invoke(target);
-            } catch (Throwable ignored) {}
-        }
-        return null;
-    }
-
-    private static double toDouble(Object o) {
-        if (o instanceof Number n) return n.doubleValue();
-        return 0.0;
     }
 
     private void cleanup() {

@@ -11,9 +11,11 @@ import meteordevelopment.meteorclient.utils.misc.input.Input;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.font.Alignment;
 import net.minecraft.client.font.DrawnTextConsumer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.text.OrderedText;
+import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fc;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,8 +67,8 @@ public class AutoCopyChat extends Module {
 
         try {
             ChatHud chat = mc.inGameHud.getChatHud();
-            Collector collector = new Collector(mc.textRenderer.fontHeight);
-            chat.render(collector, 0, 0, false);
+            Collector collector = new Collector(mc.textRenderer);
+            chat.render(collector, mc.getWindow().getScaledHeight(), mc.inGameHud.getTicks(), false);
 
             if (collector.lines.isEmpty()) return;
 
@@ -74,11 +76,9 @@ public class AutoCopyChat extends Module {
             double mouseY = mc.mouse.getY() / mc.getWindow().getScaleFactor();
 
             for (Line line : collector.lines) {
-                double left = Math.min(line.x, line.endX);
-                double right = Math.max(line.x, line.endX);
-                if (mouseY < line.y || mouseY > line.y + line.height) continue;
-                if (mouseX < left - 2 || mouseX > right + 2) continue;
                 if (line.text.isEmpty()) continue;
+                if (mouseY < line.y || mouseY > line.y + line.height) continue;
+                if (mouseX < line.x - 2 || mouseX > line.endX + 2) continue;
 
                 mc.keyboard.setClipboard(line.text);
                 if (showNotification.get()) info("%s%s", prefix.get(), line.text);
@@ -90,13 +90,13 @@ public class AutoCopyChat extends Module {
     }
 
     private static final class Line {
-        private final int x;
-        private final int y;
-        private final int endX;
-        private final int height;
+        private final double x;
+        private final double y;
+        private final double endX;
+        private final double height;
         private final String text;
 
-        private Line(int x, int y, int endX, int height, String text) {
+        private Line(double x, double y, double endX, double height, String text) {
             this.x = x;
             this.y = y;
             this.endX = endX;
@@ -106,12 +106,15 @@ public class AutoCopyChat extends Module {
     }
 
     private static final class Collector implements DrawnTextConsumer {
-        private final List<Line> lines = new ArrayList<>();
-        private final int height;
-        private DrawnTextConsumer.Transformation transformation;
+        private static final DrawnTextConsumer.Transformation IDENTITY =
+            new DrawnTextConsumer.Transformation(new Matrix3x2f());
 
-        private Collector(int height) {
-            this.height = height;
+        private final List<Line> lines = new ArrayList<>();
+        private final TextRenderer textRenderer;
+        private DrawnTextConsumer.Transformation transformation = IDENTITY;
+
+        private Collector(TextRenderer textRenderer) {
+            this.textRenderer = textRenderer;
         }
 
         @Override
@@ -132,25 +135,26 @@ public class AutoCopyChat extends Module {
                 return true;
             });
 
-            int endX = x + (int) Math.ceil(MeteorClientHolder.width(builder.toString()));
-            lines.add(new Line(x, y, endX, height, builder.toString()));
+            DrawnTextConsumer.Transformation active = transformation != null ? transformation : this.transformation;
+            Matrix3x2fc pose = active == null ? null : active.pose();
+
+            double scale = pose == null ? 1.0 : Math.abs(pose.m11());
+            double screenX = pose == null ? x : pose.m00() * x + pose.m10() * y + pose.m20();
+            double screenY = pose == null ? y : pose.m01() * x + pose.m11() * y + pose.m21();
+            double width = textRenderer.getWidth(text) * scale;
+            double height = Math.max(1.0, textRenderer.fontHeight * scale);
+
+            lines.add(new Line(screenX, screenY, screenX + width, height, builder.toString()));
         }
 
         @Override
         public void text(Alignment alignment, int x, int y, DrawnTextConsumer.Transformation transformation, net.minecraft.text.Text text) {
-            text(alignment, x, y, transformation, net.minecraft.text.OrderedText.of(text.asOrderedText()));
+            text(alignment, x, y, transformation, text.asOrderedText());
         }
 
         @Override
         public void marqueedText(net.minecraft.text.Text text, int x, int y, int width, int height, int ticks, DrawnTextConsumer.Transformation transformation) {
             text(Alignment.LEFT, x, y, transformation, text.asOrderedText());
-        }
-
-        @SuppressWarnings("unused")
-        private static final class MeteorClientHolder {
-            private static double width(String text) {
-                return meteordevelopment.meteorclient.MeteorClient.mc.textRenderer.getWidth(text) * 0.5;
-            }
         }
     }
 }

@@ -198,12 +198,28 @@ public class SpearAura extends AModule {
         .defaultValue(3.0)
         .build());
 
+    private final Setting<Double> diveDistance = sgDive.add(new DoubleSetting.Builder()
+        .name("dive-distance")
+        .description("How far the dive travels down from the position height. Larger values pierce through the hitbox.")
+        .min(0.0)
+        .sliderRange(0.0, 12.0)
+        .defaultValue(3.0)
+        .build());
+
     private final Setting<Double> stopAbove = sgDive.add(new DoubleSetting.Builder()
         .name("stop-above")
-        .description("Height above the target at which the dive stops moving down.")
+        .description("Height above the target's feet that counts as low enough to attack.")
         .min(0.0)
         .sliderRange(0.0, 4.0)
         .defaultValue(0.6)
+        .build());
+
+    private final Setting<Double> attackLowOffset = sgDive.add(new DoubleSetting.Builder()
+        .name("attack-low-offset")
+        .description("Extra height above the aim point that still counts as a valid dive attack.")
+        .min(0.0)
+        .sliderRange(0.0, 4.0)
+        .defaultValue(0.35)
         .build());
 
     private final Setting<Double> diveSpeed = sgDive.add(new DoubleSetting.Builder()
@@ -559,8 +575,12 @@ public class SpearAura extends AModule {
 
         aimAt(aim);
 
-        double stopY = t.getY() + stopAbove.get();
+        double startY = t.getY() + positionHeight.get();
+        double stopY = startY - diveDistance.get();
         double distance = playerPos.distanceTo(aim);
+        boolean bottomedOut = playerPos.y <= stopY + 0.05;
+        boolean lowEnough = playerPos.y <= aim.y + attackLowOffset.get()
+            || playerPos.y <= t.getY() + stopAbove.get();
 
         if (keepDiving.get() || distance > reach.get()) {
             double wanted = Math.max(0.0, Math.min(diveSpeed.get(), playerPos.y - stopY));
@@ -569,7 +589,7 @@ public class SpearAura extends AModule {
             applyVelocity(Vec3d.ZERO);
         }
 
-        if (distance <= reach.get() + reachExtra.get()) {
+        if (distance <= reach.get() + reachExtra.get() && (lowEnough || bottomedOut)) {
             attack(t, aim);
             holdTimer = attackHold.get();
             passes++;
@@ -578,7 +598,7 @@ public class SpearAura extends AModule {
             return;
         }
 
-        if (playerPos.y < stopY) {
+        if (playerPos.y < stopY - 0.5) {
             applyVelocity(Vec3d.ZERO);
             phase = Phase.Position;
         }
