@@ -1,6 +1,7 @@
 package com.example.addon.mixin;
 
 import com.example.addon.gui.YuioButton;
+import com.example.addon.render.LoadingSound;
 import com.example.addon.render.YuioRender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -57,6 +58,9 @@ public abstract class TitleScreenMixin extends Screen {
     private static float curX, curY, lagX, lagY, driftT;
 
     @Unique
+    private static boolean yuio$soundPlayed = false;
+
+    @Unique
     private final List<YuioButton> yuio$btns = new ArrayList<>();
 
     protected TitleScreenMixin(Text title) {
@@ -67,6 +71,11 @@ public abstract class TitleScreenMixin extends Screen {
     private void yuio$init(CallbackInfo ci) {
         clearChildren();
         yuio$btns.clear();
+
+        if (!yuio$soundPlayed) {
+            yuio$soundPlayed = true;
+            LoadingSound.play();
+        }
 
         int btnW = 96, btnH = 26, gap = 8;
         int total = btnW * 4 + gap * 3;

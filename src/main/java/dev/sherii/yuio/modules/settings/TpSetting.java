@@ -108,7 +108,6 @@ public final class TpSetting extends AModule {
    }
 
    public void onActivate() {
-      this.toggle();
    }
 
    private static final void interval$lambda$0(Double it) {

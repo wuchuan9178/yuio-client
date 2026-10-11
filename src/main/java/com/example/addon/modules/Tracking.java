@@ -1,6 +1,8 @@
 package com.example.addon.modules;
 
 import com.example.addon.AddonTemplate;
+import dev.sherii.yuio.predict.PredictEngine;
+import dev.sherii.yuio.predict.Prediction;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.ShapeMode;
@@ -241,10 +243,8 @@ public class Tracking extends Module {
     }
 
     private Vec3d predictPos(PlayerEntity player, int ticks) {
-        double x = player.getX() + player.getVelocity().x * ticks;
-        double y = player.getY() + player.getVelocity().y * ticks;
-        double z = player.getZ() + player.getVelocity().z * ticks;
-        return new Vec3d(x, y, z);
+        Prediction prediction = PredictEngine.INSTANCE.predict(player, ticks);
+        return prediction != null && prediction.pos() != null ? prediction.pos() : player.getEntityPos();
     }
 
     private List<Vec3d> computePath(Vec3d target, int loops, double tpDist) {

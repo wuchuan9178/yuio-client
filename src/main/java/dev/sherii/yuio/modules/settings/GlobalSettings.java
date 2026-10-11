@@ -134,11 +134,6 @@ public final class GlobalSettings extends AModule {
         TpUtils.INSTANCE.setInterval(interval.get());
     }
 
-    @Override
-    public void onDeactivate() {
-        toggle();
-    }
-
     public static double getMoveDistance() {
         return moveDistance.get();
     }

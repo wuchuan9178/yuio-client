@@ -2,15 +2,14 @@ package com.example.addon.modules;
 
 import com.example.addon.AddonTemplate;
 import dev.sherii.yuio.AModule;
-import dev.sherii.yuio.manager.PredictManager;
+import dev.sherii.yuio.modules.settings.PredictSetting;
 import dev.sherii.yuio.modules.settings.TpSetting;
+import dev.sherii.yuio.predict.PredictEngine;
+import dev.sherii.yuio.predict.Prediction;
 import dev.sherii.yuio.settings.DoubleListSetting;
-import dev.sherii.yuio.utils.APredictUtils;
 import dev.sherii.yuio.utils.FindUtils;
 import dev.sherii.yuio.utils.InteractUtils;
 import dev.sherii.yuio.utils.PacketUtils;
-import dev.sherii.yuio.utils.PredictUtil;
-import dev.sherii.yuio.utils.PredictUtils;
 import dev.sherii.yuio.utils.SwapUtils;
 import dev.sherii.yuio.utils.TpUtils;
 import java.util.ArrayList;
@@ -521,16 +520,11 @@ public final class MaceMissAura extends AModule {
    private static int moveTickTimer;
    private static boolean isSending;
    private static boolean wasDoTp;
-   private static final PredictManager predict = new PredictManager();
-   private static PlayerEntity predictedTarget;
    private static Vec3d renderPredictedPos;
    private static Entity tpbotTarget;
    private static int tpbotTickTimer;
    private static ArrayList<Vec3d> tpbotHistory = new ArrayList<>();
    private static Vec3d tpbotRealPos = Vec3d.ZERO;
-   private static int savedAPredictTicks;
-   private static int savedAPredictSmooth;
-   private static boolean savedAPredictPingSync;
    private static Vec3d tpRenderPos;
    private static List<Vec3d> vclipRenderPositions = new ArrayList<>();
    private static int lastRender2DTick;
@@ -957,14 +951,53 @@ public final class MaceMissAura extends AModule {
       }
    }
 
+   private static final boolean advancedPredict() {
+      return predictionMode.get() == MaceMissAura.PredictionMode.Advanced;
+   }
+
+   private static final double advancedPredictTicks() {
+      return advancedPredict() ? ((Number)advancedPredictionTicks.get()).doubleValue() : (double)PredictSetting.INSTANCE.getPredictTicks();
+   }
+
+   private static final Vec3d enginePredict(Entity entity) {
+      return enginePredict(
+         entity,
+         advancedPredictTicks(),
+         advancedPredict() && (Boolean)advancedPingSync.get(),
+         ((Number)advancedSmooth.get()).doubleValue()
+      );
+   }
+
+   private static final Vec3d enginePredict(Entity entity, double ticks, boolean pingSync, double smooth) {
+      if (entity == null) {
+         return null;
+      }
+
+      Prediction prediction = PredictEngine.INSTANCE.predict(entity, pingSync ? PredictEngine.INSTANCE.leadTicks(entity, ticks, 0.0) : ticks);
+      if (prediction == null || prediction.pos() == null) {
+         return entity.getEntityPos();
+      }
+
+      Vec3d base = entity.getEntityPos();
+      return smooth <= 1.0 ? prediction.pos() : base.add(prediction.pos().subtract(base).multiply(1.0 / smooth));
+   }
+
+   private static final Box enginePredictBox(Entity entity) {
+      if (entity == null) {
+         return null;
+      }
+
+      Prediction prediction = PredictEngine.INSTANCE.predict(entity, advancedPredictTicks());
+      return prediction == null || prediction.box() == null ? entity.getBoundingBox() : prediction.box();
+   }
+
    private final void act() {
       UUID targetUuid = target != null ? target.getUuid() : null;
-      Vec3d targetDiff = targetUuid != null && predict.isNotEmpty() ? predict.getDiff() : null;
       FindUtils var10000 = FindUtils.INSTANCE;
       Set var10001 = (Set)entities.get();
       var10001 = var10001;
       Object var10002 = ignoreFriends.get();
-      Entity t = var10000.findTarget(var10001, (Boolean)var10002, true, e -> actTargetFilter(e, targetUuid, targetDiff));
+      Entity t = var10000.findTarget(var10001, (Boolean)var10002, true, e -> actTargetFilter(e, targetUuid));
       UUID tUuid = t != null ? t.getUuid() : null;
       target = t;
       if ((Boolean)syncBreachArmor.get() && t instanceof PlayerEntity && (Boolean)useMace.get() && !(Boolean)useFastTp.get()) {
@@ -985,34 +1018,20 @@ public final class MaceMissAura extends AModule {
       MaceMissAura.PredictionMode var20 = (MaceMissAura.PredictionMode)predictionMode.get();
       switch (var20 == null ? -1 : WhenMappings.$EnumSwitchMapping$1[var20.ordinal()]) {
          case 1:
-            if (t != null && t instanceof PlayerEntity && APredictUtils.enablePrediction) {
-               predictedTarget = APredictUtils.createPredict((PlayerEntity)t);
-               Vec3d var23;
-               if (predictedTarget != null) {
-                  PlayerEntity var22 = predictedTarget;
-                  var23 = var22.getEntityPos();
-               } else {
-                  var23 = null;
-               }
-
-               renderPredictedPos = var23;
+            if (t != null) {
+               renderPredictedPos = enginePredict(t);
             } else {
-               predictedTarget = null;
                renderPredictedPos = null;
             }
             break;
          case 2:
             if (t != null && (Boolean)usePredict.get() && java.util.Objects.equals(targetUuid, tUuid)) {
-               PredictManager var21 = predict;
-               Vec3d var36 = t.getEntityPos();
-               var21.push(var36);
+               renderPredictedPos = enginePredict(t);
             } else {
-               predict.clear();
+               renderPredictedPos = null;
             }
             break;
          default:
-            predict.clear();
-            predictedTarget = null;
             renderPredictedPos = null;
       }
 
@@ -1025,16 +1044,13 @@ public final class MaceMissAura extends AModule {
          Vec3d playerPos = player.getEntityPos();
          MaceMissAura.PredictionMode var41 = (MaceMissAura.PredictionMode)predictionMode.get();
          Vec3d targetPos = switch (var41 == null ? -1 : WhenMappings.$EnumSwitchMapping$1[var41.ordinal()]) {
-            case 1 -> predictedTarget != null ? predictedTarget.getEntityPos() : t.getEntityPos();
-            case 2 -> {
-               if ((Boolean)usePredict.get() && predict.isNotEmpty()) {
-                  yield t.getEntityPos().add(predict.getDiff());
-               }
-
-               yield t.getEntityPos();
+            case 1 -> renderPredictedPos != null ? renderPredictedPos : t.getEntityPos();
+            case 2 -> (Boolean)usePredict.get() && renderPredictedPos != null ? renderPredictedPos : t.getEntityPos();
+            case 3 -> enginePredict(t);
+            case 4 -> {
+               Vec3d predicted = enginePredict(t);
+               yield predicted != null ? predicted : t.getEntityPos();
             }
-            case 3 -> PredictUtils.INSTANCE.predictEntity(t);
-            case 4 -> { Vec3d predicted = PredictUtil.INSTANCE.predictEntity(t); yield predicted != null ? predicted : t.getEntityPos(); }
             default -> t.getEntityPos();
          };
          if (!(Boolean)useFastTp.get()) {
@@ -1055,24 +1071,23 @@ public final class MaceMissAura extends AModule {
          var41 = (MaceMissAura.PredictionMode)predictionMode.get();
          switch (var41 == null ? -1 : WhenMappings.$EnumSwitchMapping$1[var41.ordinal()]) {
             case 1:
-               if (predictedTarget == null || predictedTarget.getBoundingBox() == null) {
+               if (enginePredictBox(t) == null) {
                   t.getBoundingBox();
                }
                break;
             case 2:
-               if ((Boolean)usePredict.get() && predict.isNotEmpty()) {
-                  t.getBoundingBox().offset(predict.getDiff());
+               if ((Boolean)usePredict.get()) {
+                  t.getBoundingBox().offset(enginePredict(t).subtract(t.getEntityPos()));
                   break;
                }
 
                t.getBoundingBox();
                break;
             case 3:
-               Vec3d predictedPos = PredictUtils.INSTANCE.predictEntity(t);
-               t.getBoundingBox().offset(predictedPos.subtract(t.getEntityPos()));
+               enginePredictBox(t);
                break;
             case 4:
-               if (PredictUtil.INSTANCE.predictBox(t) == null) {
+               if (enginePredictBox(t) == null) {
                   t.getBoundingBox();
                }
                break;
@@ -1202,36 +1217,12 @@ public final class MaceMissAura extends AModule {
                yield diff != null ? t.getEntityPos().add(diff) : t.getEntityPos();
             }
             case 2 -> this.tpbotSimplePredict((Entity)t);
-            case 3 -> {
-               Vec3d var43;
-               vclipResolve: {
-                  savedAPredictTicks = APredictUtils.predictionTicks;
-                  savedAPredictSmooth = APredictUtils.smooth;
-                  savedAPredictPingSync = APredictUtils.pingSync;
-                  APredictUtils.enablePrediction = true;
-                  Object var40 = tpbotAdvancedTicks.get();
-                  APredictUtils.predictionTicks = ((Number)var40).intValue();
-                  var40 = tpbotAdvancedSmooth.get();
-                  APredictUtils.smooth = ((Number)var40).intValue();
-                  var40 = tpbotAdvancedPingSync.get();
-                  APredictUtils.pingSync = (Boolean)var40;
-                  PlayerEntity pred = t instanceof PlayerEntity ? APredictUtils.createPredict((PlayerEntity)t) : null;
-                  if (pred != null) {
-                     var43 = pred.getEntityPos();
-                     if (var43 != null) {
-                        break vclipResolve;
-                     }
-                  }
-
-                  var43 = t.getEntityPos();
-               }
-
-               Vec3d result = var43;
-               APredictUtils.predictionTicks = savedAPredictTicks;
-               APredictUtils.smooth = savedAPredictSmooth;
-               APredictUtils.pingSync = savedAPredictPingSync;
-               yield result;
-            }
+            case 3 -> enginePredict(
+               t,
+               ((Number)tpbotAdvancedTicks.get()).doubleValue(),
+               (Boolean)tpbotAdvancedPingSync.get(),
+               ((Number)tpbotAdvancedSmooth.get()).doubleValue()
+            );
             default -> t.getEntityPos();
          };
          if (this.mc.player != null) {
@@ -1423,19 +1414,15 @@ public final class MaceMissAura extends AModule {
          Vec3d playerPos = player.getEntityPos();
          MaceMissAura.PredictionMode var91 = (MaceMissAura.PredictionMode)predictionMode.get();
          Vec3d targetPos = switch (var91 == null ? -1 : WhenMappings.$EnumSwitchMapping$1[var91.ordinal()]) {
-            case 1 -> predictedTarget != null ? predictedTarget.getEntityPos() : t.getEntityPos();
-            case 2 -> {
-               if ((Boolean)usePredict.get() && predict.isNotEmpty()) {
-                  yield t.getEntityPos().add(predict.getDiff());
-               }
-
-               yield t.getEntityPos();
+            case 1 -> renderPredictedPos != null ? renderPredictedPos : t.getEntityPos();
+            case 2 -> (Boolean)usePredict.get() && renderPredictedPos != null ? renderPredictedPos : t.getEntityPos();
+            case 3 -> enginePredict(t);
+            case 4 -> {
+               Vec3d predicted = enginePredict(t);
+               yield predicted != null ? predicted : t.getEntityPos();
             }
-            case 3 -> PredictUtils.INSTANCE.predictEntity(t);
-            case 4 -> { Vec3d predicted = PredictUtil.INSTANCE.predictEntity(t); yield predicted != null ? predicted : t.getEntityPos(); }
             default -> t.getEntityPos();
          };
-         targetPos = usePredict.get() && predict.isNotEmpty() ? targetPos.add(predict.getDiff()) : targetPos;
          Vec3d var59;
          if ((Boolean)useFastTp.get()) {
             var59 = targetPos;
@@ -1681,8 +1668,7 @@ public final class MaceMissAura extends AModule {
                   if (target != null) {
                      Entity tgt = target;
                      int var15 = 0;
-                     Vec3d predictedPos = PredictUtils.INSTANCE.predictEntity(tgt);
-                     Box box = tgt.getBoundingBox().offset(predictedPos.subtract(tgt.getEntityPos()));
+                     Box box = enginePredictBox(tgt);
                      event.renderer.box(box, (Color)predictedColor.get(), (Color)predictedColor.get(), (ShapeMode)shapeMode.get(), 0);
                   }
                   break;
@@ -1690,7 +1676,7 @@ public final class MaceMissAura extends AModule {
                   if (target != null) {
                      Entity tgt = target;
                      int var7 = 0;
-                     Box var20 = PredictUtil.INSTANCE.predictBox(tgt);
+                     Box var20 = enginePredictBox(tgt);
                      if (var20 != null) {
                         Box box = var20;
                         int var9 = 0;
@@ -1734,18 +1720,9 @@ public final class MaceMissAura extends AModule {
       moveTickTimer = ((Number)var10000).intValue();
       isSending = false;
       wasDoTp = false;
-      predict.clear();
-      predictedTarget = null;
       renderPredictedPos = null;
       tpRenderPos = null;
       vclipRenderPositions.clear();
-      APredictUtils.enablePrediction = predictionMode.get() == MaceMissAura.PredictionMode.Advanced;
-      var10000 = advancedPredictionTicks.get();
-      APredictUtils.predictionTicks = ((Number)var10000).intValue();
-      var10000 = advancedSmooth.get();
-      APredictUtils.smooth = ((Number)var10000).intValue();
-      var10000 = advancedPingSync.get();
-      APredictUtils.pingSync = (Boolean)var10000;
       tpbotTarget = null;
       var10000 = tpbotDelay.get();
       tpbotTickTimer = ((Number)var10000).intValue();
@@ -1761,7 +1738,6 @@ public final class MaceMissAura extends AModule {
          TpUtils.INSTANCE.sendMovePacket(this.mc.player.getX(), this.mc.player.getY(), this.mc.player.getZ(), true, null);
       }
 
-      APredictUtils.enablePrediction = false;
       renderPredictedPos = null;
       tpRenderPos = null;
       vclipRenderPositions.clear();
@@ -1889,7 +1865,6 @@ public final class MaceMissAura extends AModule {
    }
 
    private static final void advancedPredictionTicks$lambda$1(Integer it) {
-      APredictUtils.predictionTicks = it;
    }
 
    private static final boolean advancedSmooth$lambda$0() {
@@ -1897,7 +1872,6 @@ public final class MaceMissAura extends AModule {
    }
 
    private static final void advancedSmooth$lambda$1(Integer it) {
-      APredictUtils.smooth = it;
    }
 
    private static final boolean advancedPingSync$lambda$0() {
@@ -1905,7 +1879,6 @@ public final class MaceMissAura extends AModule {
    }
 
    private static final void advancedPingSync$lambda$1(Boolean it) {
-      APredictUtils.pingSync = it;
    }
 
    private static final boolean vclipPointColor$lambda$0() {
@@ -1976,7 +1949,7 @@ public final class MaceMissAura extends AModule {
          : new Vec3d(bp.getX() + 0.5, bp.getY(), bp.getZ() + 0.5);
    }
 
-   private static final boolean actTargetFilter(Entity entity, UUID targetUuid, Vec3d targetDiff) {
+   private static final boolean actTargetFilter(Entity entity, UUID targetUuid) {
       if (INSTANCE.mc.player == null) {
          return true;
       }
@@ -2026,31 +1999,10 @@ public final class MaceMissAura extends AModule {
       }
       MaceMissAura.PredictionMode var23 = (MaceMissAura.PredictionMode)predictionMode.get();
       Box entityBox = switch (var23 == null ? -1 : WhenMappings.$EnumSwitchMapping$1[var23.ordinal()]) {
-         case 1 -> {
-            if (entity instanceof PlayerEntity && java.util.Objects.equals(targetUuid, entityUuid) && APredictUtils.enablePrediction) {
-               PlayerEntity predicted = APredictUtils.createPredict((PlayerEntity)entity);
-               yield predicted != null ? predicted.getBoundingBox() : ((PlayerEntity)entity).getBoundingBox();
-            } else {
-               yield entity.getBoundingBox();
-            }
-         }
-         case 2 -> java.util.Objects.equals(targetUuid, entityUuid) && predict.isNotEmpty() ? entity.getBoundingBox().offset(targetDiff) : entity.getBoundingBox();
-         case 3 -> {
-            if (java.util.Objects.equals(targetUuid, entityUuid)) {
-               Vec3d predictedPos = PredictUtils.INSTANCE.predictEntity(entity);
-               yield entity.getBoundingBox().offset(predictedPos.subtract(entity.getEntityPos()));
-            } else {
-               yield entity.getBoundingBox();
-            }
-         }
-         case 4 -> {
-            if (java.util.Objects.equals(targetUuid, entityUuid)) {
-               Box predicted = PredictUtil.INSTANCE.predictBox(entity);
-               yield predicted != null ? predicted : entity.getBoundingBox();
-            } else {
-               yield entity.getBoundingBox();
-            }
-         }
+         case 1 -> java.util.Objects.equals(targetUuid, entityUuid) ? enginePredictBox(entity) : entity.getBoundingBox();
+         case 2 -> java.util.Objects.equals(targetUuid, entityUuid) && (Boolean)usePredict.get() ? enginePredictBox(entity) : entity.getBoundingBox();
+         case 3 -> java.util.Objects.equals(targetUuid, entityUuid) ? enginePredictBox(entity) : entity.getBoundingBox();
+         case 4 -> java.util.Objects.equals(targetUuid, entityUuid) ? enginePredictBox(entity) : entity.getBoundingBox();
          default -> entity.getBoundingBox();
       };
       if (((Number)range.get()).doubleValue() <= 0.0) {

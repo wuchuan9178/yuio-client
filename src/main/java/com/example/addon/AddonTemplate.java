@@ -58,8 +58,8 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new AutoEz());
         Modules.get().add(MaceMissAura.INSTANCE);
         Modules.get().add(new MaceMissAurav2());
-        Modules.get().add(new SpearArmorBreaker());
         Modules.get().add(new SpearAura());
+        Modules.get().add(new TpSpear());
         Modules.get().add(new AntiMiss());
         Modules.get().add(new Orbit());
         Modules.get().add(new SuperVClip());
@@ -80,13 +80,13 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new SmoothCamera());
         Modules.get().add(new WebGui());
         Modules.get().add(new AutoElytraMace());
-        Modules.get().add(new AutoCopyChat());
         Modules.get().add(new ModelReplace());
         Modules.get().add(new AutoLandingWater());
         Modules.get().add(new AimAssist());
         Modules.get().add(new NoGround());
 
         // MaceMissAura依赖
+        dev.sherii.yuio.predict.PredictEngine.init();
         Modules.get().add(dev.sherii.yuio.modules.settings.TpSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.PredictSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.GlobalSettings.INSTANCE);

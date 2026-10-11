@@ -90,8 +90,8 @@
 | `MaceMissAura` | 锤子。含 `miss-clip`、`breachVClip` 等**可加减的 VClip 高度列表** |
 | `MaceMissAurav2` | 锤子 v2。**skid by puerhx(iaa)** |
 | `MaceAura` | 自动锤击暴击光环 |
-| `SpearAura` | 长矛光环。**VClip 到目标头顶 → 悬停蓄力 → 俯冲穿刺**，循环执行。`move-mode` 可选 `Velocity` / `Teleport` / `Both`；升空 / 定位 / 俯冲 / 攻击 / 反拉回五组参数全开，攻击点可以取**包围盒中心**（打小碰撞箱才打得中）；附带 pull-back 保护，被服务器拉回时自动清空节奏 |
-| `SpearArmorBreaker` | 长矛破甲 |
+| `SpearAura` | 长矛光环。**VClip 到目标头顶 → 悬停蓄力 → 俯冲攻击**，循环执行。`move-mode` 可选 `Velocity` / `Teleport` / `Both`；升空 / 定位 / 俯冲 / 攻击 / 反拉回五组参数全开，攻击点可以取**包围盒中心**（打小碰撞箱才打得中）；附带 pull-back 保护，被服务器拉回时自动清空节奏 |
+| `TpSpear` | TP 长矛。**一发 VClip 直接贴到敌人身上 → 靠蓄力长矛的判定把整套甲一次性碎掉**，全程不需要发攻击包（蓄力贴上去就判定）。默认 `predict-mode = OnTop`（单点贴脸，不再是前→身→后的三点穿刺线）、`settle = 0`、`stay-on-target` 会每 tick 把位置压在敌人身上，所以不会有"贴上去又弹回来"的来回抖动；`pull-back-protection` 在服务端把我们拉回时停 `pull-back-cooldown` tick 再重贴。想恢复成贯穿走法可以把 `predict-mode` 换成 `Pierce`（近点→中心→远点）或 `Multi`（把预测的 1σ/2σ 候选点连成一条穿刺线）。`track-durability` 拿护甲耐久的变化当命中反馈，连续空刀会自动加宽穿刺线；`Debug` 组打开后护甲耐久、VClip 复位和每次拉回都会打到聊天栏 |
 | `LacrymiraAura` | 光环 |
 | `AutoElytraMace` | 鞘翅起飞 + 俯冲 + 锤击一条龙 |
 
@@ -109,7 +109,6 @@
 | `PacketLimiter` | 发包限速。**只按 PPS 算**：一秒内发出去的包超过 `max-pps` 就按 `limit-action` 处理（丢包 / 提示 / 两者），保留**白名单**机制，常用包不会被误伤 |
 | `PacketLimitTester` | 刷垃圾包，用来测服务器的发包上限 |
 | `TPBot` / `TP-bot-V2` | 自动追踪目标 |
-| `auto-copy-chat` | 鼠标悬停到某条聊天消息后 `Ctrl+C` 复制它 |
 | `auto-ez` | 击杀 / 被击杀猫娘播报，双模式，支持 `%s` 死者 / `%m` 自己 / `%z` 坐标 / `%c` 计数 / `%p` 图腾数 |
 
 ### Other
@@ -122,7 +121,7 @@
 |---|---|
 | `GlobalSettings` | 全局设置。把 `TpUtils` 的移动距离、速度、分包策略、发包间隔这些**统一收到一个模块里**，不用再一个个翻别的面板 |
 | `TP Setting` | TP 相关参数（`TpUtils` / `TPUtilX` / `LTpUtils` 三种实现可切） |
-| `predict-setting` | 预测相关参数 |
+| `predict-setting` | 全局预判引擎的全部参数，分 8 组：**General**（`predict-ticks` 兜底提前量、`debug` 把每次预测的 `mode/lead/conf/var/speed/bias` 写进日志）、**Sampling**（`sample-capacity` 回归窗口、`packet-sampling` 用包级原始位置、`tick-sampling` 补 tick 采样、`tick-length` 服务器 tick 长度、`tick-compensation` 低 TPS 补偿 + `min/max-tick-scale`、`still-samples` 静止判定）、**Classification**（`static-speed` 静止阈值、`teleport-distance` VClip 判定、`teleport-cooldown`、`clear-on-teleport` 跳变清速度历史、`smoothing` 瞬时速度权重、`min-samples`、`residual-window`）、**Orbit**（`orbit-enabled` 圆周相位锁定 + `orbit-min-speed` / `orbit-min-omega` / `orbit-min-streak` / `orbit-max-radius` / `orbit-score`）、**Confidence**（`staleness-decay` 陈旧衰减、`min-confidence` 下限）、**Latency**（`latency-compensation`、`ping-scale`、`pipeline-ticks`、`action-ticks`、`min-lead`、`max-lead`）、**Learning**（`learning` 在线调参、`learning-rate`、`max-bias`、`max-error`、`hit-radius`）、**Engine**（`reset-on-enable`、`max-idle-ticks`、`max-tracked-entities`） |
 
 ### 重点模块
 
