@@ -65,7 +65,7 @@ public final class TpUtils {
 
    private final void sendLimitMsg() {
       if (this.isMessage()) {
-         ChatUtils.errorPrefix("TpUtils", "Limited packet.(鎿嶄綘濡堜綘鎬庝箞鐢ㄨ繖涔堝鍖?", new Object[0]);
+         ChatUtils.errorPrefix("TpUtils", "Limited packet.(操你妈你怎么用这么多包", new Object[0]);
       }
    }
 

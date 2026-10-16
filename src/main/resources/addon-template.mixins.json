@@ -8,6 +8,7 @@
     "PlayerListHudMixin",
     "ChestBlockEntityAccessor",
     "BarrelBlockEntityAccessor",
+    "ChatHudMixin",
     "InGameHudScoreboardMixin",
     "MinecraftClientMixin",
     "TitleScreenMixin",
