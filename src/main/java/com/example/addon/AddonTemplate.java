@@ -84,6 +84,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new AutoLandingWater());
         Modules.get().add(new AimAssist());
         Modules.get().add(new NoGround());
+        Modules.get().add(new BlurDebug());
 
         // MaceMissAura依赖
         dev.sherii.yuio.predict.PredictEngine.init();

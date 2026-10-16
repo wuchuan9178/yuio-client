@@ -2,7 +2,6 @@ package dev.sherii.yuio.settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -88,14 +87,14 @@ public class DoubleListSetting extends Setting<List<Double>> {
    }
 
    public void resetImpl() {
-      this.value = new ArrayList((Collection)this.defaultValue);
+      this.value = new ArrayList<>(this.defaultValue);
    }
 
    public static void fillTable(GuiTheme theme, WTable table, DoubleListSetting setting) {
       table.clear();
-      ArrayList<Double> values = new ArrayList<>((Collection<? extends Double>)setting.get());
+      ArrayList<Double> values = new ArrayList<>(setting.get());
 
-      for (int i = 0; i < ((List)setting.get()).size(); i++) {
+      for (int i = 0; i < setting.get().size(); i++) {
          int index = i;
          WDoubleEdit edit = theme.doubleEdit(
             values.get(index), setting.min, setting.max, setting.sliderMin, setting.sliderMax, setting.decimalPlaces, setting.noSlider
@@ -125,7 +124,7 @@ public class DoubleListSetting extends Setting<List<Double>> {
          table.row();
       }
 
-      if (!((List)setting.get()).isEmpty()) {
+      if (!setting.get().isEmpty()) {
          table.add(theme.horizontalSeparator()).expandX();
          table.row();
       }
@@ -159,11 +158,11 @@ public class DoubleListSetting extends Setting<List<Double>> {
       private boolean noSlider = false;
 
       public Builder() {
-         super(new ArrayList(0));
+         super(new ArrayList<Double>(0));
       }
 
       public DoubleListSetting.Builder defaultValue(Double... defaults) {
-         this.defaultValue = defaults != null ? Arrays.asList(defaults) : new ArrayList();
+         this.defaultValue = defaults != null ? Arrays.asList(defaults) : new ArrayList<Double>();
          return this;
       }
 
@@ -218,7 +217,7 @@ public class DoubleListSetting extends Setting<List<Double>> {
          return new DoubleListSetting(
             this.name,
             this.description,
-            (List<Double>)this.defaultValue,
+            this.defaultValue,
             this.onChanged,
             this.onModuleActivated,
             this.visible,

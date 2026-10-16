@@ -3,516 +3,522 @@ package com.example.addon.modules;
 import com.example.addon.AddonTemplate;
 import dev.sherii.yuio.predict.PredictEngine;
 import dev.sherii.yuio.predict.Prediction;
-import dev.sherii.yuio.utils.InteractUtils;
+import dev.sherii.yuio.utils.FindUtils;
+import dev.sherii.yuio.utils.PacketUtils;
 import dev.sherii.yuio.utils.TpUtils;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.*;
-import meteordevelopment.meteorclient.systems.friends.Friends;
+import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.DoubleSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
+import meteordevelopment.meteorclient.settings.IntSetting;
+import meteordevelopment.meteorclient.settings.Setting;
+import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import meteordevelopment.meteorclient.utils.entity.SortPriority;
-import meteordevelopment.meteorclient.utils.entity.TargetUtils;
-import meteordevelopment.meteorclient.utils.player.InvUtils;
+import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import net.minecraft.util.Hand;
+import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.ClientTickEndC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Spear TP rush attack — 1 tick judgment window.
+ *
+ * 移植自 PuerHx 的 TpSpear.kt（object TpSpear : PHXModule）。行为逐条对齐：
+ * 落点搜索（overshoot / render-limit / searchOrder）、分段移动包、回原位包、
+ * server-tick-delay 状态机、ClientTickEnd 与 PlayerMove 的取消。
+ *
+ * 唯一的结构性改动：原版的 Predict 分组（约 45 个 setting + PredictSetting.PredictMode
+ * 的十种模式，全部依赖 PuerHx 的 PredictUtils）改成接本项目的预判引擎
+ * {@link PredictEngine}（dev.sherii.yuio.predict），只保留 5 种取点方式。
+ */
 public class TpSpear extends Module {
-    private final SettingGroup sgTarget = settings.createGroup("Target");
     private final SettingGroup sgSpear = settings.createGroup("Spear");
-    private final SettingGroup sgMove = settings.createGroup("Move");
     private final SettingGroup sgPredict = settings.createGroup("Predict");
-    private final SettingGroup sgArmor = settings.createGroup("Armor");
-    private final SettingGroup sgDebug = settings.createGroup("Debug");
 
-    private final Setting<Set<EntityType<?>>> targetTypes = sgTarget.add(new EntityTypeListSetting.Builder()
-        .name("target-type").description("Entities to pierce.")
-        .onlyAttackable().defaultValue(EntityType.PLAYER).build());
-    private final Setting<SortPriority> priority = sgTarget.add(new EnumSetting.Builder<SortPriority>()
-        .name("priority").description("Target sorting priority.").defaultValue(SortPriority.LowestDistance).build());
-    private final Setting<Double> range = sgTarget.add(new DoubleSetting.Builder()
-        .name("range").description("Max target distance.").defaultValue(60).min(1).sliderMax(200).build());
-    private final Setting<Boolean> targetPlayers = sgTarget.add(new BoolSetting.Builder()
-        .name("target-players").description("Target players.").defaultValue(true).build());
-    private final Setting<Boolean> targetMobs = sgTarget.add(new BoolSetting.Builder()
-        .name("target-mobs").description("Target mobs.").defaultValue(false).build());
-    private final Setting<Boolean> ignoreFriends = sgTarget.add(new BoolSetting.Builder()
-        .name("ignore-friends").description("Ignore friends.").defaultValue(true).build());
-    private final Setting<Boolean> keepTarget = sgTarget.add(new BoolSetting.Builder()
-        .name("keep-target").description("Keep the current target until it dies or leaves range.").defaultValue(true).build());
+    // ---- Spear ----
 
-    private final Setting<SwitchMode> switchMode = sgSpear.add(new EnumSetting.Builder<SwitchMode>()
-        .name("switch-mode").description("Weapon switch method.").defaultValue(SwitchMode.Silent).build());
-    private final Setting<Boolean> requireSpear = sgSpear.add(new BoolSetting.Builder()
-        .name("require-spear").description("Only work while holding a spear.").defaultValue(true).build());
-    private final Setting<Boolean> charge = sgSpear.add(new BoolSetting.Builder()
-        .name("charge").description("Hold use to keep the spear charged.").defaultValue(true).build());
-    private final Setting<Boolean> chargeInteract = sgSpear.add(new BoolSetting.Builder()
-        .name("charge-interact").description("Send one item use every tick, this is what keeps the charge alive on most servers.")
-        .defaultValue(true).visible(charge::get).build());
-    private final Setting<Boolean> attackPacket = sgSpear.add(new BoolSetting.Builder()
-        .name("attack-packet").description("Also send attack packets on every pass.").defaultValue(false).build());
-    private final Setting<Integer> attackTimes = sgSpear.add(new IntSetting.Builder()
-        .name("attack-times").description("Attack packets per pass, all in the same tick.")
-        .defaultValue(3).min(1).sliderMax(10).visible(attackPacket::get).build());
-    private final Setting<Boolean> rotation = sgSpear.add(new BoolSetting.Builder()
-        .name("rotation").description("Rotate before sending the attack packet.").defaultValue(false).build());
-    private final Setting<Boolean> swing = sgSpear.add(new BoolSetting.Builder()
-        .name("swing").description("Swing the hand on every pass.").defaultValue(true).build());
+    private final Setting<Double> spearDistance = sgSpear.add(new DoubleSetting.Builder()
+        .name("spear-distance").description("Dash distance past target.")
+        .min(1.0).sliderRange(1.0, 100.0).defaultValue(50.0).build());
 
-    private final Setting<MoveMode> moveMode = sgMove.add(new EnumSetting.Builder<MoveMode>()
-        .name("move-mode").description("How to reach the target. Teleport is the raw vclip.")
-        .defaultValue(MoveMode.Teleport).build());
-    private final Setting<Double> moveSpeed = sgMove.add(new DoubleSetting.Builder()
-        .name("move-speed").description("Velocity multiplier used by the velocity modes.")
-        .defaultValue(1.0).min(0.1).sliderMax(3).build());
-    private final Setting<Double> originGap = sgMove.add(new DoubleSetting.Builder()
-        .name("origin-gap").description("Extra distance before the hitbox where the pierce line starts.")
-        .defaultValue(0.6).min(0).sliderMax(4).build());
-    private final Setting<Double> pierceDistance = sgMove.add(new DoubleSetting.Builder()
-        .name("pierce-distance").description("Distance past the hitbox where the pierce line ends.")
-        .defaultValue(1.2).min(0).sliderMax(4).build());
-    private final Setting<Double> heightOffset = sgMove.add(new DoubleSetting.Builder()
-        .name("height-offset").description("Vertical offset from the target feet.")
-        .defaultValue(0.0).min(-1).max(1).sliderMin(-1).sliderMax(1).build());
-    private final Setting<Integer> settle = sgMove.add(new IntSetting.Builder()
-        .name("settle").description("Ticks to wait between two passes, stay-on-target keeps us glued in the meantime.")
-        .defaultValue(0).min(0).sliderMax(10).build());
-    private final Setting<Integer> maxPasses = sgMove.add(new IntSetting.Builder()
-        .name("max-passes").description("Stop after this many passes, 0 for unlimited.")
-        .defaultValue(0).min(0).sliderMax(50).build());
-    private final Setting<Boolean> stayOnTarget = sgMove.add(new BoolSetting.Builder()
-        .name("stay-on-target").description("Keep sending the position on top of the target instead of going back and forth.")
-        .defaultValue(true).build());
-    private final Setting<Boolean> pullBackProtection = sgMove.add(new BoolSetting.Builder()
-        .name("pull-back-protection").description("Stop teleporting for a moment whenever the server teleports us back.")
-        .defaultValue(true).build());
-    private final Setting<Integer> pullBackCooldown = sgMove.add(new IntSetting.Builder()
-        .name("pull-back-cooldown").description("Ticks of stillness after a server position correction.")
-        .defaultValue(5).min(0).sliderMax(40).visible(pullBackProtection::get).build());
+    // 兼容保留：不再参与攻击逻辑。TP 落点由“目标距离 + 越过量”决定，始终贴着目标，
+    // 无论该值设多少，攻击范围只由 spear-distance 决定，目标也不会被甩出渲染范围。
+    private final Setting<Double> spearMaxTp = sgSpear.add(new DoubleSetting.Builder()
+        .name("spear-max-tp").description("兼容保留, 已不再限制攻击/TP 距离, 可忽略。")
+        .min(1.0).sliderRange(1.0, 200.0).defaultValue(100.0).build());
 
-    private final Setting<Boolean> usePredict = sgPredict.add(new BoolSetting.Builder()
-        .name("use-predict").description("Aim at the predicted position instead of the current one.").defaultValue(true).build());
-    private final Setting<PredictMode> predictMode = sgPredict.add(new EnumSetting.Builder<PredictMode>()
-        .name("predict-mode").description("How the target is reached. OnTop is a single vclip straight onto the target.")
-        .defaultValue(PredictMode.OnTop).build());
-    private final Setting<Double> startupTicks = sgPredict.add(new DoubleSetting.Builder()
-        .name("startup-ticks").description("Own pipeline latency in ticks.").defaultValue(1.0).min(0).sliderMax(6).build());
-    private final Setting<Double> actionTicks = sgPredict.add(new DoubleSetting.Builder()
-        .name("action-ticks").description("Ticks the pierce itself needs.").defaultValue(1.0).min(0).sliderMax(6).build());
-    private final Setting<Integer> rings = sgPredict.add(new IntSetting.Builder()
-        .name("rings").description("Number of sigma rings sampled around the prediction.")
-        .defaultValue(1).min(0).sliderMax(3).visible(() -> predictMode.get() == PredictMode.Multi).build());
-    private final Setting<Integer> maxPoints = sgPredict.add(new IntSetting.Builder()
-        .name("max-points").description("Maximum stations in a single multi-point pass.")
-        .defaultValue(8).min(1).sliderMax(20).visible(() -> predictMode.get() == PredictMode.Multi).build());
-    private final Setting<Double> minLead = sgPredict.add(new DoubleSetting.Builder()
-        .name("min-lead").description("Lower bound of the lead in ticks.").defaultValue(1.0).min(0).sliderMax(10).build());
-    private final Setting<Double> maxLead = sgPredict.add(new DoubleSetting.Builder()
-        .name("max-lead").description("Upper bound of the lead in ticks.").defaultValue(12.0).min(1).sliderMax(40).build());
-    private final Setting<Boolean> resetOnTeleport = sgPredict.add(new BoolSetting.Builder()
-        .name("reset-on-teleport").description("Clear the motion history when the target vclips.").defaultValue(true).build());
+    private final Setting<Integer> delay = sgSpear.add(new IntSetting.Builder()
+        .name("server-tick-delay").description("Server tick delay before resync.")
+        .min(0).sliderMax(20).defaultValue(2).build());
 
-    private final Setting<Double> armorThreshold = sgArmor.add(new DoubleSetting.Builder()
-        .name("armor-threshold").description("Stop attacking below this armor durability.").defaultValue(20).min(0).sliderMax(200).build());
-    private final Setting<Boolean> stopWhenBroken = sgArmor.add(new BoolSetting.Builder()
-        .name("stop-when-broken").description("Release the target once its armor is gone.").defaultValue(true).build());
-    private final Setting<Boolean> trackDurability = sgArmor.add(new BoolSetting.Builder()
-        .name("track-durability").description("Use armor durability changes as hit feedback.").defaultValue(true).build());
-    private final Setting<Integer> missLimit = sgArmor.add(new IntSetting.Builder()
-        .name("miss-limit").description("Consecutive misses before the pierce line is widened.").defaultValue(3).min(1).sliderMax(10).build());
-    private final Setting<Double> maxSpread = sgArmor.add(new DoubleSetting.Builder()
-        .name("max-spread").description("Maximum widening multiplier of the pierce line.").defaultValue(3.0).min(1).sliderMax(6).build());
+    private final Setting<Double> stepSize = sgSpear.add(new DoubleSetting.Builder()
+        .name("spear-step-size")
+        .description("单次移动包的最大位移（格）。调大 = 每步移动更远、中间包更少，冲刺更快更接近瞬移；调小 = 分步更多、更慢。默认 10 与原版一致。注意：单包位移过大可能被部分服务器判为异常位移。")
+        .min(1.0).sliderMax(200.0).defaultValue(10.0).build());
 
-    private final Setting<Boolean> debug = sgDebug.add(new BoolSetting.Builder()
-        .name("debug").description("Print the armor durability, the vclip resets and every server pull-back into the chat.")
+    private final Setting<Double> renderLimit = sgSpear.add(new DoubleSetting.Builder()
+        .name("spear-render-limit")
+        .description("TP 落点与目标的最大距离（格）。落点太远时，TP 瞬间目标会脱出渲染/模拟距离而消失（目标脱渲染）。0 = 自动使用客户端视距；调大可攻击更远目标，但可能让目标脱渲染。")
+        .min(0.0).sliderMax(512.0).defaultValue(0.0).build());
+
+    // ---- Predict（yuio 自己的预判引擎）----
+
+    private final Setting<Boolean> predict = sgPredict.add(new BoolSetting.Builder()
+        .name("predict")
+        .description("启用目标预判（用 yuio 自己的预判引擎 dev.sherii.yuio.predict，替代 PuerHx 的 PredictUtils）。")
         .defaultValue(false).build());
 
-    private Entity target;
+    private final Setting<PredictMode> predictMode = sgPredict.add(new EnumSetting.Builder<PredictMode>()
+        .name("mode")
+        .description("取点方式：Engine = 引擎自动提前量（启动延迟 + 动作延迟 + ping + 学习偏置）；Ticks = 固定 ticks；Ping = 按延迟换算 ticks；Swept = 当前与预判位置的扫描盒中心；Multi = 多环候选取质心。")
+        .defaultValue(PredictMode.Engine).visible(predict::get).build());
+
+    private final Setting<Double> startupTicks = sgPredict.add(new DoubleSetting.Builder()
+        .name("startup-ticks").description("Own pipeline latency in ticks.")
+        .defaultValue(1.0).min(0.0).sliderRange(0.0, 6.0).visible(predict::get).build());
+
+    private final Setting<Double> actionTicks = sgPredict.add(new DoubleSetting.Builder()
+        .name("action-ticks").description("Ticks the action itself needs (the spear thrust).")
+        .defaultValue(1.0).min(0.0).sliderRange(0.0, 6.0).visible(predict::get).build());
+
+    private final Setting<Double> minLead = sgPredict.add(new DoubleSetting.Builder()
+        .name("min-lead").description("Lower bound of the lead in ticks.")
+        .defaultValue(1.0).min(0.0).sliderRange(0.0, 10.0).visible(predict::get).build());
+
+    private final Setting<Double> maxLead = sgPredict.add(new DoubleSetting.Builder()
+        .name("max-lead").description("Upper bound of the lead in ticks.")
+        .defaultValue(12.0).min(1.0).sliderRange(1.0, 40.0).visible(predict::get).build());
+
+    private final Setting<Integer> predictTicks = sgPredict.add(new IntSetting.Builder()
+        .name("predict-ticks").description("Ticks ahead for the Ticks mode.")
+        .defaultValue(4).min(1).max(20).sliderRange(1, 20)
+        .visible(() -> predict.get() && predictMode.get() == PredictMode.Ticks).build());
+
+    private final Setting<Integer> rings = sgPredict.add(new IntSetting.Builder()
+        .name("rings").description("Number of sigma rings sampled around the prediction (Multi mode).")
+        .defaultValue(1).min(0).sliderMax(3)
+        .visible(() -> predict.get() && predictMode.get() == PredictMode.Multi).build());
+
+    private final Setting<Integer> maxPoints = sgPredict.add(new IntSetting.Builder()
+        .name("max-points").description("Maximum candidate stations averaged into the aim point (Multi mode).")
+        .defaultValue(8).min(1).sliderMax(20)
+        .visible(() -> predict.get() && predictMode.get() == PredictMode.Multi).build());
+
+    private final Setting<Double> heightOffset = sgPredict.add(new DoubleSetting.Builder()
+        .name("height-offset").description("Vertical offset from the target hitbox center.")
+        .defaultValue(0.0).min(-1.0).max(1.0).sliderRange(-1.0, 1.0).visible(predict::get).build());
+
+    private final Setting<Boolean> resetOnTeleport = sgPredict.add(new BoolSetting.Builder()
+        .name("reset-on-teleport").description("Clear the motion history when the target vclips.")
+        .defaultValue(true).visible(predict::get).build());
+
+    // ---- constants (与 Kotlin 原版一致) ----
+
+    private static final double OVERSHOOT = 5.0;
+    private static final double ATTACK_RANGE = 3.0;
+    private static final int MAX_STEPS = 320;
+    private static final double MIN_SEGMENT = 0.5;
+    private static final double SEARCH_STEP = 2.0;
+    private static final double[] SEARCH_ORDER = buildSearchOrder();
+
+    private static double[] buildSearchOrder() {
+        double[] order = new double[19];
+        for (int i = 1; i <= 9; i++) {
+            order[i * 2 - 1] = i;
+            order[i * 2] = -i;
+        }
+        return order;
+    }
+
+    // ---- state ----
+
+    public int currentWaitBackTick = 0;
+    private int pendingBackTick = 0;
+    private MoveEntry pendingBackposEntry;
+    private float playerPitch;
+    private float playerYaw;
+    private boolean hasPlayerRotation;
     private int spearSlot = -1;
-    private int previousSlot = -1;
-    private boolean weaponSwitched;
-    private boolean charging;
-    private int settleTicks;
-    private int passes;
-    private int armorBaseline = -1;
-    private int missStreak;
-    private int correctionTicks;
-    private int pullBacks;
-    private int teleportResets;
-    private double spread = 1.0;
-    private Vec3d approach;
+    private int originalSlot = -1;
+
+    private record MoveEntry(Vec3d pos, Float yaw, Float pitch, boolean onGround) {
+    }
+
+    private record Aim(float pitch, float yaw) {
+    }
+
+    public enum PredictMode {
+        Engine,
+        Ticks,
+        Ping,
+        Swept,
+        Multi
+    }
 
     public TpSpear() {
-        super(AddonTemplate.ATTACK, "tp-spear", "VClip onto the target and pierce straight through its armor.");
+        super(AddonTemplate.ATTACK, "tp-spear", "Spear TP rush attack — 1 tick judgment window.");
     }
+
+    // ---- lifecycle ----
 
     @Override
     public void onActivate() {
-        target = null;
+        currentWaitBackTick = 0;
+        pendingBackTick = 0;
+        pendingBackposEntry = null;
+        hasPlayerRotation = false;
         spearSlot = -1;
-        previousSlot = -1;
-        weaponSwitched = false;
-        charging = false;
-        settleTicks = 0;
-        passes = 0;
-        armorBaseline = -1;
-        missStreak = 0;
-        correctionTicks = 0;
-        pullBacks = 0;
-        teleportResets = 0;
-        spread = 1.0;
-        approach = null;
+        originalSlot = -1;
+        refreshSpearSlot();
+        // 原版在这里向 PredictUtils 注册运动历史请求器；本项目的 PredictEngine 自己每 tick
+        // 采样所有实体（PredictEngine.onTick），不需要注册。
     }
 
     @Override
     public void onDeactivate() {
-        release();
-        if (weaponSwitched) {
-            if (switchMode.get() == SwitchMode.Silent) InvUtils.swapBack();
-            else if (switchMode.get() == SwitchMode.Normal && previousSlot >= 0) setSelectedSlot(previousSlot);
+        currentWaitBackTick = 0;
+        pendingBackTick = 0;
+        pendingBackposEntry = null;
+        hasPlayerRotation = false;
+        mc.options.useKey.setPressed(false);
+        if (originalSlot >= 0 && mc.player != null) {
+            mc.player.getInventory().setSelectedSlot(originalSlot);
+            PacketUtils.INSTANCE.sendPacket(new UpdateSelectedSlotC2SPacket(originalSlot));
         }
-        weaponSwitched = false;
-        target = null;
+        originalSlot = -1;
+        spearSlot = -1;
     }
 
-    @EventHandler
-    private void onPacketReceive(PacketEvent.Receive event) {
-        if (!(event.packet instanceof PlayerPositionLookS2CPacket)) return;
-
-        pullBacks++;
-        if (!pullBackProtection.get()) return;
-
-        correctionTicks = pullBackCooldown.get();
-        if (debug.get()) info("server pulled us back #%d, holding still for %d ticks", pullBacks, correctionTicks);
-    }
+    // ---- events ----
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
+        PlayerEntity player = mc.player;
+        if (player == null) return;
 
-        updateTarget();
-        if (target == null || !target.isAlive() || target.isRemoved()) {
-            release();
+        if (!holdingSpear()) {
+            refreshSpearSlot();
             return;
         }
 
-        Entity current = target;
-
-        if (current instanceof PlayerEntity player && stopWhenBroken.get() && armorBaseline >= 0
-            && getArmorDurability(player) <= armorThreshold.get()) {
-            if (debug.get()) info("armor gone after %d passes (durability %d)", passes, getArmorDurability(player));
-            release();
-            target = null;
-            return;
-        }
-
-        if (!ensureWeapon()) return;
-
-        if (charge.get()) maintainCharge();
-
-        if (correctionTicks > 0) {
-            correctionTicks--;
-            return;
-        }
-
-        if (maxPasses.get() > 0 && passes >= maxPasses.get()) {
-            release();
-            return;
-        }
-
-        double lead = clamp(PredictEngine.INSTANCE.leadTicks(current, startupTicks.get(), actionTicks.get()),
-            minLead.get(), maxLead.get());
-
-        if (usePredict.get()) {
-            Prediction probe = PredictEngine.INSTANCE.predict(current, lead);
-            if (probe != null && probe.teleport() && resetOnTeleport.get()) {
-                PredictEngine.INSTANCE.tracker(current).reset();
-                teleportResets++;
-                if (debug.get()) info("target vclipped, motion history cleared #%d", teleportResets);
+        if (currentWaitBackTick > 0) {
+            currentWaitBackTick--;
+            if (currentWaitBackTick > delay.get()) currentWaitBackTick = delay.get();
+            if (currentWaitBackTick > 0) {
+                player.setVelocity(Vec3d.ZERO);
+                player.setOnGround(false);
             }
-        }
-
-        if (settleTicks > 0) {
-            settleTicks--;
-            if (stayOnTarget.get()) stick(current, lead);
-            return;
-        }
-
-        Vec3d direction = swingDirection(current);
-        List<Vec3d> stations = buildStations(current, lead, direction);
-        if (stations.isEmpty()) return;
-        execute(current, stations, direction);
-    }
-
-    private List<Vec3d> buildStations(Entity entity, double lead, Vec3d direction) {
-        List<Vec3d> stations = new ArrayList<>();
-        Box reference = entity.getBoundingBox();
-        Vec3d center = reference.getCenter().add(0.0, heightOffset.get(), 0.0);
-        Prediction prediction = usePredict.get() ? PredictEngine.INSTANCE.predict(entity, lead) : null;
-
-        if (prediction != null) {
-            center = prediction.aim(heightOffset.get());
-            if (prediction.box() != null) reference = prediction.box();
-
-            if (predictMode.get() == PredictMode.Swept) {
-                Box swept = PredictEngine.INSTANCE.sweptBox(entity, entity.getEntityPos(), prediction.pos());
-                if (swept != null) reference = swept;
-            }
-        }
-
-        switch (predictMode.get()) {
-            case OnTop -> stations.add(onTopPoint(entity, lead));
-            case Direct, Swept -> stations.add(center);
-            case Pierce -> {
-                stations.add(nearPoint(center, direction, reference));
-                stations.add(center);
-                stations.add(farPoint(center, direction, reference));
-            }
-            case Multi -> {
-                stations.add(nearPoint(center, direction, reference));
-                if (prediction != null) {
-                    List<Vec3d> candidates = PredictEngine.INSTANCE.candidates(entity, lead, rings.get());
-                    int limit = Math.min(candidates.size(), maxPoints.get());
-                    for (int i = 0; i < limit; i++) {
-                        Vec3d point = candidates.get(i);
-                        stations.add(new Vec3d(point.x, center.y, point.z));
-                    }
-                } else {
-                    stations.add(center);
+            if (currentWaitBackTick == 1) {
+                player.fallDistance = 0.0;
+                if (hasPlayerRotation) {
+                    TpUtils.INSTANCE.sendMovePacket(playerYaw, playerPitch, player.isOnGround(), 0);
                 }
-                stations.add(farPoint(center, direction, reference));
+                hasPlayerRotation = false;
             }
-        }
-
-        return stations;
-    }
-
-    private Vec3d onTopPoint(Entity entity, double lead) {
-        if (usePredict.get()) {
-            Prediction prediction = PredictEngine.INSTANCE.predict(entity, lead);
-            if (prediction != null) {
-                return new Vec3d(prediction.pos().x, entity.getY() + heightOffset.get(), prediction.pos().z);
-            }
-        }
-
-        return new Vec3d(entity.getX(), entity.getY() + heightOffset.get(), entity.getZ());
-    }
-
-    private void stick(Entity entity, double lead) {
-        Vec3d point = onTopPoint(entity, lead);
-        TpUtils.INSTANCE.sendMovePacket(point, mc.player.isOnGround(), null);
-        TpUtils.INSTANCE.setPos(point);
-        mc.player.fallDistance = 0.0;
-    }
-
-    private void execute(Entity entity, List<Vec3d> stations, Vec3d direction) {
-        if (moveMode.get() != MoveMode.Velocity) {
-            for (Vec3d station : stations) {
-                TpUtils.INSTANCE.sendMovePacket(station, mc.player.isOnGround(), null);
-                TpUtils.INSTANCE.setPos(station);
-                mc.player.fallDistance = 0.0;
-            }
-        }
-
-        if (moveMode.get() != MoveMode.Teleport) {
-            mc.player.setVelocity(direction.x * moveSpeed.get(), 0.0, direction.z * moveSpeed.get());
-            mc.player.velocityDirty = true;
-        }
-
-        if (attackPacket.get()) {
-            int times = Math.max(1, attackTimes.get());
-            for (int i = 0; i < times; i++) {
-                InteractUtils.INSTANCE.attack(entity, rotation.get(), swing.get());
-            }
-        } else if (swing.get()) {
-            mc.player.swingHand(Hand.MAIN_HAND);
-        }
-
-        passes++;
-        settleTicks = Math.max(0, settle.get());
-        feedback(entity);
-    }
-
-    private void feedback(Entity entity) {
-        if (!(entity instanceof PlayerEntity player)) return;
-
-        int current = getArmorDurability(player);
-        if (armorBaseline < 0) {
-            armorBaseline = current;
-            if (debug.get()) info("armor baseline %d", current);
             return;
         }
 
-        if (current < armorBaseline) {
-            PredictEngine.INSTANCE.registerHit(entity);
-            if (debug.get()) info("armor hit on pass %d: %d -> %d", passes, armorBaseline, current);
-            armorBaseline = current;
-            missStreak = 0;
-            spread = 1.0;
+        if (pendingBackTick > 0) {
+            pendingBackTick--;
+            if (pendingBackTick == 0) {
+                if (pendingBackposEntry != null) sendMoveEntryPacket(pendingBackposEntry);
+                currentWaitBackTick = delay.get() + 1;
+                pendingBackposEntry = null;
+            }
             return;
         }
 
-        if (!trackDurability.get()) return;
+        spearAttack();
+    }
 
-        missStreak++;
-        if (missStreak >= missLimit.get()) {
-            PredictEngine.INSTANCE.registerMiss(entity);
-            missStreak = 0;
-            spread = Math.min(maxSpread.get(), spread + 0.5);
-            if (debug.get()) info("no armor damage for %d passes, pierce line widened to %.1fx", missLimit.get(), spread);
+    @EventHandler
+    private void onPacketSend(PacketEvent.Send event) {
+        if (event.packet instanceof ClientTickEndC2SPacket && currentWaitBackTick > 1) {
+            event.cancel();
+        }
+        if (event.packet instanceof PlayerMoveC2SPacket && currentWaitBackTick > 0 && pendingBackTick <= 0) {
+            event.cancel();
         }
     }
 
-    private Vec3d nearPoint(Vec3d center, Vec3d direction, Box box) {
-        double radius = Math.max(box.getLengthX(), box.getLengthZ()) * 0.5;
-        return center.subtract(direction.multiply(radius + originGap.get() * spread));
-    }
+    // ---- spearAttack ----
 
-    private Vec3d farPoint(Vec3d center, Vec3d direction, Box box) {
-        double radius = Math.max(box.getLengthX(), box.getLengthZ()) * 0.5;
-        return center.add(direction.multiply(radius + pierceDistance.get() * spread));
-    }
+    private boolean spearAttack() {
+        PlayerEntity player = mc.player;
+        if (player == null) return false;
 
-    private Vec3d swingDirection(Entity entity) {
-        Vec3d velocity = entity.getVelocity();
-        double speed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
-        if (speed > 0.02) return new Vec3d(velocity.x / speed, 0.0, velocity.z / speed);
+        spearSlot = findSpearInHotbar();
 
-        Vec3d playerPos = mc.player.getEntityPos();
-        Vec3d targetPos = entity.getEntityPos();
-        double distance = Math.sqrt(sq(targetPos.x - playerPos.x) + sq(targetPos.z - playerPos.z));
-        if (distance > 1.0 || approach == null) approach = horizontal(playerPos, targetPos);
-        return approach;
-    }
-
-    private void maintainCharge() {
-        if (!mc.options.useKey.isPressed()) mc.options.useKey.setPressed(true);
-        charging = true;
-
-        if (chargeInteract.get() && mc.interactionManager != null) {
-            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+        if (spearDistance.get() < 0) {
+            currentWaitBackTick = 0;
+            return false;
         }
-    }
 
-    private void release() {
-        if (charging) {
-            mc.options.useKey.setPressed(false);
-            charging = false;
+        Entity target = FindUtils.INSTANCE.findTarget(
+            Set.of(EntityType.PLAYER),
+            true,
+            true,
+            other -> player.getEntityPos().distanceTo(other.getEntityPos()) <= spearDistance.get()
+                && isSpearable(other)
+        );
+
+        if (target == null) {
+            currentWaitBackTick = 0;
+            return false;
         }
-    }
 
-    private boolean ensureWeapon() {
-        if (weaponSwitched) return true;
-        spearSlot = findSpearSlot();
-        if (spearSlot == -1) {
-            if (requireSpear.get()) return false;
-            weaponSwitched = true;
+        Vec3d playerPos = player.getEntityPos();
+        playerPitch = player.getPitch();
+        playerYaw = player.getYaw();
+        hasPlayerRotation = true;
+
+        // Full 3D direction from player eye to target eye — keeps the vertical component
+        // so enemies at different heights can be attacked. 预判由 Predict 分组控制。
+        Vec3d targetPos = predictTargetPos(target);
+        Vec3d direction = targetPos.add(0.0, target.getEyeHeight(target.getPose()), 0.0)
+            .subtract(player.getEyePos());
+        double distance = direction.length();
+        Vec3d directionNorm = direction.normalize();
+
+        // 落点在玩家背后（远离目标）：TP 回原位时产生朝目标的高速位移，
+        // 从而触发动能攻击判定 —— 同一平面静止目标也能打出伤害。
+        Vec3d tpDirection = directionNorm.multiply(-1.0);
+        Vec3d horizontalLine = getVerticalWithSameXZ(directionNorm);
+
+        List<Vec3d> to = findValidTpPosition(playerPos, tpDirection, horizontalLine, spearDistance.get(), distance);
+
+        if (to != null) {
+            Aim aim = rotationToVec2f(directionNorm);
+
+            for (int i = 0; i < to.size() - 1; i++) {
+                sendMoveEntryPacket(new MoveEntry(to.get(i), null, null, false));
+            }
+            Vec3d targetTpPos = to.get(to.size() - 1);
+            sendMoveEntryPacket(new MoveEntry(targetTpPos, aim.yaw(), aim.pitch(), false));
+
+            pendingBackposEntry = new MoveEntry(playerPos, aim.yaw(), aim.pitch(), false);
+            pendingBackTick = 1;
+
+            // Restore visual rotation（原版：setPitch/setYaw 回到动作前的朝向）
+            player.setPitch(playerPitch);
+            player.setYaw(playerYaw);
             return true;
         }
-        previousSlot = getSelectedSlot();
-        if (switchMode.get() == SwitchMode.Silent) InvUtils.swap(spearSlot, false);
-        else if (switchMode.get() == SwitchMode.Normal) setSelectedSlot(spearSlot);
-        weaponSwitched = true;
+
+        // 目标在 spear-distance 内但找不到合法落点：通常是目标贴墙/站在建筑里，
+        // 或玩家背后 search 范围内被方块挡住。保持原版文案。
+        ChatUtils.errorPrefix("TpSpear", "Too far to reach target");
+        currentWaitBackTick = 0;
         return true;
     }
 
-    private void updateTarget() {
-        if (keepTarget.get() && target != null && target.isAlive() && !target.isRemoved() && targetCheck(target)) return;
-        List<Entity> candidates = new ArrayList<>();
-        TargetUtils.getList(candidates, this::targetCheck, priority.get(), 1);
-        Entity next = candidates.isEmpty() ? null : candidates.get(0);
-        if (next != target) {
-            armorBaseline = -1;
-            missStreak = 0;
-            spread = 1.0;
-            passes = 0;
-            settleTicks = 0;
-            correctionTicks = 0;
-            approach = null;
-            target = next;
+    private Vec3d getVerticalWithSameXZ(Vec3d direction) {
+        Vec3d cross = direction.crossProduct(new Vec3d(0.0, 1.0, 0.0));
+        return cross.lengthSquared() < 1.0E-6 ? new Vec3d(1.0, 0.0, 0.0) : cross.normalize();
+    }
+
+    private Aim rotationToVec2f(Vec3d direction) {
+        double h = Math.sqrt(direction.x * direction.x + direction.z * direction.z);
+        float pitch = (float) Math.toDegrees(Math.atan2(-direction.y, h));
+        float yaw = (float) Math.toDegrees(Math.atan2(-direction.x, direction.z));
+        return new Aim(pitch, yaw);
+    }
+
+    private List<Vec3d> findValidTpPosition(Vec3d currentPlayerPos, Vec3d tpDirection, Vec3d expandDirection,
+                                            double distance, double minDistance) {
+        // 渲染距离兜底：落点与目标的距离 = search + minDistance，超过渲染/模拟距离时目标会脱渲染。
+        // 因此把 search 限制在 renderLimit - minDistance 内；spear-render-limit = 0 时自动取视距。
+        // 目标过远（minDistance >= renderLimit / 2）时：显式指定 renderLimit 则返回 null（报 Too far），
+        // 自动模式则回退到原逻辑，不破坏“打远目标”的能力。
+        boolean explicitRenderLimit = renderLimit.get() > 0.0;
+        double limit = explicitRenderLimit ? renderLimit.get() : mc.options.getClampedViewDistance() * 16.0;
+        double search = (explicitRenderLimit || limit - minDistance > minDistance)
+            ? Math.min(distance, Math.min(minDistance + OVERSHOOT, limit - minDistance))
+            : Math.min(distance, minDistance + OVERSHOOT);
+
+        while (search > minDistance) {
+            for (double i : SEARCH_ORDER) {
+                Vec3d searchTpPos = currentPlayerPos
+                    .add(tpDirection.multiply(search))
+                    .add(expandDirection.multiply(i));
+
+                // 只用搜索半径 distance 兜底，挡掉横向偏移过大的候选。
+                if (searchTpPos.squaredDistanceTo(currentPlayerPos) > distance * distance) break;
+
+                if (!TpUtils.INSTANCE.isPlayerSafe(BlockPos.ofFloored(searchTpPos))) continue;
+
+                List<Vec3d> sequence = isValidTpLocation(currentPlayerPos, searchTpPos);
+                if (sequence != null) return sequence;
+            }
+            search -= SEARCH_STEP;
         }
+        return null;
     }
 
-    private boolean targetCheck(Entity entity) {
-        if (!targetTypes.get().contains(entity.getType())) return false;
-        if (entity == mc.player) return false;
-        if (!(entity instanceof LivingEntity living) || !living.isAlive()) return false;
-        if (entity instanceof PlayerEntity player) {
-            if (!targetPlayers.get()) return false;
-            if (player.isCreative() || player.isSpectator()) return false;
-            if (ignoreFriends.get() && !Friends.get().shouldAttack(player)) return false;
-        } else if (!targetMobs.get()) return false;
-        return entity.squaredDistanceTo(mc.player) <= range.get() * range.get();
+    private List<Vec3d> isValidTpLocation(Vec3d playerLocation, Vec3d tpLocation) {
+        Vec3d currentSimulateMovement = playerLocation.subtract(tpLocation);
+
+        if (!TpUtils.INSTANCE.isPathMiss(tpLocation, tpLocation.add(currentSimulateMovement))) return null;
+
+        List<Vec3d> listTo = generateTpSequence(playerLocation, tpLocation);
+        return listTo.isEmpty() ? null : listTo;
     }
 
-    private int findSpearSlot() {
-        for (int i = 0; i < 36; i++) {
-            ItemStack stack = mc.player.getInventory().getStack(i);
-            if (!stack.isEmpty() && stack.getItem().toString().toLowerCase().contains("spear")) return i;
+    private List<Vec3d> generateTpSequence(Vec3d src, Vec3d dst) {
+        double totalDist = src.distanceTo(dst);
+        if (totalDist < MIN_SEGMENT) return List.of(dst);
+
+        // 单步位移由 spear-step-size 决定：调大 → 中间包更少 → 冲刺更快更接近瞬移
+        int stepCount = Math.min(MAX_STEPS, Math.max(1, (int) Math.ceil(totalDist / stepSize.get())));
+        List<Vec3d> result = new ArrayList<>(stepCount);
+        for (int i = 1; i <= stepCount; i++) {
+            double t = (double) i / stepCount;
+            result.add(new Vec3d(
+                src.x + (dst.x - src.x) * t,
+                src.y + (dst.y - src.y) * t,
+                src.z + (dst.z - src.z) * t
+            ));
+        }
+        return result;
+    }
+
+    // ---- packet ----
+
+    private void sendMoveEntryPacket(MoveEntry entry) {
+        if (mc.player == null) return;
+
+        PlayerMoveC2SPacket packet;
+        if (entry.yaw() != null && entry.pitch() != null) {
+            packet = new PlayerMoveC2SPacket.Full(
+                entry.pos().x, entry.pos().y, entry.pos().z,
+                entry.yaw(), entry.pitch(), entry.onGround(), false);
+        } else {
+            packet = new PlayerMoveC2SPacket.PositionAndOnGround(
+                entry.pos().x, entry.pos().y, entry.pos().z, entry.onGround(), false);
+        }
+        PacketUtils.INSTANCE.sendPacket(packet);
+    }
+
+    // ---- spear / trident ----
+
+    private boolean isSpearable(Entity entity) {
+        PlayerEntity player = mc.player;
+        if (player == null) return false;
+
+        if (player.getMainHandStack().getItem() != Items.TRIDENT) {
+            refreshSpearSlot();
+        }
+
+        // 与原版一致：太近（近战攻击范围内）不扎。
+        if (player.getEyePos().squaredDistanceTo(entity.getEyePos()) <= ATTACK_RANGE * ATTACK_RANGE) return false;
+
+        if (mc.world == null) return false;
+        HitResult hit = mc.world.raycast(new RaycastContext(
+            player.getEyePos(), entity.getEyePos(),
+            RaycastContext.ShapeType.COLLIDER,
+            RaycastContext.FluidHandling.NONE,
+            player
+        ));
+
+        return hit == null || hit.getType() == HitResult.Type.MISS;
+    }
+
+    private boolean isSpearStack(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+
+        String name = stack.getName().getString();
+        String lower = name.toLowerCase();
+        if (lower.contains("spear") || lower.contains("trident") || name.contains("矛")) return true;
+        return stack.getItem() == Items.TRIDENT;
+    }
+
+    private boolean holdingSpear() {
+        PlayerEntity player = mc.player;
+        return player != null && isSpearStack(player.getMainHandStack());
+    }
+
+    private int findSpearInHotbar() {
+        PlayerEntity player = mc.player;
+        if (player == null) return -1;
+        for (int i = 0; i <= 8; i++) {
+            if (isSpearStack(player.getInventory().getStack(i))) return i;
         }
         return -1;
     }
 
-    private int getSelectedSlot() {
-        try {
-            Field field = mc.player.getInventory().getClass().getDeclaredField("selectedSlot");
-            field.setAccessible(true);
-            return field.getInt(mc.player.getInventory());
-        } catch (Exception ignored) {
-            return -1;
+    private boolean refreshSpearSlot() {
+        PlayerEntity player = mc.player;
+        if (player == null) return false;
+
+        spearSlot = findSpearInHotbar();
+        if (spearSlot < 0) return false;
+
+        if (originalSlot < 0) originalSlot = player.getInventory().getSelectedSlot();
+        if (originalSlot != spearSlot) {
+            player.getInventory().setSelectedSlot(spearSlot);
+            PacketUtils.INSTANCE.sendPacket(new UpdateSelectedSlotC2SPacket(spearSlot));
         }
+        mc.options.useKey.setPressed(true);
+        return true;
     }
 
-    private void setSelectedSlot(int slot) {
-        try {
-            Field field = mc.player.getInventory().getClass().getDeclaredField("selectedSlot");
-            field.setAccessible(true);
-            field.setInt(mc.player.getInventory(), slot);
-        } catch (Exception ignored) {
+    // ---- predict (yuio 引擎) ----
+
+    /** 按 Predict 开关 / 模式计算目标预判后的位置（返回的是目标实体原点，eye height 在外面加）。 */
+    private Vec3d predictTargetPos(Entity entity) {
+        if (!predict.get()) return entity.getEntityPos();
+
+        double lead = switch (predictMode.get()) {
+            case Ticks -> Math.max(0.0, predictTicks.get());
+            case Ping -> pingTicks();
+            default -> leadTicks(entity);
+        };
+
+        Prediction prediction = PredictEngine.INSTANCE.predict(entity, lead);
+        if (prediction == null) return entity.getEntityPos();
+
+        if (prediction.teleport() && resetOnTeleport.get()) {
+            PredictEngine.INSTANCE.tracker(entity).reset();
         }
-    }
 
-    private int getArmorDurability(PlayerEntity player) {
-        int total = 0;
-        for (int slot : new int[]{39, 38, 37, 36}) {
-            ItemStack stack = player.getInventory().getStack(slot);
-            if (!stack.isEmpty()) total += stack.getMaxDamage() - stack.getDamage();
+        Vec3d pos = prediction.aim(heightOffset.get());
+
+        if (predictMode.get() == PredictMode.Swept) {
+            Box swept = PredictEngine.INSTANCE.sweptBox(entity, entity.getEntityPos(), pos);
+            if (swept != null) pos = swept.getCenter();
+        } else if (predictMode.get() == PredictMode.Multi) {
+            List<Vec3d> candidates = PredictEngine.INSTANCE.candidates(entity, lead, rings.get());
+            if (!candidates.isEmpty()) {
+                int limit = Math.min(candidates.size(), Math.max(1, maxPoints.get()));
+                Vec3d sum = Vec3d.ZERO;
+                for (int i = 0; i < limit; i++) sum = sum.add(candidates.get(i));
+                pos = sum.multiply(1.0 / limit);
+            }
         }
-        return total;
+        return pos;
     }
 
-    private Vec3d horizontal(Vec3d from, Vec3d to) {
-        double dx = to.x - from.x;
-        double dz = to.z - from.z;
-        double length = Math.sqrt(dx * dx + dz * dz);
-        if (length < 0.001) return new Vec3d(0.0, 0.0, 1.0);
-        return new Vec3d(dx / length, 0.0, dz / length);
+    private double leadTicks(Entity entity) {
+        double lead = PredictEngine.INSTANCE.leadTicks(entity, startupTicks.get(), actionTicks.get());
+        return Math.max(minLead.get(), Math.min(maxLead.get(), lead));
     }
 
-    private double clamp(double value, double min, double max) {
-        return value < min ? min : (value > max ? max : value);
+    private double pingTicks() {
+        return Math.max(1.0, (PredictEngine.INSTANCE.myPing() + 1) / 25.0);
     }
-
-    private static double sq(double value) {
-        return value * value;
-    }
-
-    public enum SwitchMode { Normal, None, Silent }
-
-    public enum MoveMode { Teleport, Velocity, Both }
-
-    public enum PredictMode { OnTop, Direct, Pierce, Swept, Multi }
 }

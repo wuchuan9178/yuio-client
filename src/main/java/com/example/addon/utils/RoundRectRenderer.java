@@ -109,6 +109,23 @@ public final class RoundRectRenderer {
             texture, u1, v1, u2, v2, Math.toRadians(rotationDegrees), nearestSampler());
     }
 
+    /**
+     * 磨砂玻璃: 采样抓屏副本, 在着色器里做圆盘模糊。
+     *
+     * <p>{@code blurRadiusPixels} 是模糊半径(帧缓冲像素)。MODE_GLASS 复用了 submit 的 stroke 字段
+     * 把它传进 {@code u_Params.x} —— 该模式下 stroke 本来就没有意义。
+     */
+    public static void glass(double x, double y, double w, double h,
+                             double topLeft, double topRight, double bottomRight, double bottomLeft,
+                             GpuTextureView texture, double u1, double v1, double u2, double v2,
+                             Color tint, int opacity, double blurRadiusPixels, boolean nearest) {
+        if (texture == null) return;
+        submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft,
+            tint, new Color(255, 255, 255, (int) clamp(opacity, 0, 255)), YuioPipelines.MODE_GLASS,
+            Math.max(0.0, blurRadiusPixels),
+            texture, u1, v1, u2, v2, 0, nearest ? nearestSampler() : linearSampler());
+    }
+
     public static void glow(double x, double y, double w, double h, double radius, double spread, Color color) {
         if (color.a <= 0) return;
         Color soft = new Color(color.r, color.g, color.b, Math.max(0, (int) (color.a * 0.32)));

@@ -22,7 +22,7 @@ public abstract class GlassHud extends HudElement {
         .name("radius").defaultValue(12).min(0).sliderRange(0, 30).build());
 
     protected final Setting<Integer> blurStrength = sgAppearance.add(new IntSetting.Builder()
-        .name("blur-strength").defaultValue(12).min(0).sliderRange(0, 20).build());
+        .name("blur-strength").description("Frosted glass blur radius: 1 = 3 pixels (default 12 = 36px). 0 disables the frosted glass.").defaultValue(12).min(0).max(30).sliderRange(0, 30).build());
 
     protected final Setting<Integer> backgroundAlpha = sgAppearance.add(new IntSetting.Builder()
         .name("background-alpha").defaultValue(165).min(0).sliderRange(0, 255).build());
