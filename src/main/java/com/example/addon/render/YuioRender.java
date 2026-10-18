@@ -130,6 +130,15 @@ public class YuioRender {
         ms.popMatrix();
     }
 
+    // ---------- 图标 ----------
+
+    // 图标都是 96x96 的整张纹理, 缩放后画出去
+    public void icon(Identifier tex, double x, double y, double size, int argb) {
+        int s = Math.max(1, (int) Math.round(size));
+        ctx.drawTexture(RenderPipelines.GUI_TEXTURED, tex, (int) Math.round(x), (int) Math.round(y),
+            0f, 0f, s, s, 96, 96, 96, 96, argb);
+    }
+
     // ---------- 模糊纹理 ----------
 
     // 把模糊图的一整块区域画到屏幕 (sx,sy,sw,sh),uv 为像素坐标

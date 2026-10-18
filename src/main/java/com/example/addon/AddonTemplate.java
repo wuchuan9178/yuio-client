@@ -30,7 +30,7 @@ import java.lang.invoke.MethodHandles;
 public class AddonTemplate extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
 
-    // 模块分类
+    //模块分类
     public static final Category ATTACK = new Category("Attack");
     public static final Category ASSIST = new Category("Assist");
     public static final Category OTHER = new Category("Other");
@@ -96,6 +96,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(dev.sherii.yuio.modules.settings.PredictSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.GlobalSettings.INSTANCE);
 
+        //Theme
         GuiThemes.add(new YuioGuiTheme());
 
         //Commands
