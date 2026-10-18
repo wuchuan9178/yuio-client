@@ -53,6 +53,7 @@ public final class FindUtils {
          if (entity == MeteorClient.mc.player || entity == MeteorClient.mc.getCameraEntity()) return false;
          if (!(entity.isAlive() || entity instanceof PlayerEntity p && p.hasVehicle())) return false;
          if (entity instanceof LivingEntity le && (le.isDead() || le.getHealth() <= 0.0F)) return false;
+         if (entity instanceof PlayerEntity p && com.example.addon.utils.ForcedFriends.protects(p)) return false;
          if (nofriend && entity instanceof PlayerEntity p && !Friends.get().shouldAttack(p)) return false;
          if (nocreative && entity instanceof PlayerEntity p && p.isCreative()) return false;
          if (!entities.contains(entity.getType())) return false;

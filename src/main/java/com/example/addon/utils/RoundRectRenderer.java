@@ -12,15 +12,18 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.textures.TextureFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import meteordevelopment.meteorclient.renderer.FixedUniformStorage;
 import meteordevelopment.meteorclient.renderer.MeshBuilder;
 import meteordevelopment.meteorclient.renderer.MeshRenderer;
 import meteordevelopment.meteorclient.renderer.MeteorVertexFormats;
+import meteordevelopment.meteorclient.utils.Utils;
+import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.DynamicUniformStorage;
 import net.minecraft.client.gl.GpuSampler;
 import net.minecraft.client.texture.NativeImage;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -31,18 +34,30 @@ public final class RoundRectRenderer {
         .putVec4().putVec4().putVec4().putVec4().putVec4().putVec4()
         .get();
 
-    private static final int UNIFORM_CAPACITY = 512;
+    private static final int UNIFORM_BASE_CAPACITY = 256;
 
-    private static FixedUniformStorage<RectData> uniforms;
+    private static DynamicUniformStorage<RectData> uniforms;
+
     private static MeshBuilder quad;
     private static GpuTextureView whiteTexture;
     private static boolean unavailable;
+    private static boolean clearedThisFrame;
 
     private RoundRectRenderer() {
     }
 
+    public static boolean isUnavailable() {
+        return unavailable;
+    }
+
+    public static void onFrameStart() {
+        clearedThisFrame = false;
+    }
+
+    // 每帧只清一次, 多个面板各自调用也安全
     public static void beginFrame() {
-        if (unavailable) return;
+        if (unavailable || clearedThisFrame) return;
+        clearedThisFrame = true;
         try {
             uniforms().clear();
         } catch (Throwable t) {
@@ -74,7 +89,13 @@ public final class RoundRectRenderer {
 
     public static void border(double x, double y, double w, double h,
                               double radius, double thickness, Color color) {
-        submit(x, y, w, h, radius, radius, radius, radius,
+        border(x, y, w, h, radius, radius, radius, radius, thickness, color);
+    }
+
+    public static void border(double x, double y, double w, double h,
+                              double topLeft, double topRight, double bottomRight, double bottomLeft,
+                              double thickness, Color color) {
+        submit(x, y, w, h, topLeft, topRight, bottomRight, bottomLeft,
             color, color, YuioPipelines.MODE_STROKE, thickness,
             null, 0, 0, 0, 0);
     }
@@ -201,13 +222,29 @@ public final class RoundRectRenderer {
             GpuBufferSlice slice = uniforms().write(data);
             GpuTextureView samplerView = texture != null ? texture : white();
 
-            MeshRenderer.begin()
-                .attachments(mc.getFramebuffer())
-                .pipeline(YuioPipelines.ROUNDED)
-                .mesh(mesh)
-                .uniform("RoundedData", slice)
-                .sampler("u_Texture", samplerView, sampler)
-                .end();
+            Matrix4fStack modelView = RenderSystem.getModelViewStack();
+            Matrix4f savedProjection = new Matrix4f(RenderUtils.projection);
+            boolean was3d = Utils.rendering3D;
+            Utils.rendering3D = false;
+            modelView.pushMatrix();
+            modelView.identity();
+
+            float spaceWidth = uiWidth();
+            float spaceHeight = uiHeight();
+            RenderUtils.projection.set(new Matrix4f().setOrtho(0f, spaceWidth, spaceHeight, 0f, -1000f, 1000f));
+            try {
+                MeshRenderer.begin()
+                    .attachments(mc.getFramebuffer())
+                    .pipeline(YuioPipelines.ROUNDED)
+                    .mesh(mesh)
+                    .uniform("RoundedData", slice)
+                    .sampler("u_Texture", samplerView, sampler)
+                    .end();
+            } finally {
+                RenderUtils.projection.set(savedProjection);
+                modelView.popMatrix();
+                Utils.rendering3D = was3d;
+            }
         } catch (Throwable t) {
             if (!unavailable) {
                 unavailable = true;
@@ -216,13 +253,122 @@ public final class RoundRectRenderer {
         }
     }
 
+    public static void blurPass(GpuTextureView source, GpuTextureView target,
+                                float radiusTexels, boolean horizontal,
+                                int textureWidth, int textureHeight) {
+        if (unavailable || source == null || target == null || radiusTexels <= 0.0F) return;
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc == null || mc.getWindow() == null) return;
+
+        float spaceWidth = uiWidth();
+        float spaceHeight = uiHeight();
+        if (spaceWidth <= 1.0F || spaceHeight <= 1.0F) return;
+
+        float texelU = textureWidth > 0 ? 1.0F / textureWidth : 0.0F;
+        float texelV = textureHeight > 0 ? 1.0F / textureHeight : 0.0F;
+
+        try {
+            MeshBuilder mesh = quad();
+            mesh.begin();
+            mesh.ensureQuadCapacity();
+
+            int i1 = mesh.vec2(0.0F, 0.0F).next();
+            int i2 = mesh.vec2(0.0F, spaceHeight).next();
+            int i3 = mesh.vec2(spaceWidth, spaceHeight).next();
+            int i4 = mesh.vec2(spaceWidth, 0.0F).next();
+            mesh.quad(i1, i2, i3, i4);
+            mesh.end();
+
+            Color white = new Color(255, 255, 255, 255);
+            RectData data = new RectData(
+                spaceWidth * 0.5F, spaceHeight * 0.5F, spaceWidth * 0.5F, spaceHeight * 0.5F,
+                0.0F, 0.0F, 0.0F, 0.0F,
+                white, white,
+                0.0F, 1.0F, 1.0F, 0.0F,
+                radiusTexels,
+                horizontal ? YuioPipelines.MODE_BLUR_H : YuioPipelines.MODE_BLUR_V,
+                texelU, texelV
+            );
+
+            GpuBufferSlice slice = uniforms().write(data);
+
+            Matrix4fStack modelView = RenderSystem.getModelViewStack();
+            Matrix4f savedProjection = new Matrix4f(RenderUtils.projection);
+            boolean was3d = Utils.rendering3D;
+            Utils.rendering3D = false;
+            modelView.pushMatrix();
+            modelView.identity();
+            RenderUtils.projection.set(new Matrix4f().setOrtho(0f, spaceWidth, spaceHeight, 0f, -1000f, 1000f));
+            try {
+                MeshRenderer.begin()
+                    .attachments(target, null)
+                    .pipeline(YuioPipelines.ROUNDED)
+                    .mesh(mesh)
+                    .uniform("RoundedData", slice)
+                    .sampler("u_Texture", source, linearSampler())
+                    .end();
+            } finally {
+                RenderUtils.projection.set(savedProjection);
+                modelView.popMatrix();
+                Utils.rendering3D = was3d;
+            }
+        } catch (Throwable t) {
+            if (!unavailable) {
+                unavailable = true;
+                AddonTemplate.LOG.error("[yuio] blur pass failed", t);
+            }
+        }
+    }
+
     private static double clamp(double value, double min, double max) {
         return value < min ? min : Math.min(value, max);
     }
 
-    private static FixedUniformStorage<RectData> uniforms() {
+    public static float uiWidth() {
+        Matrix4f ambient = RenderUtils.projection;
+        if (isOrtho(ambient)) {
+            float width = Math.abs(2.0f / ambient.m00());
+            if (width > 32.0f) return width;
+        }
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        return mc == null || mc.getWindow() == null ? 0.0f : mc.getWindow().getScaledWidth();
+    }
+
+    public static float uiHeight() {
+        Matrix4f ambient = RenderUtils.projection;
+        if (isOrtho(ambient)) {
+            float height = Math.abs(2.0f / ambient.m11());
+            if (height > 32.0f) return height;
+        }
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        return mc == null || mc.getWindow() == null ? 0.0f : mc.getWindow().getScaledHeight();
+    }
+
+    public static float uiUnit() {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc == null || mc.getWindow() == null) return 1.0f;
+
+        float space = uiWidth();
+        if (space <= 1.0f) return 1.0f;
+
+        return Math.max(1.0f, mc.getWindow().getFramebufferWidth() / space);
+    }
+
+    private static boolean isOrtho(Matrix4f matrix) {
+        return Math.abs(matrix.m03()) < 1.0e-4f
+            && Math.abs(matrix.m13()) < 1.0e-4f
+            && Math.abs(matrix.m23()) < 1.0e-4f
+            && matrix.m33() > 0.5f
+            && Math.abs(matrix.m00()) > 1.0e-6f
+            && Math.abs(matrix.m11()) > 1.0e-6f;
+    }
+
+    private static DynamicUniformStorage<RectData> uniforms() {
         if (uniforms == null) {
-            uniforms = new FixedUniformStorage<>("yuio - Rounded Rect", UNIFORM_SIZE, UNIFORM_CAPACITY);
+            uniforms = new DynamicUniformStorage<>("yuio - Rounded Rect", UNIFORM_SIZE, UNIFORM_BASE_CAPACITY);
         }
         return uniforms;
     }

@@ -57,7 +57,7 @@ public abstract class GlassHud extends HudElement {
     protected void panel(double x, double y, double w, double h) {
         IslandRenderer.beginFrame();
         BlurRenderer.init();
-        BlurRenderer.request(blurStrength.get());
+        BlurRenderer.request();
 
         IslandRenderer.shadow(x, y, w, h, radius.get() * unit(), 1.0);
         IslandRenderer.glass(x, y, w, h, radius.get() * unit(),

@@ -1,6 +1,7 @@
 package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
+import com.example.addon.gui.YuioGuiTheme;
 import com.example.addon.hud.FriendHud;
 import com.example.addon.hud.ImageHud;
 import com.example.addon.hud.KeyListHud;
@@ -16,6 +17,7 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
+import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.utils.SettingsWidgetFactory;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
@@ -84,13 +86,17 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new AutoLandingWater());
         Modules.get().add(new AimAssist());
         Modules.get().add(new NoGround());
-        Modules.get().add(new BlurDebug());
+        Modules.get().add(new NotifyModule());
+        Modules.get().add(new UiBlur());
+        Modules.get().add(new BlurSettings());
 
         // MaceMissAura依赖
         dev.sherii.yuio.predict.PredictEngine.init();
         Modules.get().add(dev.sherii.yuio.modules.settings.TpSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.PredictSetting.INSTANCE);
         Modules.get().add(dev.sherii.yuio.modules.settings.GlobalSettings.INSTANCE);
+
+        GuiThemes.add(new YuioGuiTheme());
 
         //Commands
         Commands.add(new CommandExample());

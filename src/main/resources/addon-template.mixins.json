@@ -1,4 +1,4 @@
-{
+﻿{
   "required": true,
   "package": "com.example.addon.mixin",
   "compatibilityLevel": "JAVA_21",
@@ -9,6 +9,7 @@
     "ChestBlockEntityAccessor",
     "BarrelBlockEntityAccessor",
     "ChatHudMixin",
+    "ChatHudInvoker",
     "InGameHudMixin",
     "InGameHudScoreboardMixin",
     "MinecraftClientMixin",
@@ -18,7 +19,22 @@
     "TotemParticleMixin",
     "CameraMixin",
     "ShaderLoaderMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "GuiRendererMixin",
+    "WidgetScreenMixin",
+    "WMeteorWindowMixin",
+    "WMeteorHeaderMixin",
+    "WMeteorTooltipMixin",
+
+    "GuiThemeNameMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "FriendsMixin",
+    "CommandsMixin",
+    "MeteorWidgetBackgroundMixin",
+    "WMeteorModuleMixin",
+    "WMeteorTopBarButtonMixin",
+    "WMeteorCheckboxMixin",
+    "WMeteorSliderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

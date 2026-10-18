@@ -18,6 +18,7 @@ import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.listeners.ConsumerListener;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 
@@ -203,7 +204,7 @@ public class NotifyHud extends HudElement {
     private void onPacketReceive(PacketEvent.Receive event) {
         if (!popNotifs.get()) return;
         if (!(event.packet instanceof EntityStatusS2CPacket packet)) return;
-        if (packet.getStatus() != 35) return;
+        if (packet.getStatus() != EntityStatuses.USE_TOTEM_OF_UNDYING) return;
         if (MeteorClient.mc.world == null) return;
 
         Entity entity = packet.getEntity(MeteorClient.mc.world);
@@ -327,12 +328,15 @@ public class NotifyHud extends HudElement {
 
     public NotifyHud() {
         super(INFO);
+
+        MeteorClient.EVENT_BUS.subscribe(this);
         MeteorClient.EVENT_BUS.subscribe(modulesListener);
         lastActive.addAll(Modules.get().getActive());
     }
 
     @Override
     public void remove() {
+        MeteorClient.EVENT_BUS.unsubscribe(this);
         MeteorClient.EVENT_BUS.unsubscribe(modulesListener);
         super.remove();
     }

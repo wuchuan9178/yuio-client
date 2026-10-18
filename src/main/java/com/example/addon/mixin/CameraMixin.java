@@ -32,7 +32,7 @@ public abstract class CameraMixin {
         long now = System.nanoTime();
         double dt = yuio$lastFrameNs == 0 ? 1.0 / 60.0 : (now - yuio$lastFrameNs) / 1_000_000_000.0;
         yuio$lastFrameNs = now;
-        if (dt > 0.1) dt = 0.1; //掉帧保护
+        if (dt > 0.1) dt = 0.1;
 
         this.pos = mod.update(this.pos, dt);
     }

@@ -648,7 +648,7 @@ public class YuioIsland extends HudElement {
         IslandRenderer.beginFrame();
         IslandRenderer.setVanillaFont(fontMode.get() == FontMode.Game);
         BlurRenderer.init();
-        BlurRenderer.request(blurStrength.get());
+        BlurRenderer.request();
         AvatarCache.poll();
         CoverCache.poll();
         updateQq(delta);

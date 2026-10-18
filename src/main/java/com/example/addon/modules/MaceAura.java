@@ -98,6 +98,8 @@ public class MaceAura extends Module {
         if (!(entity instanceof LivingEntity living) || !living.isAlive()) return false;
         if (entity instanceof PlayerEntity player) {
             if (player.isCreative() || player.isSpectator()) return false;
+
+            if (com.example.addon.utils.ForcedFriends.protects(player)) return false;
             if (ignoreFriend.get() && !Friends.get().shouldAttack(player)) return false;
         }
         return entity.distanceTo(mc.player) <= range.get();

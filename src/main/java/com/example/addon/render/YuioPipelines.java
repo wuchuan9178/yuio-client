@@ -31,6 +31,8 @@ public final class YuioPipelines {
     public static final int MODE_TEXTURED = 3;
     /** 磨砂玻璃: 采样模糊纹理并做乘法着色, 不能用 MODE_TEXTURED 的 mix(), 那会把模糊细节抹平。 */
     public static final int MODE_GLASS = 4;
+    public static final int MODE_BLUR_H = 5;
+    public static final int MODE_BLUR_V = 6;
 
     /** 跟 Meteor 的 UI 管线共用 MeshData, 否则顶点会绕过游戏投影矩阵而错位。 */
     private static final RenderPipeline.Snippet MESH_DATA = RenderPipeline.builder()

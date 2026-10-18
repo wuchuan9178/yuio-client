@@ -1,6 +1,8 @@
 package com.example.addon.mixin;
 
 import com.example.addon.AddonTemplate;
+import com.example.addon.utils.ForcedFriends;
+import com.example.addon.utils.RoundRectRenderer;
 import com.example.addon.utils.YuioIconPack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Icons;
@@ -26,8 +28,15 @@ public class MinecraftClientMixin {
     @Unique
     private static int yuio$ticks = 0;
 
+    @Inject(method = "render", at = @At("HEAD"))
+    private void yuio$renderHead(boolean tick, CallbackInfo ci) {
+        RoundRectRenderer.onFrameStart();
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void yuio$tick(CallbackInfo ci) {
+        ForcedFriends.tick();
+
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc == null) return;
 

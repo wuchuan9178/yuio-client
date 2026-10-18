@@ -2,128 +2,115 @@ package dev.sherii.yuio.modules.settings;
 
 import com.example.addon.AddonTemplate;
 import dev.sherii.yuio.AModule;
-import dev.sherii.yuio.utils.TpUtils;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 
 public final class TpSetting extends AModule {
-   public static final TpSetting INSTANCE = new TpSetting();
-   private static final SettingGroup sgGeneral = INSTANCE.settings.getDefaultGroup();
-   private static final SettingGroup sgLimit = INSTANCE.settings.createGroup("Packet-Limit");
-   private static final SettingGroup sgMode = INSTANCE.settings.createGroup("TP Mode");
-   private static final DoubleSetting moveDistance = sgGeneral.add(new DoubleSetting.Builder()
-      .name("MoveDistance")
-      .min(0.0)
-      .sliderRange(1.0, 128.0)
-      .defaultValue(10.0)
-      .build()
-   );
-   private static final DoubleSetting velocityMoveSpeed = sgGeneral.add(new DoubleSetting.Builder()
-      .name("VelocitySpeed")
-      .min(0.0)
-      .sliderRange(0.1, 256.0)
-      .defaultValue(10.0)
-      .build()
-   );
-   private static final EnumSetting<TpMode> tpMode = sgMode.add(new EnumSetting.Builder<TpMode>()
-      .name("tp-mode")
-      .description("Which TP utility to use")
-      .defaultValue(TpMode.TpUtils)
-      .build()
-   );
-   private static final EnumSetting<Action> action = sgLimit.add(new EnumSetting.Builder<Action>()
-      .name("action")
-      .defaultValue(Action.Both)
-      .build()
-   );
-   private static final DoubleSetting interval = sgLimit.add(new DoubleSetting.Builder()
-      .name("interval")
-      .min(0.0)
-      .sliderRange(0.0, 10.0)
-      .defaultValue(7.0)
-      .onChanged(TpSetting::interval$lambda$0)
-      .build()
-   );
-   private static final IntSetting maxPacketRate = sgLimit.add(new IntSetting.Builder()
-      .name("max-packets")
-      .min(0)
-      .sliderRange(0, 32767)
-      .defaultValue(500)
-      .build()
-   );
-   private static final IntSetting inOneTick = sgLimit.add(new IntSetting.Builder()
-      .name("tick")
-      .min(0)
-      .sliderRange(0, 1000)
-      .defaultValue(0)
-      .build()
-   );
-   private static final IntSetting limitPacket = sgLimit.add(new IntSetting.Builder()
-      .name("limit-packet")
-      .min(1)
-      .sliderRange(1, 100)
-      .defaultValue(20)
-      .build()
-   );
+    public static final TpSetting INSTANCE = new TpSetting();
 
-   private TpSetting() {
-      super(AddonTemplate.SETTINGS, "TP Setting", "Tp Setting.");
-   }
+    public enum PacketMode {
+        Position,
+        PositionRotation,
+        Rotation,
+        Ground
+    }
 
-   public final double getMoveDistance() {
-      return moveDistance.get();
-   }
+    public enum GroundMode {
+        Keep,
+        ForceTrue,
+        ForceFalse
+    }
 
-   public final double getVelocityMoveSpeed() {
-      return velocityMoveSpeed.get();
-   }
+    private static final SettingGroup sgGeneral = INSTANCE.settings.getDefaultGroup();
+    private static final SettingGroup sgPacket = INSTANCE.settings.createGroup("TP Packet");
 
-   public final TpSetting.TpMode getTpMode() {
-      return tpMode.get();
-   }
+    private static final DoubleSetting moveDistance = sgGeneral.add(new DoubleSetting.Builder()
+        .name("MoveDistance")
+        .description("Distance between two interpolation steps when smooth teleport is enabled.")
+        .min(0.0)
+        .sliderRange(1.0, 128.0)
+        .defaultValue(10.0)
+        .build()
+    );
 
-   public final TpSetting.Action getAction() {
-      return action.get();
-   }
+    private static final DoubleSetting velocityMoveSpeed = sgGeneral.add(new DoubleSetting.Builder()
+        .name("VelocitySpeed")
+        .description("Velocity used by the velocity move mode.")
+        .min(0.0)
+        .sliderRange(0.1, 256.0)
+        .defaultValue(10.0)
+        .build()
+    );
 
-   public final double getInterval() {
-      return interval.get();
-   }
+    private static final EnumSetting<PacketMode> packetMode = sgPacket.add(new EnumSetting.Builder<PacketMode>()
+        .name("packet-mode")
+        .description("Which PlayerMoveC2SPacket flavour a teleport step sends.")
+        .defaultValue(PacketMode.Position)
+        .build()
+    );
 
-   public final int getMaxPacketRate() {
-      return maxPacketRate.get();
-   }
+    private static final BoolSetting smooth = sgPacket.add(new BoolSetting.Builder()
+        .name("smooth")
+        .description("Interpolate along the path instead of re-sending the start position. Off = a single teleport packet.")
+        .defaultValue(false)
+        .build()
+    );
 
-   public final int getInOneTick() {
-      return inOneTick.get();
-   }
+    private static final IntSetting repeat = sgPacket.add(new IntSetting.Builder()
+        .name("repeat")
+        .description("How many times the destination packet is sent.")
+        .min(1)
+        .sliderRange(1, 20)
+        .defaultValue(1)
+        .build()
+    );
 
-   public final int getLimitPacket() {
-      return limitPacket.get();
-   }
+    private static final EnumSetting<GroundMode> onGround = sgPacket.add(new EnumSetting.Builder<GroundMode>()
+        .name("on-ground")
+        .description("Override the onGround flag carried by the teleport packets.")
+        .defaultValue(GroundMode.Keep)
+        .build()
+    );
 
-   public void onActivate() {
-   }
+    private static final BoolSetting applyClientPos = sgPacket.add(new BoolSetting.Builder()
+        .name("apply-client-position")
+        .description("Also move the client player to the destination after the teleport.")
+        .defaultValue(false)
+        .build()
+    );
 
-   private static final void interval$lambda$0(Double it) {
-      TpUtils var10000 = TpUtils.INSTANCE;
-      var10000.setInterval(it);
-   }
+    private TpSetting() {
+        super(AddonTemplate.SETTINGS, "TP Setting", "Tp Setting.");
+    }
 
+    public double getMoveDistance() {
+        return moveDistance.get();
+    }
 
-   public enum Action {
-      None,
-      Drop,
-      Message,
-      Both
-   }
+    public double getVelocityMoveSpeed() {
+        return velocityMoveSpeed.get();
+    }
 
+    public PacketMode getPacketMode() {
+        return packetMode.get();
+    }
 
-   public enum TpMode {
-      TpUtils,
-      TPUtilX,
-      LTpUtils
-   }
+    public boolean isSmooth() {
+        return smooth.get();
+    }
+
+    public int getRepeat() {
+        return repeat.get();
+    }
+
+    public GroundMode getGroundMode() {
+        return onGround.get();
+    }
+
+    public boolean isApplyClientPos() {
+        return applyClientPos.get();
+    }
 }

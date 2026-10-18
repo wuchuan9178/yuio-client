@@ -179,7 +179,7 @@ public class AutoEz extends Module {
                 return;
             }
 
-            if (status == 3 && mode.get() == Mode.entity) { // 实体死亡
+            if (status == 3 && mode.get() == Mode.entity) {
                 Entity entity = mc.world.getEntityById(entityId);
                 if (entity instanceof PlayerEntity dead) {
                     if (dead.getUuid().equals(mc.player.getUuid())) {
@@ -299,11 +299,11 @@ public class AutoEz extends Module {
         }
     }
 
-
     private String extractKillerFromMessage(String raw) {
-        // 优先尝试常见关键词
+
         String[] markers = {" by ", " was ", "被", "死于", "Slain by ", "killed by "};
         String killer = null;
+        // 优先尝试常见关键词
         for (String marker : markers) {
             int idx = raw.indexOf(marker);
             if (idx != -1) {

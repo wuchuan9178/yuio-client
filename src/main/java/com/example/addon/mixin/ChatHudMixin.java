@@ -1,5 +1,10 @@
 package com.example.addon.mixin;
 
+import com.example.addon.modules.UiBlur;
+import com.example.addon.render.ChatBackendWrapper;
+import com.example.addon.render.ChatPanel;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
@@ -9,7 +14,10 @@ import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChatHud.class)
 public class ChatHudMixin {
@@ -38,11 +46,28 @@ public class ChatHudMixin {
 
         String copy = plain.replaceAll(" \\([0-9]{1,9}\\)$", "");
 
-        MutableText out = message.copy();
-        out.append(Text.literal(" ").setStyle(Style.EMPTY));
+        MutableText out = Text.empty();
         out.append(Text.literal(YUIO_COPY_BUTTON).setStyle(Style.EMPTY
-            .withColor(Formatting.DARK_GRAY)
+            .withColor(Formatting.GREEN)
             .withClickEvent(new ClickEvent.CopyToClipboard(copy))));
+        out.append(Text.literal(" "));
+        out.append(message.copy());
         return out;
+    }
+
+    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;IIIZZ)V",
+        at = @At("HEAD"))
+    private void yuio$beginPanel(DrawContext context, TextRenderer textRenderer, int currentTick,
+                                 int mouseX, int mouseY, boolean interactable, boolean bl, CallbackInfo ci) {
+        ChatPanel.reset(context);
+    }
+
+    @Redirect(method = "render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;IIIZZ)V",
+        at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/hud/ChatHud$Backend;IIZ)V"))
+    private void yuio$wrapBackend(ChatHud chatHud, ChatHud.Backend drawer, int windowHeight, int currentTick, boolean expanded) {
+        UiBlur module = UiBlur.active();
+        ChatHud.Backend backend = module == null || !module.chat.get() ? drawer : new ChatBackendWrapper(drawer);
+        ((ChatHudInvoker) (Object) chatHud).yuio$renderBackend(backend, windowHeight, currentTick, expanded);
     }
 }

@@ -32,6 +32,9 @@ public final class InteractUtils {
    }
 
    public final void attack(Entity entity, boolean rotation, boolean swing) {
+      // 强制好友保护: 任何走这个封包入口的攻击都不许落到名单里的人身上
+      if (com.example.addon.utils.ForcedFriends.protects(entity)) return;
+
       if (rotation) {
          Rotations.rotate(Rotations.getYaw(entity), Rotations.getPitch(entity, Target.Head));
       }

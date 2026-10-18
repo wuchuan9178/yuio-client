@@ -34,7 +34,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Unique
     private static final float SENSITIVITY = 1.2f;
     @Unique
-    private static final float DISTANT = 0.22f;   // 视差跟得越慢越"远"
+    private static final float DISTANT = 0.22f;
     @Unique
     private static final float SMOOTH = 0.10f;
 

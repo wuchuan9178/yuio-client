@@ -197,9 +197,9 @@ public class Tracking extends Module {
     private void bypassWall(PlayerEntity target) {
         if (mc.player.canSee(target)) return;
 
-        double step = 2.0;          // 初始步长
+        double step = 2.0;
         int attempts = 0;
-        final int maxAttempts = 10; // 最大尝试次数，防止过度传送
+        final int maxAttempts = 10;
 
         while (!mc.player.canSee(target) && attempts < maxAttempts) {
             Vec3d direction = new Vec3d(target.getX() - mc.player.getX(), 0, target.getZ() - mc.player.getZ()).normalize();
