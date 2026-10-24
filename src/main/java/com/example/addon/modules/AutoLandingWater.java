@@ -169,7 +169,7 @@ public class AutoLandingWater extends Module {
     private float savedPitch;
 
     public AutoLandingWater() {
-        super(AddonTemplate.ASSIST, "auto-landing-water",
+        super(AddonTemplate.SURVIVAL, "auto-landing-water",
             "Places water under you when falling from a high place.");
     }
 

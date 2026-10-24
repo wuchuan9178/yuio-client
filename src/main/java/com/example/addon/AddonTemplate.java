@@ -33,6 +33,7 @@ public class AddonTemplate extends MeteorAddon {
     //模块分类
     public static final Category ATTACK = new Category("Attack");
     public static final Category ASSIST = new Category("Assist");
+    public static final Category SURVIVAL = new Category("Survival");
     public static final Category OTHER = new Category("Other");
     public static final Category SETTINGS = new Category("Settings");
 
@@ -55,7 +56,6 @@ public class AddonTemplate extends MeteorAddon {
         //Modules
         Modules.get().add(new AutoDick());
         Modules.get().add(new AutoSex());
-        Modules.get().add(new KeepBouncy());
         Modules.get().add(new TPbot());
         Modules.get().add(new AutoEz());
         Modules.get().add(MaceMissAura.INSTANCE);
@@ -89,6 +89,11 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new NotifyModule());
         Modules.get().add(new UiBlur());
         Modules.get().add(new BlurSettings());
+        Modules.get().add(new Scaffold());
+        Modules.get().add(new Dummy());
+        Modules.get().add(new RandomTp());
+        Modules.get().add(new FriendOfAlcohol());
+        Modules.get().add(new Repeater());
 
         // MaceMissAura依赖
         dev.sherii.yuio.predict.PredictEngine.init();
@@ -117,6 +122,7 @@ public class AddonTemplate extends MeteorAddon {
     public void onRegisterCategories() {
         Modules.registerCategory(ATTACK);
         Modules.registerCategory(ASSIST);
+        Modules.registerCategory(SURVIVAL);
         Modules.registerCategory(OTHER);
         Modules.registerCategory(SETTINGS);
     }

@@ -27,6 +27,15 @@ public final class GuiIcons {
     public static final String MP_REFRESH = "mp_refresh";
     public static final String MP_BACK = "mp_back";
 
+    public static final String CAT_COMBAT = "cat_combat";
+    public static final String CAT_PLAYER = "cat_player";
+    public static final String CAT_MOVEMENT = "cat_movement";
+    public static final String CAT_RENDER = "cat_render";
+    public static final String CAT_WORLD = "cat_world";
+    public static final String CAT_MISC = "cat_misc";
+    public static final String SEARCH = "search";
+    public static final String GEAR = "gear";
+
     public static final String SP_ADD = "sp_add";
     public static final String SP_CONNECT = "sp_connect";
     public static final String SP_JOIN = "sp_join";
@@ -50,6 +59,14 @@ public final class GuiIcons {
         get(MACROS);
         get(PROFILES);
         get(BACK);
+        get(CAT_COMBAT);
+        get(CAT_PLAYER);
+        get(CAT_MOVEMENT);
+        get(CAT_RENDER);
+        get(CAT_WORLD);
+        get(CAT_MISC);
+        get(SEARCH);
+        get(GEAR);
     }
 
     public static Identifier id(String name) {

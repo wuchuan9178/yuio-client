@@ -35,29 +35,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Spear TP rush attack — 1 tick judgment window.
- *
- * 移植自 PuerHx 的 TpSpear.kt（object TpSpear : PHXModule）。行为逐条对齐：
- * 落点搜索（overshoot / render-limit / searchOrder）、分段移动包、回原位包、
- * server-tick-delay 状态机、ClientTickEnd 与 PlayerMove 的取消。
- *
- * 唯一的结构性改动：原版的 Predict 分组（约 45 个 setting + PredictSetting.PredictMode
- * 的十种模式，全部依赖 PuerHx 的 PredictUtils）改成接本项目的预判引擎
- * {@link PredictEngine}（dev.sherii.yuio.predict），只保留 5 种取点方式。
- */
 public class TpSpear extends Module {
     private final SettingGroup sgSpear = settings.createGroup("Spear");
     private final SettingGroup sgPredict = settings.createGroup("Predict");
 
-    // ---- Spear ----
+    //Spear
 
     private final Setting<Double> spearDistance = sgSpear.add(new DoubleSetting.Builder()
         .name("spear-distance").description("Dash distance past target.")
         .min(1.0).sliderRange(1.0, 100.0).defaultValue(50.0).build());
 
-    // 兼容保留：不再参与攻击逻辑。TP 落点由“目标距离 + 越过量”决定，始终贴着目标，
-    // 无论该值设多少，攻击范围只由 spear-distance 决定，目标也不会被甩出渲染范围。
     private final Setting<Double> spearMaxTp = sgSpear.add(new DoubleSetting.Builder()
         .name("spear-max-tp").description("兼容保留, 已不再限制攻击/TP 距离, 可忽略。")
         .min(1.0).sliderRange(1.0, 200.0).defaultValue(100.0).build());
@@ -76,7 +63,7 @@ public class TpSpear extends Module {
         .description("TP 落点与目标的最大距离（格）。落点太远时，TP 瞬间目标会脱出渲染/模拟距离而消失（目标脱渲染）。0 = 自动使用客户端视距；调大可攻击更远目标，但可能让目标脱渲染。")
         .min(0.0).sliderMax(512.0).defaultValue(0.0).build());
 
-    // ---- Predict（yuio 自己的预判引擎）----
+    //Predict预判引擎
 
     private final Setting<Boolean> predict = sgPredict.add(new BoolSetting.Builder()
         .name("predict")
@@ -127,7 +114,7 @@ public class TpSpear extends Module {
         .name("reset-on-teleport").description("Clear the motion history when the target vclips.")
         .defaultValue(true).visible(predict::get).build());
 
-    // ---- constants (与 Kotlin 原版一致) ----
+    //constants 与Kotlin原版一致
 
     private static final double OVERSHOOT = 5.0;
     private static final double ATTACK_RANGE = 3.0;
@@ -145,7 +132,7 @@ public class TpSpear extends Module {
         return order;
     }
 
-    // ---- state ----
+    //state
 
     public int currentWaitBackTick = 0;
     private int pendingBackTick = 0;
@@ -174,7 +161,7 @@ public class TpSpear extends Module {
         super(AddonTemplate.ATTACK, "tp-spear", "Spear TP rush attack — 1 tick judgment window.");
     }
 
-    // ---- lifecycle ----
+    //lifecycle
 
     @Override
     public void onActivate() {
@@ -185,8 +172,6 @@ public class TpSpear extends Module {
         spearSlot = -1;
         originalSlot = -1;
         refreshSpearSlot();
-        // 原版在这里向 PredictUtils 注册运动历史请求器；本项目的 PredictEngine 自己每 tick
-        // 采样所有实体（PredictEngine.onTick），不需要注册。
     }
 
     @Override
@@ -204,7 +189,7 @@ public class TpSpear extends Module {
         spearSlot = -1;
     }
 
-    // ---- events ----
+    //events
 
     @EventHandler
     private void onTick(TickEvent.Post event) {

@@ -18,7 +18,7 @@ public class YuioGuiTheme extends MeteorGuiTheme {
 
     public static boolean isActive() {
         GuiTheme theme = GuiThemes.get();
-        return theme != null && NAME.equals(theme.name);
+        return theme != null && (NAME.equals(theme.name) || Yuio2GuiTheme.NAME.equals(theme.name));
     }
 
     public static void select(boolean yuio) {

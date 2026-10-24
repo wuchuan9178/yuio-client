@@ -1,6 +1,6 @@
 package com.example.addon.mixin;
 
-import com.example.addon.modules.KeepBouncy;
+import com.example.addon.modules.FriendOfAlcohol;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -24,11 +24,11 @@ public class LivingEntityRendererMixin {
                               OrderedRenderCommandQueue commands, CameraRenderState cameraState,
                               CallbackInfo ci) {
         LivingEntity entity = getEntityFromState(state);
-        if (entity != null && KeepBouncy.INSTANCE != null && KeepBouncy.INSTANCE.isBouncy(entity)) {
+        if (entity != null && FriendOfAlcohol.INSTANCE != null && FriendOfAlcohol.INSTANCE.isBouncy(entity)) {
             matrices.push();
-            float sx = (float) KeepBouncy.INSTANCE.getScaleX(entity);
-            float sy = (float) KeepBouncy.INSTANCE.getScaleY(entity);
-            float sz = (float) KeepBouncy.INSTANCE.getScaleZ(entity);
+            float sx = (float) FriendOfAlcohol.INSTANCE.getScaleX(entity);
+            float sy = (float) FriendOfAlcohol.INSTANCE.getScaleY(entity);
+            float sz = (float) FriendOfAlcohol.INSTANCE.getScaleZ(entity);
             matrices.scale(sx, sy, sz);
         }
     }
@@ -38,7 +38,7 @@ public class LivingEntityRendererMixin {
                                 OrderedRenderCommandQueue commands, CameraRenderState cameraState,
                                 CallbackInfo ci) {
         LivingEntity entity = getEntityFromState(state);
-        if (entity != null && KeepBouncy.INSTANCE != null && KeepBouncy.INSTANCE.isBouncy(entity)) {
+        if (entity != null && FriendOfAlcohol.INSTANCE != null && FriendOfAlcohol.INSTANCE.isBouncy(entity)) {
             matrices.pop();
         }
     }

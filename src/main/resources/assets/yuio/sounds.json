@@ -1,0 +1,10 @@
+{
+  "alcohol": {
+    "sounds": [
+      {
+        "name": "yuio:alcohol",
+        "stream": true
+      }
+    ]
+  }
+}

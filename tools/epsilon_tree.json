@@ -1,0 +1,3836 @@
+{
+	"type": "gh",
+	"name": "NekoyaHouse/Epsilon",
+	"version": "26.3.x",
+	"default": null,
+	"files": [
+		{
+			"name": "/.github/ISSUE_TEMPLATE/bug_report.md",
+			"hash": "A7oeKjVbHe1ymSloUVMMb/j3NNNI3B/coWLmYNdf3Y8=",
+			"size": 538
+		},
+		{
+			"name": "/.github/ISSUE_TEMPLATE/feature_request.md",
+			"hash": "EvO3PiasKX8SCafO6sItvm8uja+JT4htivCyv+WT2XU=",
+			"size": 169
+		},
+		{
+			"name": "/.github/workflows/backport.yml",
+			"hash": "xbey9rAfFqWGJNBMwANIQGy4xuwwHX/cg2cI+wAqVls=",
+			"size": 9104
+		},
+		{
+			"name": "/.github/workflows/build.yml",
+			"hash": "EZdViXTgc9HFJ7UKOy2Pl9VGQlzhbr5dj6D5FZtNuTY=",
+			"size": 1224
+		},
+		{
+			"name": "/.github/workflows/nightly-build.yml",
+			"hash": "v/rStOC5pfcHrYpWBtup7/oKI/cGtf8YUbF2jKBH4rM=",
+			"size": 2576
+		},
+		{
+			"name": "/.gitignore",
+			"hash": "3S6j/0BQkpMNbNYDoqYc4W66LD4iYq6ghSV/j+sPthg=",
+			"size": 231
+		},
+		{
+			"name": "/AGENTS.md",
+			"hash": "WErABsn/igQD1F3xdsXgXr0UbiwDQcyPTCu39gtTRrA=",
+			"size": 10600
+		},
+		{
+			"name": "/build.gradle.kts",
+			"hash": "1HZAJeP/wm8LtYHuczUlcqTY3lUFuswq2GdFuWL8log=",
+			"size": 1198
+		},
+		{
+			"name": "/buildSrc/build.gradle.kts",
+			"hash": "E1S2NRTfnF7oHW7b1Re/aeGct3GmK9n5nKTIDjmewMs=",
+			"size": 66
+		},
+		{
+			"name": "/buildSrc/src/main/kotlin/multiloader-common.gradle.kts",
+			"hash": "BCWwbGh9IQlFiBYIOEGlOjYQovO1vMS3xmnC90arWP0=",
+			"size": 5115
+		},
+		{
+			"name": "/buildSrc/src/main/kotlin/multiloader-loader.gradle.kts",
+			"hash": "V3vkkRguIJgXI1GZDgrL+q4RUXeKM9lOoeapvmib40c=",
+			"size": 1417
+		},
+		{
+			"name": "/common/build.gradle.kts",
+			"hash": "i7k5sD1thhawjKcS2NYLANSMcTifMkVWWC53J8hEO+w=",
+			"size": 2040
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/Account.java",
+			"hash": "87k1DupWmeburm0ZtuVj+cQ76v/ASYQ4/qIdsPZZPSQ=",
+			"size": 5052
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/AccountCache.java",
+			"hash": "JG5GQc/h7pWdZZyL3Zjcbo1gc2l8dqsaLqc+0qgsQeA=",
+			"size": 1634
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/AccountType.java",
+			"hash": "zmnAK5m/YzkBPTjiMZegsEnzyPKgVPv5hGXhH5jCDj4=",
+			"size": 123
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/MicrosoftLogin.java",
+			"hash": "mpTbZ1c0LZut62Sg5WVpFzIR7DovQuXu+jIPvlVSWsU=",
+			"size": 10410
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/TexturesJson.java",
+			"hash": "o3fCLYhgAggwjGKO9oaxJFVEXNJv+XJVCz+jmgH1fmE=",
+			"size": 386
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/TokenAccount.java",
+			"hash": "V05Tg5FMjowsXHW66KBf21onPSlLFlkkAK+CX0u49M8=",
+			"size": 97
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/types/CrackedAccount.java",
+			"hash": "ohYJrqw+Gz+2P1HNEyQ3yi8ioPWUuqKrZfHPeu1wx6M=",
+			"size": 897
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/types/MicrosoftAccount.java",
+			"hash": "7cdRKh1vYuiPbQwn0xPUkzS/br8wBrpn9s4Ck8Qc9CA=",
+			"size": 1329
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/types/SessionAccount.java",
+			"hash": "FKVSGcyiyiHotIw62lp1ecxywL5yCUp7JE6Vms6RQP8=",
+			"size": 2424
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/types/TheAlteningAccount.java",
+			"hash": "meLUtP6UBVD6MW8dx714lwAGpT+WdMPE9Vuo9U07wjo=",
+			"size": 4196
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/accounts/UuidToProfileResponse.java",
+			"hash": "gjEdKI3cyAU5hKmMu1lqmatsjwjBPrep8W82chukWq0=",
+			"size": 566
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/config/LegacyConfigMigrator.java",
+			"hash": "ORz88yFyxmnS1ncUXgfKo64rLN5BvwJdni1cPG2lWEo=",
+			"size": 3707
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/ffmpeg/FFmpegNativePlatform.java",
+			"hash": "pv6VU93JG1x3ROwcvBcLasVF9YjNvgkA2JEQWRoX9bo=",
+			"size": 4053
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/DefaultTranslateComponent.java",
+			"hash": "ti883u2QqIWnsDv1yt6oPpi5mUXe3trLoHzkSjlwBNE=",
+			"size": 2271
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/EpsilonLanguage.java",
+			"hash": "gOLjYYG0N+KYw7vUhUKNppHFRcH/OQolZqDD7x4nnTg=",
+			"size": 592
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/EpsilonLanguageManager.java",
+			"hash": "LMf7eIQL6ux9fTxIPKosHLb7ye94loklJCZncWIXcwI=",
+			"size": 4738
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/EpsilonTranslateComponent.java",
+			"hash": "b4gb+iTJlXlFp0fblpdXGckFw7PYTe9m7OsEPz+B+Ws=",
+			"size": 449
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/EpsilonTranslations.java",
+			"hash": "t4LXalac3HsAxHBfR59z1D3mjw1Tvgo0CC1PhMPzf/I=",
+			"size": 27601
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/I18NFileGenerator.java",
+			"hash": "RXpmiF1hz5+EctcUV/NMAZTlkOM8aKRkoXopYqRIc6M=",
+			"size": 4909
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/I18NJson.java",
+			"hash": "ERnmaC/zFahcAcf9EAuJGCUcY6VOTqZIx518wp9LTcs=",
+			"size": 3230
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/LanguageReloadListener.java",
+			"hash": "00BvujvmYhvUDuFXS8stRd0WzANmEB7HbxSG91IXNEI=",
+			"size": 704
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/i18n/TranslateComponent.java",
+			"hash": "fEhAz0K+3GZt3oymOHRx/WJiGDAXjLOe/y00pvDyHCw=",
+			"size": 214
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/assets/resources/ResourceLocationUtils.java",
+			"hash": "X2PuOUnupmoRtbKvAO020Rc/Y2axwGEMP5J4LMhXj/E=",
+			"size": 1170
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/Constants.java",
+			"hash": "Gvc6E0dwn3973lA/DIV7np02KKqxoj21HhVhC6NZvfc=",
+			"size": 499
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/HudModule.java",
+			"hash": "/M+E2WnqDq3Z8QWWgsRTTXPm2REwWoHVbGMJbg/0OC8=",
+			"size": 6067
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/Hotkey.java",
+			"hash": "fRWrxMbregAgNddBMxpt112LIqMYkS1zX582ZiadFCY=",
+			"size": 10696
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/Inventory.java",
+			"hash": "0p7uNhhncBD2QUhagFhZJLwXjJdYSH6rskrZjGkGYqo=",
+			"size": 4624
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/impl/BalanceInstance.java",
+			"hash": "OuPi8iLIEMrRtyXWTiCnnQUWYC6zP8yK8FBQjXTsP+0=",
+			"size": 3732
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/impl/MusicInstance.java",
+			"hash": "I1FR26nE1PNcoqzvU9doRjCbJ857j3Flod2G9rOSp70=",
+			"size": 13461
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/impl/ScaffoldBlocksInstance.java",
+			"hash": "IAv2reSKfJQJ7K/y8gR5OK9wbExTJqo46fjat9/Pd/c=",
+			"size": 10483
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/impl/TabListInstance.java",
+			"hash": "b1vSxduTkvCCV6oy+HRiahNtiic7/le1+dye7IbRQCM=",
+			"size": 25681
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/impl/TargetInstance.java",
+			"hash": "RB5dJzQRCQHVitqr9ZLTntRIokJ+zKIso6VKkK1W4zo=",
+			"size": 8042
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/LandController.java",
+			"hash": "oQkTnAFeTRwP10LogFy6VQNsyHo42P+j4h8i5jIRvic=",
+			"size": 2239
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/instance/LandInstance.java",
+			"hash": "A55WRIxqgQgZruRojX7aO5jnwV7UHG368cNGTkXXtF4=",
+			"size": 2720
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/Island.java",
+			"hash": "8vU7hp4GFAYxQkYijHW1OS85cgx8k1xSDewyjZ/c7v4=",
+			"size": 9662
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/IslandPalette.java",
+			"hash": "bJy3lcCTOdWDL+gK00XVb4u78JobwgdC/HpR1cGsJv8=",
+			"size": 1203
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/LandRenderer.java",
+			"hash": "jQdPsUvO0WtWVpqgQpfbKyPJOaZ8rIm1U7B+psS40vI=",
+			"size": 10353
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/pattern/impl/CheckPattern.java",
+			"hash": "XPjKHQ8oJvUuQl8vd35rDoz/IlcbpZCcZyNqjhutinY=",
+			"size": 492
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/pattern/impl/DelayPattern.java",
+			"hash": "PkdMDoR+Uh/V3jz9DbIRorvM4fQW0Dd2MJSmd0yS9tY=",
+			"size": 401
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/island/pattern/LCPattern.java",
+			"hash": "NEs9Qe41kE0BQYSlhQs2OI7lPVqj6fm1O/75dILa3qI=",
+			"size": 366
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/ModuleList.java",
+			"hash": "zD1qbzHOtUnmrLOXuEvuX4agGIQsM8a8zqaTG8ht4q0=",
+			"size": 23440
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/MTF.java",
+			"hash": "Aog/LEX8kaK5JQfbu4iVOm/26zbs6fef7t186ELzjZ0=",
+			"size": 1444
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/Notification.java",
+			"hash": "FpXLaBOH0CVxqPTfn0XjapCJfEYEWUu9NSQy1M1BpLE=",
+			"size": 2734
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/NotificationMode.java",
+			"hash": "OywfcTT8Cx8ihc8OCaoxujfE2x4C1aMnogjn2aeYanc=",
+			"size": 718
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/Notifications.java",
+			"hash": "VQAacnQTC9ggeMoccakyJQmcN1kD/yOPb98Yx6bR1Qk=",
+			"size": 4718
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/style/AkarinNotification.java",
+			"hash": "oNE4CkIR2GYvn0q6gc+f7MW3Yiy5DTAqH2nTitXdCz4=",
+			"size": 8470
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/style/NVIDIANotification.java",
+			"hash": "6ZKoNQzeZnXS0z2IGmLCedAJgEr9bT5a8VTzsmApUAM=",
+			"size": 10923
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/notification/style/QuantumNotification.java",
+			"hash": "AIRwF31xKaba5/VXWgRvU19cI3uvqd76MjuR+BkR63E=",
+			"size": 16793
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/PlayerInfo.java",
+			"hash": "eyJsztR1hrp1T6h44LtSvm0f2fGnKOs3PG/lp2MgSOk=",
+			"size": 18531
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/ScaffoldBlock.java",
+			"hash": "0cc63TxKX+B91GzYy6kNAoIVbUVC4CDO0IPV48wn6Fc=",
+			"size": 13984
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/TargetHUD.java",
+			"hash": "H9zwUvVVLeItl7bSewY2FVqc6Cde2OZV6QKep/Gpopk=",
+			"size": 28130
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/VictoryBanner.java",
+			"hash": "ozpvK3Ip5AycApicc9b3a4UUzlUG3zClJfRvYCrZUB0=",
+			"size": 20164
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/elements/impl/Watermark.java",
+			"hash": "4V80BDG4rslAdC5X9m5WWs0n5QdKKF6ooItX72hE080=",
+			"size": 7939
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/EpsilonCommon.java",
+			"hash": "If78Xs2F9ndkcx38CoETBv6r5e3fN930TqmFKC9tH0c=",
+			"size": 2232
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/Cancellable.java",
+			"hash": "FTMBCZeIouME+gOyCBBVyivNIdYOFFozNIk24qd6UPk=",
+			"size": 243
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/EventBus.java",
+			"hash": "rotLjf+tLyRdNoLCaG9j5iN7ykmyZ5OAJJJSNP0/yH8=",
+			"size": 5822
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/EventHandler.java",
+			"hash": "2E3uSkRVK5cY0bXSx4q8ALj7LOW+5RRHMoUDr9LXDd4=",
+			"size": 387
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/EventPriority.java",
+			"hash": "XkfYjNHDA/Xhluew6hH26EKsryWD1y62Rg+at1pK/d8=",
+			"size": 320
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/listeners/ConsumerListener.java",
+			"hash": "eI+lW1GeG5rz51hS8SmweGmzdZ1OOCtWqjbAz8ixERg=",
+			"size": 1057
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/listeners/IListener.java",
+			"hash": "m/np4+d5Uvd+pyaeXbmH4wTond5gPn9UlwildGISrQw=",
+			"size": 622
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/bus/listeners/LambdaListener.java",
+			"hash": "mFjcMYIrHuCtxPcg8TUmVpaALtEc5oObHdVRh12dQ5Q=",
+			"size": 3443
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/AfterRender3DEvent.java",
+			"hash": "1RBHZKUgAQ69Bci7feRbwgrRQXLjoke8xLDTU1C6Ick=",
+			"size": 77
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/AfterSendPositionEvent.java",
+			"hash": "Xk2m57prqKwaFD4kT6TF3q+28KxdaH1FLJwPQuqghTQ=",
+			"size": 81
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/ArmRenderEvent.java",
+			"hash": "+sASCHvGDXEOPMPsqeZFzz513kOZHa+FKp50MSTF9ds=",
+			"size": 206
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/AttackEntityEvent.java",
+			"hash": "6SvNihlLp4w1CdxMW5fn6TcSZzjscehgeZe6MKf3Vsg=",
+			"size": 558
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/AttackSlowdownEvent.java",
+			"hash": "UPzQMkSQS3jJWH5S1a1dXnWpjC8Z7KPmmEW2XbYmaKI=",
+			"size": 149
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/AttackYawEvent.java",
+			"hash": "MkLez+rqAU6F94nBmoGhCGPBSa3HW9lh23bIZCjsp/o=",
+			"size": 290
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/BlockCollisionEvent.java",
+			"hash": "1OIEcx7oYNbwxylp2ArQyJiETeShcUhvc2ryirB/A7I=",
+			"size": 627
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/ChunkOcclusionEvent.java",
+			"hash": "JkPdPmxyGx0deZ12yX3Cq40SfjhKvZ4mFzPWRo5RKc4=",
+			"size": 149
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/ClientTickEvent.java",
+			"hash": "oCXhNPoPYBgDkaFkAb63FOQN6MBDy+JJ0+yBYnd77Jk=",
+			"size": 198
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/DestroyBlockEvent.java",
+			"hash": "AW9+dT0vlDj2D0tuZK0QSaDisOk2HxCyH+CplZKBReI=",
+			"size": 381
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/DestroyedBlockEvent.java",
+			"hash": "4fVcOi4tG7dy2US8JT4MKyDPunsHw7vF1y4ba6Gja4w=",
+			"size": 315
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/FallFlyingEvent.java",
+			"hash": "oQAEdEhNWEKtWK5dh3V5ayR57qJSwsgGrzEDtbcaME4=",
+			"size": 492
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/FallFlyingMovementEvent.java",
+			"hash": "wD4izEGDBs50oAFlEw/wv3GggqPcyDFsLnd9CHytpk4=",
+			"size": 514
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/FireworkRotationEvent.java",
+			"hash": "t//U9Qnh5zAikGfwIV8EzQ82Pne/Eoy0AhmlvkjIA7Y=",
+			"size": 504
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/GameJoinedEvent.java",
+			"hash": "K2aJoDS8+lXJb2FBnu0Wj0RmtkhJUJlaOD0a8hnncm0=",
+			"size": 74
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/GameLeftEvent.java",
+			"hash": "YVzp/2FogvJLdBCLuUGyv6jWoH8885hE/x6k97BS8k8=",
+			"size": 72
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/HeldItemRenderEvent.java",
+			"hash": "fp0/Q5ipA85d6B4rYNMH2I7gmWxzjZbtQ2bsgYGwzHE=",
+			"size": 211
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/JumpEvent.java",
+			"hash": "iGzxIHenepWbVeVdFvQZeysO9eiDxzfIZM6jaJw6BTM=",
+			"size": 280
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/KeyboardInputEvent.java",
+			"hash": "lubQ3WadLdcWyD0G0ayGJnzLV4tpmxr+WgBRmGO9/LA=",
+			"size": 1523
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/KeyPressEvent.java",
+			"hash": "JJ5E2UBh20z4tvXzpA/pwQgp6uY2A6a57h1JycuTLuA=",
+			"size": 652
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/LevelUpdateEvent.java",
+			"hash": "ESWgCVg4QDAtzL17mMO60sLFeq1rXLXP6jMK3bBCc9U=",
+			"size": 75
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/MousePressEvent.java",
+			"hash": "hP96KtbcEG8bxgK2aMzXQrbrDqVW+vS7MURnmNANCEE=",
+			"size": 594
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/MouseScrollEvent.java",
+			"hash": "bY+cPi8EYjvjcm43QwkHPZQNKvJzw0twlb8MxxM389s=",
+			"size": 319
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/MoveEvent.java",
+			"hash": "pUAHRVJXJhU/a1jQAcTLsPsawpa3/lF9irdz6X7Ne5w=",
+			"size": 663
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/OpenScreenEvent.java",
+			"hash": "GsznB9r3Da8mfsUafjFbcrI9x60f92c7Pw8Hlt1Ay/o=",
+			"size": 371
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/PacketEvent.java",
+			"hash": "bUlLT5e7QV58nN83bqOr8B773lZg/WHZPIDz7ClO8p8=",
+			"size": 876
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/PlaceBlockEvent.java",
+			"hash": "v26mzukoZkHqG0qgSmmNiCcVEVwWuTKI820cQTD8Uxc=",
+			"size": 554
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/PlayerTickEvent.java",
+			"hash": "IzQlgl/RJyO4yiG6vkJgvrAF8B1JuyYI03G7DO5v1gE=",
+			"size": 221
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/RaytraceEvent.java",
+			"hash": "60tQS2AHRXUvmEGEa0Q879x8nSxGkNEC4PXpk/EQtO0=",
+			"size": 488
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/Render2DEvent.java",
+			"hash": "Qz53dxL9wsu76FqIsN+Kev1h/VbRQU0wEabeLL9+OnQ=",
+			"size": 694
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/Render3DEvent.java",
+			"hash": "sLWCaWw0MpGDC1T2/jKWfmvXU3wbnXgfa+Ob6ltaWcI=",
+			"size": 320
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/RespawnEvent.java",
+			"hash": "ZmV2ekyjB5yXO2gog+g+72lE5x2HHz44uTbS6fsTumk=",
+			"size": 71
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/RightClickEvent.java",
+			"hash": "p8KKiWvjINkeHRf6VkJ7Kjbt0/OW3Ko9BAAojI/KIwk=",
+			"size": 145
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/RotationAnimationEvent.java",
+			"hash": "eWgzRMzhwLY14tbAlllhOf4FSBlebeTv5LEwpEBbaT4=",
+			"size": 966
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/SendPositionEvent.java",
+			"hash": "eGRMBBov/2pXXCvvov9e0kY2gpZQjnw6v3wEES47Zsg=",
+			"size": 1296
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/SlowdownEvent.java",
+			"hash": "OwmO0YawCfGjDx9W+0urDB2MZUI6ZyRBsQTSX1aBXqY=",
+			"size": 345
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/StartDestroyBlockEvent.java",
+			"hash": "k6xQErNXAAjom5ZP6R39Uiy/MFcOT9b2bAj30v641hQ=",
+			"size": 768
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/StartUseItemEvent.java",
+			"hash": "SgfQjMFkn6fjU/5KS5HxdWOf5mwAaYC51YrCl3My/sw=",
+			"size": 147
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/StrafeEvent.java",
+			"hash": "KOwL1i14byPUa6B9zEwhlhjvVvXjBToIKdAsTAcWDp4=",
+			"size": 284
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/SwingHandEvent.java",
+			"hash": "5NIi4LQ6dT/SaGpZOCnMhd386sACuwQXZ9ZBPTcdhzc=",
+			"size": 144
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/TravelEvent.java",
+			"hash": "QRQDt/Ab4MmE2dLQ5zBOxiB2EKhfFVp6xeo7xgInGYI=",
+			"size": 141
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/UseItemEvent.java",
+			"hash": "7OkhP4py6OgjlXWaFGQNZ2TlV2qv6OHlvk01RM0SZA0=",
+			"size": 663
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/events/impl/UseItemRaytraceEvent.java",
+			"hash": "QQfTdN/e0ZSMKfoQtQcgClgZqLvi/qLyMSfuBTbAPQI=",
+			"size": 502
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/buffer/BufferUtils.java",
+			"hash": "eB2MTHqWeL+rvjfEC8eZoCckhTSUlvHwMXkdiQe0UWw=",
+			"size": 473
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/buffer/LuminRingBuffer.java",
+			"hash": "njbZukUL7Y+rTo8aMNZ5fFjszOTNe6nx+3KMYtNXiEA=",
+			"size": 7298
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/immediate/LuminImmediateRenderer.java",
+			"hash": "FkF+/Hxp6K4Isoz98cdPwfM/WOsv2FYkSGNEH4VeFhU=",
+			"size": 16259
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LICENSE",
+			"hash": "OXLcl0T2SZ8Pmy2/dmlvKuetivmyPd5m1q+Gyd+zaYY=",
+			"size": 35149
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LuminBindGroupLayouts.java",
+			"hash": "W2zUETYFxLAmmqzceeeiBJJ7WiGGxKIVXEATN9wxveE=",
+			"size": 1782
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LuminRenderPipelines.java",
+			"hash": "0E4pO1jIUElDW+00EQtxF+Nx93CoDrbaRJnDcvQS5OI=",
+			"size": 6618
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LuminRenderSystem.java",
+			"hash": "h25EogmFxyWiLOWpZ+Xthb+WVuHoUSvXkgIUlutiptE=",
+			"size": 14656
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LuminTexture.java",
+			"hash": "JMgW5dHXK86HoxHallGFb19O6BrXt6tRLB+3Wfc5NyI=",
+			"size": 1111
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/LuminVertexFormats.java",
+			"hash": "gMxyc/0/AUSz7tA8/WA6AnSRxeiJ1dTqy0QLNymM1OU=",
+			"size": 2152
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/PlayerHeadTexture.java",
+			"hash": "er3MUiw1m2aJlB3blzJBv6RTWOtpLq9AuX0aq4lTC5A=",
+			"size": 3885
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/README.md",
+			"hash": "tIYW0IANCNmEaehIniwYf+J4X0r0GAkVFBDWd3ILVBE=",
+			"size": 3512
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/README_zh.md",
+			"hash": "oNdSf+Ht6i6U5e7jzuyIVX+nhGe2cjWF1zFt6zVaAFI=",
+			"size": 3212
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/ArcRenderer.java",
+			"hash": "PNxseQwfc1qCAJP9ke8VUpjIWzZjYGHnoBcQqOYrer4=",
+			"size": 9224
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/IRenderer.java",
+			"hash": "N9IrIsMkx09nR7TDkIwh+ZC4wGvEyAOly2E4oJagkIE=",
+			"size": 799
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/RectRenderer.java",
+			"hash": "JAQJ6vJtwlXR6+cMYlWYAh5kpIZN6hjkkMw7thXbdUI=",
+			"size": 6442
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/RoundRectOutlineRenderer.java",
+			"hash": "HZTKyXrSPOXFv19LblOoYONgoT3jz9KFxI/93QDb9H0=",
+			"size": 8850
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/RoundRectRenderer.java",
+			"hash": "icEVxGr8NzCzPQFx52xUAy7d2yoiXaaewtH0ot7GMlY=",
+			"size": 7495
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/ShadowRenderer.java",
+			"hash": "1bT1a3HSe+mwCmjnpzrUiKshtBIX5GC1QWG2abgkwAk=",
+			"size": 15941
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/TextRenderer.java",
+			"hash": "G2K/Ttf/GaAnq+hNEdAiVnLq0BGKP+fSgIz31Jlb30k=",
+			"size": 6099
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/TextureRenderer.java",
+			"hash": "VRixOYu2PpY/f/Md0yumsf9y67+84+ItvbhbUuU8+B8=",
+			"size": 16836
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/renderers/TriangleRenderer.java",
+			"hash": "t4SSYbrRogi7aI0kkdmeyHP43NbM69AQNaTGskIBJ6Q=",
+			"size": 6880
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DBounds.java",
+			"hash": "cOeU/ikYC8TfAjaXn4gYHRt6A1pFqgVRbo1CJ71JbD0=",
+			"size": 1563
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DCommand.java",
+			"hash": "Y2FVCKn3MPkECxIE38cS3EVdgA9/oGaDWSW0Df2jtmo=",
+			"size": 6873
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DCommandKind.java",
+			"hash": "R5ifGt8kt966GIWRDRTmPhk1UqIz7fksRAg8Qn0lMV4=",
+			"size": 233
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DScheduler.java",
+			"hash": "N2iEaJhWkw8Ap1cn9USIga5CGGYMFiPESJyMO1yh3MA=",
+			"size": 53251
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DScissor.java",
+			"hash": "BR8eZacwNR6KJsHPnZekLcJfcCZV8405Y1LP6uWuCGQ=",
+			"size": 604
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render2d/Render2DTexture.java",
+			"hash": "PRvZDPIXpe97PCvfYYZZgQ+rl4Ywc796jqA6xEeQy+U=",
+			"size": 669
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/schedulers/render3d/Render3DScheduler.java",
+			"hash": "190yoSTCuVwVdWm5PwBGChRssS8GSUkn3p+7VFpukQs=",
+			"size": 19023
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/BlurShader.java",
+			"hash": "j8cB7NpMen/nIStB8Gw7VN6ittHbUBONVVIj3LhJFNY=",
+			"size": 15132
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/CustomSkyShader.java",
+			"hash": "xuAffT/6i0OoRdpZn2wprXZ/gNuaHWHtqwmD6AJXQsY=",
+			"size": 6306
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/FilterShader.java",
+			"hash": "ryd4GEDSdK8arhTvVcXAkdbSjYzZHonkuy27g5uPxWk=",
+			"size": 4935
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/FXAAShader.java",
+			"hash": "t1KENwmlzoiP+hSMA5qT4ueTEYLtaJHo0PiGBO5qTyQ=",
+			"size": 4806
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/GlslSandBox.java",
+			"hash": "xxEusuV/b0FsOcMfsjmO407KDRw0FiB8+weBMrXpLeY=",
+			"size": 5629
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/shaders/MotionBlurShader.java",
+			"hash": "51k0SRGIQRs01Yw/ICbXXe71QKp7NOgYO8lZZy3m9wA=",
+			"size": 9211
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/GlyphDescriptor.java",
+			"hash": "KWFMKeMz5p2bhLFHaD5qnhQvh8jXTBzK3O1sp/Q7E1g=",
+			"size": 303
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/IconChars.java",
+			"hash": "VGL8VhFT1ww7x1xL12mVQY59pFjiTOfWNdMwICeAWHg=",
+			"size": 194150
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/IFontLoader.java",
+			"hash": "BRXjbsIXi8N6vM9GORo4qcRA7ItjQbtrpgQvSlhwVsI=",
+			"size": 218
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ITextRenderer.java",
+			"hash": "vls7l/IjLs4Buh52fDJCWijx1Y1w4yskDg+fY7Zh+2E=",
+			"size": 1802
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/minecraft/EpsilonFontGlyph.java",
+			"hash": "OY0J4zxSuFwIZ4M1FRouzpxekAlGUct3k81Fh6Z76no=",
+			"size": 10484
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/minecraft/EpsilonFontMetrics.java",
+			"hash": "JwfpQA/A3hBh+4p9KLCloM8ZaSOy0FVyqpcqUz1h0rQ=",
+			"size": 2985
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/minecraft/EpsilonTextRenderable.java",
+			"hash": "06xk7R1MdDKC8FEOJzjCvitdZh6GlRWgeqAtzfubUzw=",
+			"size": 188
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/StaticFontLoader.java",
+			"hash": "seLBN6wbrVZ3B9+6QnB8YpNLjhK2WOb2ogi+721FBME=",
+			"size": 13887
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/SystemEmojiAtlas.java",
+			"hash": "F9kyPj6X63yzg4YQCHx5aJCg4mHZ6cwePQG68fOoN7M=",
+			"size": 13197
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/TextGlitchEffect.java",
+			"hash": "59O+VZLI5KcwQRvtTikVZRaGKMy0GZBKtjQ5q48FRsY=",
+			"size": 1462
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ttf/TtfFontFile.java",
+			"hash": "J5KyNOTGvDhaUM+U4ZiVtnIx03FhWcZEGLG+OAk/2bY=",
+			"size": 12400
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ttf/TtfFontLoader.java",
+			"hash": "fntfqQ4VW6QbdK8d3yuoUVDYE16Smrr78G5FMDXZPJY=",
+			"size": 13843
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ttf/TtfGlyph.java",
+			"hash": "SrIwGSBz0QwerkYQAZi2pH2LryKobLe1Sk6baCxVmrk=",
+			"size": 267
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ttf/TtfGlyphAtlas.java",
+			"hash": "cLIMwV1dDmtn+f0he8uCT1D3IBqbIvcK48llF441b2I=",
+			"size": 7754
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/text/ttf/TtfTextRenderer.java",
+			"hash": "7BxeL9kC3bhTHiIipFFPtfCO8rbFHjAO/A+Rd5c7R08=",
+			"size": 30849
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/graphics/video/VideoPlayer.java",
+			"hash": "XgC2HQ0OjHSbTqUGQzrOHzoxvsLNQosTkb9PT72Bjpw=",
+			"size": 12381
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/AbstractDropdownPanel.java",
+			"hash": "ukNrFsvOoegonz993IQBF46+fGrrn21Rud1v42vByBM=",
+			"size": 14909
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/CategoryPanel.java",
+			"hash": "maJYCeIyD1dZEXt/xDFn67AQw/1sFjVTScxSHPAnWu0=",
+			"size": 9261
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/Component.java",
+			"hash": "l/691NKGMtxpcQNizm1ujoi1XurjpJyDwSEOytX95PA=",
+			"size": 2287
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/ConfigDropdownPanel.java",
+			"hash": "pugxPZNM1J6pFcJojgCXfTEivMwLpkvUqbBKEC9Wbeo=",
+			"size": 11803
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/DropdownPanel.java",
+			"hash": "UKGW9z/wGsKdLE5TOX/pecysM1QZvDbs0G1OukSL7V0=",
+			"size": 1387
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/FriendDropdownPanel.java",
+			"hash": "QoN+hfdTV5ugaUTuU9gfguEG0neTJPmSclzFNX0m4fQ=",
+			"size": 7308
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/MainDropdownPanel.java",
+			"hash": "X9n3jjqYQMm7wpPaJ2jy01h/O7DhrASA+2nWUbSNa78=",
+			"size": 9863
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/ModuleButton.java",
+			"hash": "JvW/Kqyyib30P7mflTRhUOcIgm0gFoVnA1b8/escCyg=",
+			"size": 14778
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/SettingsContent.java",
+			"hash": "SY9sUEDBbL2jHrn7xrTMb3tbAOFl1D9MD9gJo3xBm34=",
+			"size": 4227
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/SettingSectionRenderer.java",
+			"hash": "xQp9NlllYTq7iEVUgy3lFCVyzlYeyZAcbyq73hWqVzM=",
+			"size": 21294
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/component/SettingsListPanel.java",
+			"hash": "cSf2x1JHmFNYHVIP2ukNsQoBzrO99zSXR0BhyPoN0iQ=",
+			"size": 2443
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/DropdownLayoutState.java",
+			"hash": "onEU7XM11ox3j8KQExueH8SPtqoCJn+6W5DPb3Qkfaw=",
+			"size": 3882
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/DropdownScreen.java",
+			"hash": "lCYYZQ7A+IYux/LY1nEkMAxilybuMpuNDLnpiAmtoWQ=",
+			"size": 26611
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/DropdownTheme.java",
+			"hash": "I4hWwRrXNdn4CE+/4ZdaZd5+0O+cJXEsFMwYI+sJI68=",
+			"size": 8184
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/ListSettingPopupScreen.java",
+			"hash": "EJwn5N5vS4k2BBMGjVIMRvOEMvCVvALXa5RS9wgoi4k=",
+			"size": 345
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/ReisaDropdownCompanion.java",
+			"hash": "GkYNClw5sMVflf/rErE8oh0KhpQvjO9TOIt9zJuAtK0=",
+			"size": 9619
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/AbstractSetSettingWidget.java",
+			"hash": "zF99tJclQ4wwT1nfVa04Bgn6pOLIYIlC1OmmpbGHa+M=",
+			"size": 4399
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/AbstractSliderWidget.java",
+			"hash": "LDyjPQSLA9ECS3AWXSqzLgEI2nIEhc+plJVUNwEfofE=",
+			"size": 10096
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/BoolWidget.java",
+			"hash": "yvbAEaShDFP7Jkz2/Kv0X2dW8/P56woFoKTLpxN7fl8=",
+			"size": 6402
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/ButtonWidget.java",
+			"hash": "2ujsNK/sWUK78iyiC30w7qgKpzroldH3lWJ42aUqekI=",
+			"size": 2578
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/ColorWidget.java",
+			"hash": "JjKEkeGQkPrzzRkmpVQuj6z1aMhltT5J10Km9AVt+4I=",
+			"size": 21700
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/DoubleSliderWidget.java",
+			"hash": "7VO4BhwoxKgBNS3uf5wAfgU2/xWMNYXfe/uUmFYwRmU=",
+			"size": 2366
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/DropdownTextField.java",
+			"hash": "d4wVJjG5h72wGL7alkeNMysUjWplOXA1b7bJmOWcN7Q=",
+			"size": 10387
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/EnumWidget.java",
+			"hash": "+427j51TZQei/gdgW4F7PX4ACcPfWF873S466y3p9nA=",
+			"size": 13773
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/IntSliderWidget.java",
+			"hash": "JAC5nceeX0AYTeMU2SaJBbTGMlsXX6yqLgAlJFuDtL8=",
+			"size": 2196
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/KeybindWidget.java",
+			"hash": "gJronzJxIyd0bAMtPFzqc0QNKGIJLWcQhmZygGDy9YM=",
+			"size": 4489
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/RegistryListSettingWidget.java",
+			"hash": "5LSKvoWLHow15KbgFou0gkwYaB/UfLNtFkR3zV0O47M=",
+			"size": 892
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/SettingWidget.java",
+			"hash": "T7Uclzx/z/fbg97/g5rV1nAmA6uD6ItYraHF8K4D2hQ=",
+			"size": 484
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/StringListSettingWidget.java",
+			"hash": "+xG9fbly/GN3CckW3Jcx8Npp89rV9Ptraiv+GpCDbTQ=",
+			"size": 886
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/dropdown/widget/StringWidget.java",
+			"hash": "ZOyt28xPPiri7CFr0wLjzzfmk7PVdJQFJhMquK9PrGg=",
+			"size": 4267
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/hudeditor/HudEditorScreen.java",
+			"hash": "0t5RIwdRybWd8hWB2n/g6rPwyz1ERmjDCIE/+oDXBxs=",
+			"size": 28997
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/hudeditor/HudLayoutHelper.java",
+			"hash": "RfMZazDXrL+kZc7AlXnsEkZhxchRY3NXfSGPEUXiTQ0=",
+			"size": 3398
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/control/UiScrollBar.java",
+			"hash": "NSIWskaym5vbqFCy+WlWEca3H6ml6qArMgL8l5y8/Ss=",
+			"size": 6070
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/control/UiTextField.java",
+			"hash": "6QzATddnPd8Qj4mQfvzWlpsII/nfgvqwAHGmX1yM6lQ=",
+			"size": 7883
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/render/LuminUiRenderer.java",
+			"hash": "dWG9ssRrwvilrDU/DjzrLOWTnY8qRwT2FswOBOB7TQ8=",
+			"size": 28286
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/render/UiContentBuffer.java",
+			"hash": "D8iQqxuqsRbtvdqLGNBTuxBSAcmOLB56IBjKUCPegk0=",
+			"size": 5113
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/render/UiRenderBatch.java",
+			"hash": "pvnNgo+pvVi6z8klKB+xxd1RKzTsFCWjmMkAbCMncyM=",
+			"size": 3260
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/scene/UiLayer.java",
+			"hash": "BoAtMGRd0G6J+/eNSuQdK3eC8hxkJ3Bwi/I9j+4En8w=",
+			"size": 536
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/scene/UiLayerStack.java",
+			"hash": "jWzfbO41R/J8ymJN2lMS0FUbf53CcmTgaW3/2hi+JL0=",
+			"size": 773
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/scene/UiScene.java",
+			"hash": "ORyDKUGYMy2loIilZaRItN/me0Q7fwagwK4kGHmiPio=",
+			"size": 2166
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/state/UiInvalidationState.java",
+			"hash": "F4H+eDxuTILFlsY+yzRBqDsSS9ZmISHg9qborsxlmos=",
+			"size": 1881
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/UiRect.java",
+			"hash": "TSlxFFOWwAZB6PM8C4m9rtt/43xogtBYi12K5XsieHY=",
+			"size": 2040
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/UiTextMetrics.java",
+			"hash": "wNRBoLjI4cl8H+8lPwhe0NhTvTNfzl8ZB4O8kIExKZE=",
+			"size": 540
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/UiTheme.java",
+			"hash": "T32ACtCPfpe0j3pM8n4YX18n8MWBLWMv7a6DzgCrGqc=",
+			"size": 1273
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/lib/UiTree.java",
+			"hash": "vAV98HIcv+3Pb66sSnItQWwgT6gyYpN81c0gieVHWxM=",
+			"size": 64582
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/adapter/ModuleViewModel.java",
+			"hash": "iehplTVOQMAAWy0Wx8VTECWK5GGtw8CWWh8RTNC+Tyc=",
+			"size": 755
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/adapter/SettingListController.java",
+			"hash": "wZZxzPQHLwVXmqJMJZAHj1/AMamqmwVfkV1DkDcAbJk=",
+			"size": 25986
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/adapter/SettingViewFactory.java",
+			"hash": "zASujm/RQmI5AMFakH7gJ0M//pXqkN9wIRL4o1xt+ts=",
+			"size": 1314
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/ModuleRow.java",
+			"hash": "/PyWk8CPNAl2cEe1a2FO6rh4vV/+soCaq8wBGNQe4VA=",
+			"size": 5470
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/PanelElements.java",
+			"hash": "1j7LOXFk5B6+KH7JGLPPdAXOaEnoDMnGyhIMnSfbf6I=",
+			"size": 4844
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/BoolSettingRow.java",
+			"hash": "d6EzLfngLnPI2YXD94KBvo4mhTu4Msg8djT6DGjItIU=",
+			"size": 3282
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/ButtonSettingRow.java",
+			"hash": "W7AcEg8rMzdmNjNzdPsXmMoCJlLjRNQ32qQwTL+zQaI=",
+			"size": 2019
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/ColorSettingRow.java",
+			"hash": "d+SLUkBXJqT2PgMO0D4i9ABzcu7z/QfLvgMlRh4qeWk=",
+			"size": 2216
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/DoubleSettingRow.java",
+			"hash": "Cq6zMOWk5Nkf0kt2ux4K64RNyPjDPCa7P2ZUlJIq864=",
+			"size": 13021
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/EnumSettingRow.java",
+			"hash": "vDxGEU50ha9wjpqgmEm9WHsUVZalp+G2oylN/GSTqHc=",
+			"size": 3390
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/IntSettingRow.java",
+			"hash": "+cX/ksRIuhPnA1Vs4/hxO3TrPsHYPiLFVfqhFMfGYyY=",
+			"size": 12689
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/KeybindSettingRow.java",
+			"hash": "ZCc0+4GeColc8wTc3ZqTduxxyYjkvLFH/Lrowpg1RWY=",
+			"size": 4918
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/LabelBadges.java",
+			"hash": "Y+wMgBlxMRxRohmq4atH1887jqpbYk41l7wH+f9Nd04=",
+			"size": 1810
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/RegistryListSettingRow.java",
+			"hash": "V7n7zW+FmEgNYdOC39djokSp6gx9dxZPavCeuvn9PRU=",
+			"size": 2231
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/StringListSettingRow.java",
+			"hash": "VI/Y4AKxn+bGBetmDa+GX2j2Xg+JndKQtEM0VcB6xPE=",
+			"size": 2212
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/setting/StringSettingRow.java",
+			"hash": "qpNaQ5em9KtMGNmTzH8UCEGgh2K+Xet498C6e9gayhs=",
+			"size": 15494
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/component/SettingRow.java",
+			"hash": "Rz1TAMJ2j168pB13sWrLjwvikK4XwnlP4eOUKDXd5/Y=",
+			"size": 1949
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/input/PanelInputRouter.java",
+			"hash": "+46qw7eZOkowqFC1OSG3upEouPSK9nKnTIparCzxoVY=",
+			"size": 3694
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/PanelDirtyState.java",
+			"hash": "kiylIR8GNFFma32gDEyr3vIZpL4e+pbG22o1JdnhLqY=",
+			"size": 1872
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/PanelLayout.java",
+			"hash": "CGFOMUYZ/otXEHRrS6Sjl5Z/lOcLn+owB5vzPat6/ng=",
+			"size": 1613
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/PanelScreen.java",
+			"hash": "n/0JGhtOBO5YZW4O6fvVXA39qBefam7nIXR988t1DkU=",
+			"size": 17183
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/PanelState.java",
+			"hash": "Yb+FYLRfooACPmZHjjOH9hgBNWnSfgRfeUdVG+WqhW8=",
+			"size": 9597
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/ColorPickerPopup.java",
+			"hash": "zHgup6vhVLoK2oZVYkRlIOWw5zY/MfgQwxFiAKK61sA=",
+			"size": 20353
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/ConfirmActionPopup.java",
+			"hash": "/nmDaeHsWqmy4Rqmim/PJd6LR9lkB4hca/VSjX7bsrk=",
+			"size": 6466
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/EnumSelectPopup.java",
+			"hash": "5teVQLuvD+Ms8lChPofViv67fcMTJfZTBlFL71peCTk=",
+			"size": 9404
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/MessagePopup.java",
+			"hash": "n6CSAcAoy2MR91/AtG146Q0i4tOpV7jrmWZfi+ml8Nc=",
+			"size": 4728
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/PanelPopupHost.java",
+			"hash": "i2/83ILAbNYEnFhNEYuduXqvDumjVLttcqybJEG0siU=",
+			"size": 8143
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/RegistryListSelectPopup.java",
+			"hash": "A7EMj1RYyUWk6f51f+t67srEdHK8Xjbb58cuFNkyNgk=",
+			"size": 35297
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/popup/StringListSelectPopup.java",
+			"hash": "N13RKKp3fMXdW2CY8KxLomQwdZ+6i8Svcz5W6S3uJgQ=",
+			"size": 14521
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/utils/IMEFocusHelper.java",
+			"hash": "8QYlNfl94FV5UGJq3YdIPrUq0W/5QHtOaizvbwWiv6E=",
+			"size": 2823
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/utils/ScrollBarDragState.java",
+			"hash": "B7iiNOoFiIIGqOZ+j//GpdD1HOt/EulUEF+aA8NeSvE=",
+			"size": 1250
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/utils/ScrollBarUtils.java",
+			"hash": "6nE2tN1LcyaXgiGi/A+VJyTnVtOgNGouS32p4B+MVrg=",
+			"size": 2316
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/CategoryRailPanel.java",
+			"hash": "QZpISWRz1nLBz5QXFyceiMciV7ZFR9rQhzR94B31/Ks=",
+			"size": 18418
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/ClientSettingPanel.java",
+			"hash": "KST6DGck4TYGvIdfceSQVDOnewGHYsiqJy/in3sz/jI=",
+			"size": 10233
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/ModuleDetailPanel.java",
+			"hash": "fZczSSF8S84JCqqY/p3i07Seqx8g2wuSHnZaBsOLcBE=",
+			"size": 25840
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/ModuleListPanel.java",
+			"hash": "r70LBKXzckDCixaxh/DaK3NBoDlvkJ0yWDtkCaz+em0=",
+			"size": 19051
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/settings/ClientSettingTabView.java",
+			"hash": "i1OjqEesfTVuVQ/dAeLAjRJcLk2KHaIolsFFw0PFzQc=",
+			"size": 1242
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/settings/ClientSettingTextField.java",
+			"hash": "8ai3Wl+gjKvUhiPtSlQW08W8//T9jpW6opwhhCsiAEY=",
+			"size": 7187
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/settings/ConfigClientSettingTab.java",
+			"hash": "q128dg+BDT5UX8SEdEkTBw60M7zllDhaKLe3GlqFnHE=",
+			"size": 29918
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/settings/FriendClientSettingTab.java",
+			"hash": "1ebpCaasAvp9kKuXEmdG5hld6pUzlQGHwPCthTYSz3Q=",
+			"size": 15130
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/settings/GeneralClientSettingTab.java",
+			"hash": "a3l81n1fyZbnb3RMXYuX9T/Qj+vPEv7WP/zusEck31I=",
+			"size": 13115
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/panel/view/TopBarPanel.java",
+			"hash": "M82AGeFvvN/lFHbgqWNyTOCOyo4US7JUlbPDSwBLUV8=",
+			"size": 621
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/accounts/AccountRow.java",
+			"hash": "ooDZ8pL/Xcy/2yPYHGaXDQLxq1EIseK9b3IIh58QB2Q=",
+			"size": 8738
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/accounts/AccountSortButton.java",
+			"hash": "qJ7YmG9/mERJzhGx9Ya0M4DjO/tec3j9X9/XmTCc59Q=",
+			"size": 2509
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/accounts/AccountSortMode.java",
+			"hash": "+ePuDl62OIqx21OnColUk0tdtIkURFNSaKVM85CWqCM=",
+			"size": 1184
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/accounts/AccountsScreen.java",
+			"hash": "wUBSvW9FsXsY3iA+PUPsM3L46BOA7hWssrm51ZGTGBw=",
+			"size": 30605
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/AssetDownloadScreen.java",
+			"hash": "/SoaHWd5HmtbAw39+do10JwcZ/ayqLPv6oXNh0L/LFE=",
+			"size": 7377
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/ConfirmDialogScreen.java",
+			"hash": "hkOCP9ao64RQHpYv3DwvNfD5vh/pkhdWNfUY4nYRsrg=",
+			"size": 1989
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/EpsilonDialogScreen.java",
+			"hash": "as5nWtriAMTjUbyzomOL3mIENEk/C67e9KTv66nDXcU=",
+			"size": 8195
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/MainMenuScreen.java",
+			"hash": "ZqLArzBxGorBG/PWWAS0cA4U8jQwPlt1PDK11oBwlFc=",
+			"size": 59494
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/PlatformNoticeScreen.java",
+			"hash": "pB0qZBhdS0Bb/izbB3u7QCnyvr0ve29X/71CLwL4Sbg=",
+			"size": 4781
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/screen/WelcomeScreen.java",
+			"hash": "SWeqeUHdOXOsNvq+dmBeA0JR9/QtBAxJnvmAuL3xI/c=",
+			"size": 7552
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/theme/EpsilonUiTheme.java",
+			"hash": "9NpDLQEAVbp1pG2oeWM6ON4qUVCO3JQCLjCzdKig16g=",
+			"size": 3284
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/theme/MD3Theme.java",
+			"hash": "tPwrg8EOjzUyjc3tBcYkPHjQmQdFL8wxhojOXDXc5n4=",
+			"size": 19548
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/gui/utils/RegistryListUi.java",
+			"hash": "E3cxpt2VXgs0FVUdNduK4Qa7Mmx4c8QJJmzKw24Wf4s=",
+			"size": 786
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/interfaces/ChatComponentAccessor.java",
+			"hash": "Re0G7Rh9Hl6h8BTZ066FSybv/DphMDkvNo+V4MIBBJQ=",
+			"size": 363
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/interfaces/ClientboundEntityEventPacketAccessor.java",
+			"hash": "zmE2VsYyYxln1wOQJQiu+oIHKVihkbrYm4tavz4q9ZE=",
+			"size": 130
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/interfaces/EntityRenderStateAccessor.java",
+			"hash": "4TvC1dzT0BZR5yQKdalvIEWREXVzbPzPeM9qOWSYPRQ=",
+			"size": 208
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/interfaces/WalkAnimationStateAccessor.java",
+			"hash": "Qq5Bo+kf5EqXQklqglMw1Dn7UBlrVdaqegyJu54mC3Q=",
+			"size": 164
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/AccountManager.java",
+			"hash": "NYv5TuDJx40oFSgBsBnsvjJH6TDleOZqKBlfuD7p0uY=",
+			"size": 1280
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/AssetManager.java",
+			"hash": "oY4ffr9LGZCI/F7g/jVOiEhhc/GRB1v7SUKD3hCrk3M=",
+			"size": 29398
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/ConfigManager.java",
+			"hash": "8HY6jsk+OfKaPgt+8keo6ZUWcha0oZlZHUDNeYQaTWY=",
+			"size": 39505
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/ExecutorManager.java",
+			"hash": "ANWZhJ1wxsJavZBMY791pcl5uBuJeKMgeJQrGvEuapg=",
+			"size": 767
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/ExtrapolationManager.java",
+			"hash": "XsnwlYBBVcddTTrKbJkAm2tY7/ocjrYcEvSBukKIv+4=",
+			"size": 5324
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/FriendManager.java",
+			"hash": "MKXN9t89mRgmcXItfLgRiASkefyESN4idapCfKy6XVg=",
+			"size": 855
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/HealthManager.java",
+			"hash": "eKzkW9zPAj9e/WCqN1tdHUBRNIyTQVF3ffBknKyKcJw=",
+			"size": 1713
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/HudElementManager.java",
+			"hash": "EwMJySLclVFSsfoUGI3kim8Jl9iDNbuS+2UEqlFn88U=",
+			"size": 2699
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/ModuleManager.java",
+			"hash": "Rhw+/dk4WuhCLaz5UOfbS7J7uOfU5srLrKNVVBtkwog=",
+			"size": 9216
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/network/ClientboundPacketManager.java",
+			"hash": "SGSXRiTT5sJwXC+Jj0e2T/J0+t8Z/8zWnczWQ/iieMc=",
+			"size": 3517
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/network/ServerboundPacketManager.java",
+			"hash": "OMxsZbIy+WEM6KTHrNZ/2NAXXJA7M8wy4rpgIDqFxzE=",
+			"size": 1854
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/NotificationManager.java",
+			"hash": "Npbb0vm7g/7OMKGbLB7m3q5wWAeDIDG5aBBEgbeRrVc=",
+			"size": 9771
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/QQAvatarManager.java",
+			"hash": "2e/qTJ6oWf2tdXfypRurn7e3B05Hjj3GK8MpnB10KFk=",
+			"size": 7034
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/RendererManager.java",
+			"hash": "W9wshPEL1ulkNYqd1RUXywsZRyKfd1mzPOtTyaxPRvg=",
+			"size": 780
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/RenderTargetManager.java",
+			"hash": "IHswH1T9K1xP37PeFXHcsFnA8K6eN1CZo29isVx20WE=",
+			"size": 869
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/rotation/RotationManager.java",
+			"hash": "z5uqFBH/Uykhkoe/KHFovMOYgQyFG1gJTZ5cu+iZuvs=",
+			"size": 11018
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/rotation/SilentRotationManager.java",
+			"hash": "mgum10h/pBHLcqHAYxCGpjAOmOFvxWUlIXpHitO7kzY=",
+			"size": 4306
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/rotation/SnapRotationManager.java",
+			"hash": "wxPaOWjXYw2c3z/8JSsy10oF3X74MIgh8EyAIW3J6K0=",
+			"size": 2043
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/ShaderManager.java",
+			"hash": "MwNvJWtrgry6ud8zeDWU8L7Y3yXCaTjbTWtwsY7g1TA=",
+			"size": 27010
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/SkinManager.java",
+			"hash": "RechgYcdw1sP4OB+2VInM9bcgXMm6JZo0ugbeU/Vi4g=",
+			"size": 1703
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/sound/SoundKey.java",
+			"hash": "0FWR03hekURG60hwojPTUKEBBo5NumHLYAW9BjPO78A=",
+			"size": 690
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/sound/SoundManager.java",
+			"hash": "FaYleeGzb+A2xtN9xnLsSzK9xPK3C+hgRIIXElad/YM=",
+			"size": 2189
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/target/TargetManager.java",
+			"hash": "JnJBYN1mdkwl5g0ccHaxCIucoE4xMS/I9VatWGWV8qk=",
+			"size": 6399
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/target/TargetRequest.java",
+			"hash": "HjqQwuOKzWXJIHWC46TGEN5m+NGqvORGpzgVPa3KwD4=",
+			"size": 2393
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/TimerManager.java",
+			"hash": "MnCjeQi5wFpC6WR7wMvlbnXWkSlB+wzEYr4yZ3fZWwY=",
+			"size": 806
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/TranslationManager.java",
+			"hash": "I2tZu7yygSUdq+QWdaYlQ766MzFNY3EYtAr0J0BZ0tQ=",
+			"size": 876
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/managers/VideoManager.java",
+			"hash": "F89C+hw0rx8gPrvj/XfHzEwrk5miervSriuQyy6KeiI=",
+			"size": 877
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinAbstractSignRenderer.java",
+			"hash": "FtnHIR20YDFEQW7fQ9THvJ8YWF1dXX+1HbRCs3ehPMk=",
+			"size": 683
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinAddressCheck.java",
+			"hash": "OnksOb0OQK00Iu0jz7Xrq61+mVmXFnWRNzmc76JFPEA=",
+			"size": 651
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinAvatar.java",
+			"hash": "GiqJFJvgLU70NjlBxOpN3ZC1R8v7vqFfcZCrrgKsgIM=",
+			"size": 1151
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinAvatarRenderer.java",
+			"hash": "HEzxNoCrzqCW6bcRqBdZVDqk6zG3cLbvtW/wN2PycAU=",
+			"size": 3358
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBannerRenderer.java",
+			"hash": "I30Epewe8OK//YdCbfhllTxHuImBQZ3QnsK82X+llSE=",
+			"size": 1250
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBeaconRenderer.java",
+			"hash": "COX2p/izXa0giErmexRAb05XaKL9dFA/e8fUzyXBiS4=",
+			"size": 1173
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBlock.java",
+			"hash": "XKO6RrLhS0eROSVPM3Nik4mN9bOoWmW+LqDUGDPPWWY=",
+			"size": 911
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBlockCollisions.java",
+			"hash": "27rFHbVT2MNUhy+5dL4m2hs6YFmu9VPxXu59X4iHb7w=",
+			"size": 1131
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBlockItem.java",
+			"hash": "bI65M/Kff1G907hL7luusnDAM/VfhtnkQXNJuUQKrT8=",
+			"size": 1973
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinBossHealthOverlay.java",
+			"hash": "W52y/5iXtU1u/b5w0Y8aoi7aiYxLLG8m0rmKP/zsihk=",
+			"size": 690
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinCamera.java",
+			"hash": "H5wQt4nawxq9f8FPBX98yen2eYwu5YC5nS9KDzrwB+o=",
+			"size": 5881
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinChatComponent.java",
+			"hash": "g+32XzEscLibW5Gzo0DWCdasjAFgIi1TuCj7NqqLmFk=",
+			"size": 2061
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinChatComponentHash.java",
+			"hash": "qSUYxmV2bg9jlfBoqssqGKIJA5nN4uJyCcUC0oIA4aY=",
+			"size": 6638
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinChatScreen.java",
+			"hash": "Ku1Q5C2MmVzmCEPXQCfxkUdM5K3YULe/hMJ3cRGaTac=",
+			"size": 900
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinChestRenderer.java",
+			"hash": "cL6ZQF5dbVMOG6xe+CGwATDo2W/OZ4udQVPTGWMIasU=",
+			"size": 2849
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinChunkBorderRenderer.java",
+			"hash": "4if4I7DALd9s80DGUdh2sXoZEYmDRcEmwpqC3PCZcb8=",
+			"size": 1438
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinClientboundEntityEventPacket.java",
+			"hash": "OkBUJXPKalGwQySOwWY/2DJsumYtTzi4onaocWIJvXE=",
+			"size": 515
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinClientBrandRetriever.java",
+			"hash": "AZoF2dMW/+vzsKq89mJtmKgQV5bf5NJaXTMUIGypbz8=",
+			"size": 707
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinClientClockInstance.java",
+			"hash": "vKf1tc+MdcAbnDYPViwaUH7d2gIH/C/9AqNkB/gvxLs=",
+			"size": 1571
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinClientLevel.java",
+			"hash": "Sz7fJoXU9WrxXvQdMniRPHeW5kXQnfjc9hmjnR/WS7c=",
+			"size": 1966
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinClientPacketListener.java",
+			"hash": "EsTyeh3iWDKLvSUwaP3dTEH8rlijCzYsy3e9JIVhSk4=",
+			"size": 5615
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinCompassAngleState.java",
+			"hash": "1Tp4ToG0sLF0v/M5OFhKdGLvm3YcfbSgrIYYdrhymww=",
+			"size": 1627
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinConnection.java",
+			"hash": "7G2BwMEtwGj0CAfshCHPwYbZ2twXPsUpLl39aYGbS24=",
+			"size": 2855
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinDataComponentInitializerEntry.java",
+			"hash": "bW7CfCZ5ztC6Fzz9id40Q1bM/laE/BIe6C6JmGPMmfQ=",
+			"size": 1339
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinDeltaTrackerTimer.java",
+			"hash": "EiqPLMcVscclUW/OH6JguZgtB0mXUfIT8FNnyCN8cno=",
+			"size": 851
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinDynamicUniforms.java",
+			"hash": "cxELK0E7FU73sppGRhCOfwhil2bv3HAqVHLOrk1/YKw=",
+			"size": 836
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEnchantTableRenderer.java",
+			"hash": "m5THvj4ow1as5Ho8hLhaXDfipAYtL0MLrZ4N1JRsGIE=",
+			"size": 1595
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEntity.java",
+			"hash": "MSMgM+hOqDZUfN+ut985qHJ231CIZTP4bEreNe+ZruU=",
+			"size": 2876
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEntityHitboxDebugRenderer.java",
+			"hash": "Onrx3bv2L+GhOJsdqTjFkbs+4iZ5oYx9zkRLAXMofEo=",
+			"size": 829
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEntityRenderDispatcher.java",
+			"hash": "CJk2KJqg0XnW5nnrQHZzzWQwfZICzWgoIWtfNl+gXj4=",
+			"size": 2297
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEntityRenderer.java",
+			"hash": "vTl1HLwvhl8xQ+sK8mixbtW+RxkMdpxfPxoUtBysakw=",
+			"size": 3447
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinEntityRenderState.java",
+			"hash": "STk5PNO/o6A8C3cZDXOE/tvQQDZTRL5rr/J2PAc4jB8=",
+			"size": 657
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFireworkParticlesStarter.java",
+			"hash": "KeBFIT6oq3IKUK6c0ibnM1UR+uxwo01bHEjta2yXXvA=",
+			"size": 975
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFireworkRocketEntity.java",
+			"hash": "AVY9KnLslCxVRz+pRgT+9hRiDuAK5nxMwO0aDYEy01M=",
+			"size": 1212
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFireworksSparkParticleSub.java",
+			"hash": "5AUIEj5Zn5r84iUkcqFQ2QupTLV76Y9H7lbWsGJviRs=",
+			"size": 947
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFirstPersonHandsAndItems.java",
+			"hash": "vQjA2PB/XY7Pq8CYS3RkeFrhKBBKegErIp2C7XWVbz8=",
+			"size": 1354
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFlowingFluid.java",
+			"hash": "Szw4Z9mSFZf6wkaN+zDyYcV+7Xg1kngjdUAj8za8zaQ=",
+			"size": 966
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFogRenderer.java",
+			"hash": "gmn/zPG0Wa8ejp26rUIFIbVD4zOJ44+TeZ5udQrLPn8=",
+			"size": 1562
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinFont.java",
+			"hash": "RRyLfDMGUDjEnDTExpn8X5OmNdhAPNrpn/UoOwYlLRw=",
+			"size": 2971
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGameRenderer.java",
+			"hash": "KoZiW3ZXuKjRc4PaGA319pLQOGSNA55nmULqQn/bBsk=",
+			"size": 4137
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGlDebug.java",
+			"hash": "GlNqPhaxsVr1SmnXML28RcJfvwfxdV3vHBECEHhhBjg=",
+			"size": 863
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGlyphRenderState.java",
+			"hash": "BhViX9MwT61y+t5eLxG6VU3Te9TV6crxDr6R/XooVHE=",
+			"size": 1026
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGuiManager.java",
+			"hash": "tRvIPvktOdzttjGyqi02O6dHAOu2qKh+qJvtUJ5GYS8=",
+			"size": 785
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGuiRenderer.java",
+			"hash": "zk46q/SuTWpgeBJDFH9EP95g8B6DmesGcTEKFEnPX3Q=",
+			"size": 3205
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinGustSeedParticle.java",
+			"hash": "KVH2hxr7EVkTdjgZShpP7AErA3GrNQ9WdwvEO29mNdc=",
+			"size": 915
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinHud.java",
+			"hash": "Frt2udHkCrZ46VTUu9wMcugnAKHNyhwhPlFTs8bhzpQ=",
+			"size": 6251
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinHumanoidArmorLayer.java",
+			"hash": "2bUYE+tmaKkfu5qTwj0HXccZElmvCfp2fZ81Uz1f7IQ=",
+			"size": 1387
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinHumanoidMobRenderer.java",
+			"hash": "l1vX3cS1aSHtQ6DHk5zMuAEFcYwXw+p97RNfyTLv63U=",
+			"size": 1117
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinInventoryScreen.java",
+			"hash": "u61ZXaOXF5XNS9GZaFHDwlxBoomtpP2J/hQ+5Pg0vh4=",
+			"size": 2334
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinItem.java",
+			"hash": "+MeecMDgmr2FCVMTyvooE7dzw3/BvWOAZROKvDjmPcw=",
+			"size": 1077
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinItemEntityRenderer.java",
+			"hash": "R7d4QOPn6PqjEFmx+T/ODH8AjTqP+tkFS5EldAVFEFI=",
+			"size": 3598
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinItemFeatureRenderer.java",
+			"hash": "VzgLU22jk9mdZ8WkTeTFsPOG311H/nqUynR/itjYNjo=",
+			"size": 1119
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinItemInHandRenderer.java",
+			"hash": "yVyMXNNya1nqXG3tvg0NoF7YAjLrK/ZUViYIGsmiZqE=",
+			"size": 8747
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinKeyboardHandler.java",
+			"hash": "xwySFZaksmYdHRyv90bvnlbOaz7mbXNzGZ0quRFMVj4=",
+			"size": 835
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinKeyboardInput.java",
+			"hash": "4xqkrOFhAsI9mUHg0piPXfWCgmEgzjXNkUrW+1X0F9I=",
+			"size": 1239
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLevelExtractor.java",
+			"hash": "cY1/J7qVPVmgLjyf83fJo2iYDyvE2M+XdthbfbsVGak=",
+			"size": 2689
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLevelRenderer.java",
+			"hash": "0Jy48VZwVrpHvkLnSHYBz171ACc7mIc+CJctjaUS3xQ=",
+			"size": 6734
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLightmap.java",
+			"hash": "8pYj9uJWQp0EDmOJrQaO1VCA9PjUy5wG+3Lm6SeOpZg=",
+			"size": 1574
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLivingEntity.java",
+			"hash": "SzB3ULJv2Hm5fhrXW8qPLGxi+JL/HQhuhGEcGXBNUM4=",
+			"size": 5882
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLivingEntityRenderer.java",
+			"hash": "e8GCmUJ5/a7xf5xr/9ikiW3YpV27Nq7YxSAGMi+a+iU=",
+			"size": 3231
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinLocalPlayer.java",
+			"hash": "2ARFB3pv/dnOqHM+PRlm1Hu5TS74Q8Oi16NMfOrWK1c=",
+			"size": 6933
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinMapRenderer.java",
+			"hash": "m32MBClOjPoKHJNFlFs1N3Q64SLF0J02Me9t6CVfdbg=",
+			"size": 1524
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinMinecraft.java",
+			"hash": "5yIJH1h3j7RAJkljPCfyqBr2kE1KqKRBder9MPLazrE=",
+			"size": 8978
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinMouseHandler.java",
+			"hash": "J0i8FA8D9/lQWY67G9j5CHjgHSbf45CvbPdwF1Pa3Co=",
+			"size": 1279
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinMultiPlayerGameMode.java",
+			"hash": "b+JxNk0hlX7Vk0J9x1hcPY3kDGOymWptUSqi9+IF5Ds=",
+			"size": 4955
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinOptions.java",
+			"hash": "KKYGDwXRDCndbR0kjWs1hFsbZxuHzwkoqlFhyCP6jnw=",
+			"size": 1871
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinParticleManager.java",
+			"hash": "UM59Ok2y88mSEqWImq36DAZIiEv6jj+lNjRIpGhd/4A=",
+			"size": 2105
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinPlayer.java",
+			"hash": "bPd3WdsTsAveL1ux6Vlzec1TY8X10Yt8USjbltyaYoo=",
+			"size": 2401
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinProjection.java",
+			"hash": "DpgC6eQSbfLQr1ww6iEhimka/8UXV+OGnp3BIg1vwr4=",
+			"size": 1148
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinScreen.java",
+			"hash": "Nb4kQMyGf0NgA6ZsccrxwC1j0HMjtAvn5b0uY8U5Y5Q=",
+			"size": 4925
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinScreenEffectRenderer.java",
+			"hash": "n5NJLE043rynbYjKfZjehtsBEbgwRFvERPZtFV81psY=",
+			"size": 2608
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinSpawnerRenderer.java",
+			"hash": "/JPuNbAGJnrxFzcd5rQXJgwg2i0EfelhhrzNnIbT7hw=",
+			"size": 1200
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinSubmitNodeCollection.java",
+			"hash": "/sjEeLDEHTzILvaD8E38g0jhcHRnQBYmPWHqCxwZouc=",
+			"size": 3012
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinTitleScreen.java",
+			"hash": "SE5twDuuRFU4OPtKmkEzd3E3pKea3xubKEUJnyVP/7s=",
+			"size": 1234
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinVisGraph.java",
+			"hash": "QvWcxUIgaXdB+ndBYbKB/fQTYFQLOgKbifMOWqO6sk4=",
+			"size": 798
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinWalkAnimationState.java",
+			"hash": "ie843VG3PjOCj7NYcba0WU2C8KWcgLfxoBLdNBt0ucg=",
+			"size": 783
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinWebBlock.java",
+			"hash": "RHFs1L4db1EmT+4op+V4/NuXI+fmurUvrrQQx9VdGTQ=",
+			"size": 1052
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/mixins/MixinWindow.java",
+			"hash": "Yc1tCKWaEN0vG1vQ0eLvLlWNQYNtwK6fry34q9/WISQ=",
+			"size": 2534
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/Category.java",
+			"hash": "MTvvdNsLmXtuyO2Y52GXWVZfYpytZH6Mbml8u/KiuGk=",
+			"size": 877
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/ClientSetting.java",
+			"hash": "hNRj6ztznt/p/xxdswDsRkRet77e/MEOwD2ewaqcxRo=",
+			"size": 11434
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AimBot.java",
+			"hash": "zslSolWo7d2HWVRZeQ3HNDaopjQkxgeCG44UOx4MKQc=",
+			"size": 11188
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AnchorBlast.java",
+			"hash": "gpcOCcXGln05Q/emL8Uj/r7mhBAfZaAQ5iweZe6MNwY=",
+			"size": 6318
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AntiBot.java",
+			"hash": "qW9Of+wkz0fTQO8OA5XcGfGYhme5X+GF5fSj3LazdSI=",
+			"size": 501
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoClicker.java",
+			"hash": "ssLnLR2A3Wa8tciL5mrs0tyvI5gSVA744mVcaYJyCps=",
+			"size": 9724
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoDtap.java",
+			"hash": "7E6rFyauxw+Bafz6yfRfM0zmOXaPE3EWuOnpMxTvPUQ=",
+			"size": 5623
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoHitCrystal.java",
+			"hash": "JifTHt/ss7AKZb6JQj0k5oBktKHQsyoYTPQWwPgI0sw=",
+			"size": 10846
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoMend.java",
+			"hash": "qw14Xl1q/KM7KjHeUcSbbzQGDCeevUlXFJI2YYErp3Q=",
+			"size": 2100
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoThrow.java",
+			"hash": "vz6CB+vaw6XvaGENQ1z04Te18Jb/Ehdz9+mPV55DSfk=",
+			"size": 13228
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoTotem.java",
+			"hash": "vAwU1sqFhOInHfyU79hGFkLqHqmtL9LblFnPcG3MnbM=",
+			"size": 2792
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/AutoWeapon.java",
+			"hash": "IljHaPqJZMRw/QTjDOM1ZimsvoMy8YRn8S03C1MqB2I=",
+			"size": 16519
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/Backtrack.java",
+			"hash": "CUIS4B6o/z+szwP+y0TqQfoICXo610y5T01sOgTEO80=",
+			"size": 18972
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/Criticals.java",
+			"hash": "NP1mtGACKo/I3KzhLbOfEpt8Nnk5v7jf8v5yfnoeIzw=",
+			"size": 2249
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/CrystalAura.java",
+			"hash": "cKkuCawnaqTznxrGGqcSZY5h0/CWmavBhWkmLZLCMPo=",
+			"size": 10019
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/CrystalBlocker.java",
+			"hash": "G8IUrFIIH+Lp8PKw+tm+pDz73ChoQcDfRmmMIqvbN7A=",
+			"size": 7226
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/DoubleAnchor.java",
+			"hash": "36Hspz0vRn1oitE5Q003Cm6PWYi3zu51uskkXISgMac=",
+			"size": 7744
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/behavior/ElytraCombatBehavior.java",
+			"hash": "SpalKPpKT2AZOXLg+PtAr7J4+T3OvZgdQlnE5sWxOs0=",
+			"size": 1540
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/behavior/FollowBehavior.java",
+			"hash": "4C0dcjT9toFWi7IGsgvDr+aGPr9Ky2GPbn7/1sVt49I=",
+			"size": 2070
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/behavior/MaceBehavior.java",
+			"hash": "ofQ+w7tJ989oPBqQO/E8OEne42PnheKOGBW721ETh7g=",
+			"size": 11857
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/behavior/SpearBehavior.java",
+			"hash": "eahuyzUr6gz5S37QFNHYypW+oYt8odYASfiaxxl04Cg=",
+			"size": 8910
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/combat/CombatHitTracker.java",
+			"hash": "vDzYDFMCd63TGGkSFs+vz+ajMrpVoO/zJH0O856dEkI=",
+			"size": 3148
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/combat/CombatWeaponController.java",
+			"hash": "vI37AFiyh+XwYr4/elS23U0dx/rIIfGoaBMvi1i1+0Q=",
+			"size": 7426
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/ElytraCombat.java",
+			"hash": "JdkDrwpOwz5YtFpi6vmmnL8OkvpSOjO5nNRzFWTueOo=",
+			"size": 25242
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/ElytraCombatInput.java",
+			"hash": "KudL18451QfVsE7Nas/7d+5WJcYeic9nzuJaEWl0NVc=",
+			"size": 1036
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/ElytraCombatMode.java",
+			"hash": "o3dxLaJd0jyaxEk0pEIqQ5VmODlN8kPD35oaONPgxW8=",
+			"size": 408
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/ElytraDirectionSolver.java",
+			"hash": "R2bPE7t4koRDSWk1CFtNKZ5qWzyuVoTRQQAuX9HRGiw=",
+			"size": 9540
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/ElytraMotionPredictor.java",
+			"hash": "fJ3Le/jqtsw3fAnTPZobM69eVDQaGsWrdsfl95BNLuY=",
+			"size": 2743
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/FlightIntent.java",
+			"hash": "eFvstX8GokrUDnUOB8nf3Uo+SL6ZZy2EurwoeGZh/+0=",
+			"size": 760
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/FlightIntentPlanner.java",
+			"hash": "jYikH/YU8/lhKuzLazsLYUb3nX/0rtzS8g+VV0fvhXU=",
+			"size": 4986
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/FlightPlanConfig.java",
+			"hash": "u9GzSKq49zprmf42PvVwFjOKMB6PoycZ1/vDLSo7Dv4=",
+			"size": 282
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/flight/LocalFlightAvoidance.java",
+			"hash": "JAHlfRry1m6Aeuis5D7cG8LxASL5dnM8uirrHURSPsc=",
+			"size": 4542
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/path/AStarSearch.java",
+			"hash": "rG1RkigZXcVATiS5IdlAgEYfgLr+MiD7coIoh9ZxDRI=",
+			"size": 7913
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/path/ElytraPathNavigator.java",
+			"hash": "n5yIE0TT7oxw2AeS/beJcsJLLBvhKtP8A8g4G9Ckh7k=",
+			"size": 29754
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/path/PathConfig.java",
+			"hash": "miuFOHivRQsPm5b/6DtTb4U1Jum7iTw44ye2IUZzdN8=",
+			"size": 355
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/path/PathPlan.java",
+			"hash": "VWwn3nM18GHK+EKCCWkIU6mMMUHzPhkKmtMW1aAybBE=",
+			"size": 397
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/path/VoxelCollisionCache.java",
+			"hash": "ESBSYcOuCEDnCJeW5P7DZ6JZd/gMJ0cxUU+TzfduECc=",
+			"size": 12196
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/target/PredictorMode.java",
+			"hash": "PuiB2suoDAEpHhG7foHfSAPF/LBzBYO3VRkvgc3M+Pw=",
+			"size": 397
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/target/TargetAction.java",
+			"hash": "M4zAdKWg6VknLq6OOGaMcnfANPv6bwauUMIqqsqia1w=",
+			"size": 543
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/target/TargetMotionTracker.java",
+			"hash": "G/uHou0o0wxaNsbW/SHWjtSylVGzrzR9XrXHxTKto3A=",
+			"size": 11692
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/elytra_combat/target/TargetSnapshot.java",
+			"hash": "zqmCe3hBLkfmP0yGu2Bht+raeebCx3L0ya1YZ+vCGp0=",
+			"size": 656
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/FeetTrap.java",
+			"hash": "OT7I+0c8dqc2ojlYNlReXQUud0LCEwJa/Ma2Xytee1M=",
+			"size": 9866
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/HoverTotem.java",
+			"hash": "OEg7iZvm14YCOmbgbzW6KfvrAtRIzImnkoQsYHbN1b8=",
+			"size": 3680
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/KeyPearl.java",
+			"hash": "xJdYso4sntaVFFfoGaRobeTUo6MpkCRJtPq600q8kfk=",
+			"size": 5190
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/KillAura.java",
+			"hash": "eHFgh80bsnoDQIcRy3qXwu54zCr/w7tKAsIq1+qiZLU=",
+			"size": 17595
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/MaceAura.java",
+			"hash": "sZruzW9SugZl64V9YZ42zRcZMiEIweNscc3WDGPmdNM=",
+			"size": 7445
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/MultiAura.java",
+			"hash": "9/Se2IZBLkEJt6ca39gnuYIRqJpy9bZs+IECKNiRY5U=",
+			"size": 3382
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/PacketMine.java",
+			"hash": "agisK4UT19Nj+Fx4b8IjnOsEUoHuIK+mxbTXaQLTfrA=",
+			"size": 28546
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/SafeAnchor.java",
+			"hash": "BaKybI7NICEIdCLTAQhWaVPe4v/6qByW79CLX5fQSE4=",
+			"size": 43800
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/SafeCrystal.java",
+			"hash": "nH5TdsbqcoLiI03nYFqLXu5j5kobtE+FrP6idDnMznY=",
+			"size": 4633
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/SilentAim.java",
+			"hash": "3lsYl5Hnb7FFUq/xvRXLNsDb59nkUVqIKTZCTep02Fk=",
+			"size": 3560
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/SpearKill.java",
+			"hash": "+2mpTZ26PGu2INuPMLLieeX3ifdeblshYdRUQfwjxXk=",
+			"size": 8832
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/TriggerBot.java",
+			"hash": "Y/5TNcXZvSTWeMkCNmpRXvE3JDbTSlcQvQ4Qq9es/Q0=",
+			"size": 6592
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/combat/ZealotCrystalPlus.java",
+			"hash": "t9IuKtRAqnt0xE7w7AYVOyMN8FvI8hIJIPqGnNNbkP0=",
+			"size": 89954
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/AutoMap.java",
+			"hash": "Iag3HG1CyGvVjCbzRvmCgUTIprgZYaN5wDsaEEp2FLM=",
+			"size": 11332
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/AutoSprint.java",
+			"hash": "pUd1Wkszgh+hPy1cKGSJX9uv1MhN1QFn9OJ8ZF+3u34=",
+			"size": 1120
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Blink.java",
+			"hash": "+gC/fyhsoBpQcxszAUf0jjHYcEO3REJ8foACRS6IcsE=",
+			"size": 7090
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Dolphin.java",
+			"hash": "/WN4lPivScSdgyLIEjvvsoXul+91SMpQcajdfPFmm6A=",
+			"size": 744
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Eagle.java",
+			"hash": "CdtwPfzQdUwKLW78qkyk9XyPnKL48RWbPr7RtFjLB64=",
+			"size": 5798
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/elytrafly/ControlElytraFlightMode.java",
+			"hash": "5ymsEzqC85pBlTDA89LRhiUpyvaEghe6d4pwCrsttqg=",
+			"size": 7413
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/elytrafly/ElytraFlightMode.java",
+			"hash": "V98aeGsIPIyhrVclnfwji5HFXCSaXwJx/BaafJPL+Qc=",
+			"size": 4757
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/elytrafly/ElytraFlightModes.java",
+			"hash": "QIi7eRyI8KPyNJR745xF3znz2ppPRin+k1/hlPGTXdQ=",
+			"size": 120
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/elytrafly/ElytraFly.java",
+			"hash": "m8rAfGdCCg7/u0ABpZNIqfVeOX4AYeZruXZOi96hbOI=",
+			"size": 7889
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/elytrafly/Pitch40ElytraFlightMode.java",
+			"hash": "A4+u9/GBdEXwLMSGdb8aY/3Y0cKTBXpXzxNOt4/kEgU=",
+			"size": 8227
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/ElytraGrimAccelerate.java",
+			"hash": "LCb34yYlwOWR0AcKOlA/ejflZQJMuR3dq8Ve4EwS5q8=",
+			"size": 11989
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Flight.java",
+			"hash": "/+MgEVv8YIiswXbAcjhANY9afM+O7Z5Ks3rZh8jCimM=",
+			"size": 1268
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/GUIMove.java",
+			"hash": "XgpmT+fDFrETL7PDXTEVd/JKbDW5uSVVyGfhDvOiWQo=",
+			"size": 1798
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/HoleSnap.java",
+			"hash": "lyKrNdf1y13zKSXADSQrTLdLeZRyNDisjHgFYPCNZF0=",
+			"size": 10707
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/JumpReset.java",
+			"hash": "a2I3Z0IoamB0VXp30PgcdzupMj/XCqPQLso5EqFbmVc=",
+			"size": 626
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/KeepSprint.java",
+			"hash": "WUguBAPcLNptHvY0XOKopbT6scldI+oMia+jyfyYkw0=",
+			"size": 1076
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/MovementFix.java",
+			"hash": "IREVLULbKL4roQLzXg2aPoYYXMIspO6CdOw/NWaWPcE=",
+			"size": 2972
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/NoSlowdown.java",
+			"hash": "Xy3ZPfDy6+xLc3kY95Z1i/buw6Z/7t2SbzXMqmz/E4s=",
+			"size": 8224
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Phase.java",
+			"hash": "gfonLs8FqQT9UnhHGxpdkl4FAGC9jVnNHFce3XfBzLM=",
+			"size": 12049
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/ReverseStep.java",
+			"hash": "ewO7Jd1Xq2XHAepjb+C2UZpHlnH3Cz4y+g9/uWlR6WM=",
+			"size": 3154
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/SafeWalk.java",
+			"hash": "EotTGQAFuXleFWVyIc7a+tFHMF9HV/YPQeCSAYmaH3Q=",
+			"size": 6045
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Scaffold.java",
+			"hash": "VfLPepcvrHU3uBGLqkLjS1Gb3+o0aDmUE2qCM8cgpRo=",
+			"size": 25293
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Speed.java",
+			"hash": "Cx/F9ce0Jb7ntWYOXzLZmb0Dah8uRpLacH0NxOMYSX0=",
+			"size": 16936
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Step.java",
+			"hash": "jg2PrSX7pCpHJ2RPASzVNt3G0oEE/pHjQ74U544oSSY=",
+			"size": 5616
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Strafe.java",
+			"hash": "p4x1olFaYj3SxdjtSjmhgVYY2PXBqLL2hGf9naS+6l4=",
+			"size": 1935
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Stuck.java",
+			"hash": "3CuFQDkGJIlzibxojA9q7ENEqD11f2v3DAbCs0WSwIo=",
+			"size": 2460
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/TargetStrafe.java",
+			"hash": "d1XQe2LOcL6q+nU8k13wfvxH8MHENkYH6KfThIRWEPM=",
+			"size": 8857
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/movement/Velocity.java",
+			"hash": "p2wc0S0/iWFQbzbptCDSUiNw8po2cR14pk/ciZeYLAs=",
+			"size": 13335
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoArmor.java",
+			"hash": "ZALs2E9noaag1NRp7t7O26AICP8elv/UGvgyIVnnMx0=",
+			"size": 10134
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoBan.java",
+			"hash": "j44YUMG7lwOH2UTc9sprhDX0tqcH3eqRQbvEiLb+RVA=",
+			"size": 4166
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoFirework.java",
+			"hash": "btrZOz4pw7DCO9/nQO43Ow8kf9gkuZo6DUZK5XV6Q3s=",
+			"size": 3550
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoKouZi.java",
+			"hash": "Enu3ZWBLnB9rKF9ikNE9z5s5rBq4YdOX10ulUh2CDa4=",
+			"size": 7433
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoMLG.java",
+			"hash": "fWQyQVJEI0+shwZ6faEqdZM1C/VNPQQ877fpUVpoFW0=",
+			"size": 14405
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoQueue.java",
+			"hash": "eDA0HrQRWjmTqR9aPx4O+PgpBozn0IaTEQsNt+kiojg=",
+			"size": 2560
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/AutoTool.java",
+			"hash": "ETyWrGNOwIiSDAJSPqfM9aoL+zg1D1zvQA4LEtvrs/0=",
+			"size": 4009
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/BedNuker.java",
+			"hash": "C1O75AiUkFwnnbudOiHwdEvILSO+43k+Y2JE8/HTBPY=",
+			"size": 13309
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/BreakCooldown.java",
+			"hash": "V86eX4T6i/ePJ4LebFc66BjH8BOYVeGEm1lc+RBQWCQ=",
+			"size": 469
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/ChestAura.java",
+			"hash": "0Oi8Bl5WAO2rpPmVfoDVrjx2jcUpXou4VMWrrOFvq6o=",
+			"size": 12384
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/Disabler.java",
+			"hash": "gJd0JjJ4bUoxVKYT9/tEhgzakBhjjQEw1YJbaMx9b7s=",
+			"size": 1794
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/ElytraSwap.java",
+			"hash": "Ax0TDkPCWnhw5ids5jrP6GK3SZl1XboEVLUlKNRdb9M=",
+			"size": 5040
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/FakePlayer.java",
+			"hash": "1w24yiyMHP2pS+T8Z1k872S+GQCsxPAi1fynJ/UpGRU=",
+			"size": 3766
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/GhostHand.java",
+			"hash": "/P9sd/L+jij22lBgf+JoDNse5OJvFeK8Cj+EuZDD/rE=",
+			"size": 2483
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/InputDisabler.java",
+			"hash": "R4JtK5fZFQo7ARvVbn5+up4SrvKQJEZAYQEC740BNhA=",
+			"size": 1777
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/InvManager.java",
+			"hash": "KC/St0CYJ0xfIN3NusvEYXcaI4gVoiaHs6iRoL3AMl0=",
+			"size": 29335
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/JumpCooldown.java",
+			"hash": "6KJCMziccdb9F4q6SAZa9sm80XY1biMo8OOh8HE5zkw=",
+			"size": 464
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/KeyFriend.java",
+			"hash": "/yM/9GpzYxEpIaS1NZeXA6X6Q3h9CUOCnwsKM/jf8iM=",
+			"size": 2585
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/MultiTask.java",
+			"hash": "M2HTOuOA4qGV3klg3tiqnS+abmLaSX1c40ncdM1NkGw=",
+			"size": 321
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/NoFall.java",
+			"hash": "fxCgoKoI1YVYh2LbLwlGd8BPggDGGNgCcQqPer3l3Uo=",
+			"size": 2974
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/NoRotate.java",
+			"hash": "mSc7diDRrtXIxE+cDScPve8PTfX9PN+Xf3TzrhD1dZU=",
+			"size": 316
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/PacketEat.java",
+			"hash": "d2TfTfT6Q2UMZZp4Eh5Qzmzqla9OX4QKY1qq+eDuTCU=",
+			"size": 1292
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/PlayerAlarms.java",
+			"hash": "p3ZnIqA69yU/AdUYEB3SqGQDCKobeDIVMaIBC3O8WMk=",
+			"size": 19233
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/SoundFX.java",
+			"hash": "0cdKuNykNstmhaOgla7SyEfEHHiOkqV+C9/g6kVXNMI=",
+			"size": 2002
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/Stealer.java",
+			"hash": "/olbaxvD9NUDigA142vJrF3Hy/UP+5aO7hkaAqbewG0=",
+			"size": 9566
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/Timer.java",
+			"hash": "A/wOIgEplSiKwAN2KYzGhY6uTZkpbssis0ASgAcL7MM=",
+			"size": 9930
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/player/UseCooldown.java",
+			"hash": "ooG9ExZBhqRkYlWvAA8JWE66pf0lyAQiWVbMGWVywP8=",
+			"size": 459
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/AntiAlias.java",
+			"hash": "XYUfMUKP1act8YFjOVCWSy8jIii5M6c0FYGpUDcGZVM=",
+			"size": 619
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/AspectRatio.java",
+			"hash": "/CJ7+IBs2FVPhI2ctENLBe5mlHnBHi/T0GVejzYwuSs=",
+			"size": 471
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/BetterChat.java",
+			"hash": "8QjYrgNCy7cSBfWSPm3MrDAYpw8WDfZv2yRozyY56fc=",
+			"size": 10747
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/BetterScoreboard.java",
+			"hash": "LevlM/3Rg0KnzCdrRS0wmhcjAbr0m2mZ/fKgQqK/frw=",
+			"size": 4751
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/BlockESP.java",
+			"hash": "7TBCIP5bl/AxKaEDlGCaJieZwFkL2qVhqVAPu8Hmm7o=",
+			"size": 7498
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/BlockHighlight.java",
+			"hash": "uI2QMIAtvfuH8h4pv0Ufg8BIY6VQ3qcWGIYf6eAkMeY=",
+			"size": 3694
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/CameraClip.java",
+			"hash": "oL9wJSUGIdusxFfVeiS7bf5ciqk1tUzOCXgGSyW1NRg=",
+			"size": 2125
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Chams.java",
+			"hash": "/OMu+kztPeH0d5+oSXfmMc2fVXt/3rYnQ9Jb4is2PwA=",
+			"size": 4837
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/CrystalChams.java",
+			"hash": "DysEr0em+iCNKJzGVMzMZ8U0BlMhIWn/f/wKf46Sclw=",
+			"size": 1796
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/CustomSky.java",
+			"hash": "E1DBRwYw7zpgv1o3dVt5U4dgmjZZ2CGtwH7VN0kCZNE=",
+			"size": 1081
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/ESP2D.java",
+			"hash": "yabtIHy6K8dLrIdQlgVqmJbRcF9mmBCjMjWPwb9DssA=",
+			"size": 11178
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Filter.java",
+			"hash": "VvTxXUn848H+Q24HlzlDSK5h+oU29ZACYlZMc/GZWvY=",
+			"size": 1491
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/FreeCamera.java",
+			"hash": "7nFTnn/T9XnFDKF8i3OiOQt8nAfkLMGvPdSC1gxnTyg=",
+			"size": 11475
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Fullbright.java",
+			"hash": "nlOMOun/R4FYXTZNiYNVOza68SY+ixVZPIqQ5CgyhhM=",
+			"size": 1312
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/GameAnimation.java",
+			"hash": "FRpW5i2uQ7jbdJNRS5WpFIJZJYJhpYCd15Y4mLHWs5U=",
+			"size": 3315
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/HandView.java",
+			"hash": "w5vQPhBFpwOWzT0W2lhwZSUvtaajwH+pg44QB3aas7E=",
+			"size": 12058
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Hat.java",
+			"hash": "QqMgTYEBIytzwIhH4jqYkGKzJ3pYWsUB3zY9vBzobbc=",
+			"size": 9255
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Health.java",
+			"hash": "kZtFfedCnYlNX8adj2oPzKPVymIgfnjnn9SjP9BxMNg=",
+			"size": 13612
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/HitParticles.java",
+			"hash": "rFUsxY1KYkKIxX64OPoGvPFiHCplOmAMrTH/HdntYGg=",
+			"size": 10541
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/HoleESP.java",
+			"hash": "zI9Gqj/1pyG60F/EA2xiUh5UGBlgolYB+KgbAiAbVaA=",
+			"size": 18247
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/ItemPhysics.java",
+			"hash": "iw71s4zBh3I4P5VAYTtlpjZRD9KrKJISpDzaddk94C4=",
+			"size": 332
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/JumpCircle.java",
+			"hash": "gOn1cZ6ZfP9lqHTmlLYlQP0ACleIqhXw2KEnj7SdywM=",
+			"size": 6226
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/KillEffect.java",
+			"hash": "jcEDZ03eiafUV6kIZ6ClTNs7wHfg6TTaaNDqAShjj+w=",
+			"size": 7017
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/LogoutSpots.java",
+			"hash": "Lz91snVAWP88FFdhbtf5dt5KxzkHBqNOw6b0B5S2t70=",
+			"size": 10096
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/maseffects/MasEffects.java",
+			"hash": "A3r+czCnwh0VX976cloNEioLmpf0CrJPGpepr5Nzsx4=",
+			"size": 13025
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/maseffects/MasEffectsParticleRenderer.java",
+			"hash": "GPx1+t3EbwWJUXR7DWyzSD7PMzOmM4yeMJgbeLf6vkM=",
+			"size": 25693
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/MotionBlur.java",
+			"hash": "rULmy4JR5TFAZf/AU3oPFYYutu3XV7SqZCEFMhTIJpI=",
+			"size": 3651
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/NameTags.java",
+			"hash": "yJQz3AZAx4Cr33R8hrXXRfwYNPOBjlXlUzgfJ1HDdns=",
+			"size": 15723
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/NoGhostBlocks.java",
+			"hash": "WzdwpntarqjeCH/o+BGzDEyd01ur4+FP/vlYHNuC8Vo=",
+			"size": 1237
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/NoRender.java",
+			"hash": "khWJcWU01mztHW6Bk4UPo57UqLb88IuN4aYIZhJA6oo=",
+			"size": 4315
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Particles.java",
+			"hash": "+BAyOeFR6bRkVkRkVCBdyb10n4q24lUlKO1q2LfRbWo=",
+			"size": 13168
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/PopChams.java",
+			"hash": "LKaLjc8Lhq7jD2brM7SHKfzYwcbKlLa5IKKvCVGxxrw=",
+			"size": 6651
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Shaders.java",
+			"hash": "gZpnxCt/B+ro2Uqtt8kqPynyEJVlsfiNd7sekQoEBf8=",
+			"size": 10331
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/SneakTweak.java",
+			"hash": "hbpjKTwNseOITaFxOct47CXV2RXgszhZcej5od6PjJU=",
+			"size": 2482
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/TitleReplace.java",
+			"hash": "rfOjq2cCEs9kPwq7hDYmtJwaEmHUdHyI6H3XgxLT5vc=",
+			"size": 3701
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/TNTTimer.java",
+			"hash": "jR7cgJIzjHYDc6bATBD0cZgaIy3pJ3/SV34Lo8nR+zQ=",
+			"size": 11617
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/TotemAnimation.java",
+			"hash": "rgryl56TOQjz6nzXrks+QitQhHiY7R5f1Bjg0+uOG2I=",
+			"size": 6039
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Trajectories.java",
+			"hash": "/zUU6d8JA4IITrS544o3i8fcd+4lomcd0o8m1imt6xA=",
+			"size": 10672
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/WorldTweaks.java",
+			"hash": "5yyL7N2viYNPltc6LTrlufXQXHCjWjGwR1tCihKd7lc=",
+			"size": 1476
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/impl/render/Xray.java",
+			"hash": "tMYoQ2LXSewZmM5NBtLL3zdbp7Xvyjsausrtrecw3TM=",
+			"size": 11622
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/modules/Module.java",
+			"hash": "xS20FmG3sEFiD5iT+qUw23hRs2lI2b0QXj2SmqMQ2G8=",
+			"size": 5173
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/BoolSetting.java",
+			"hash": "GADe5O0Zn3fxt53cg2k5Z6owltGquHmU4dQ7a3Gr9sA=",
+			"size": 419
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/ButtonSetting.java",
+			"hash": "Z+OokFkYoFjh3h42fSNl75fb9MWr2QkDME0D+xM82qc=",
+			"size": 330
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/ColorSetting.java",
+			"hash": "dR94kEgp0oNYFs01tAACWCtojA3dxItPfQ4AMo63PCI=",
+			"size": 534
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/DoubleSetting.java",
+			"hash": "ho/d223PKmNC8OK9Di0DJtrUYp7Z5hcPo1vaJbBiC/I=",
+			"size": 1027
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/EnumSetting.java",
+			"hash": "ChQ1vnG1E4BrBRN97VSGPx/lIERNDn1dVNXga8PrX6I=",
+			"size": 4706
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/IntSetting.java",
+			"hash": "B2CrwhIYD7h5xGEOY7P3FQ+qtZRTuDkbNBcU+kTPGEk=",
+			"size": 994
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/KeybindSetting.java",
+			"hash": "MCBDTOb+h2XBvVuqgDjNBF6g2xP0dh5YcMEg8q0meYA=",
+			"size": 353
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/RegistryListSetting.java",
+			"hash": "VnMWtjsIf8D/sFwtqxa1lSOz8op2NosDoLKpTs68mgo=",
+			"size": 5787
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/StringListSetting.java",
+			"hash": "4JpL/vGSlwk9yOVx2fUbFLqYNRjDa+G9UJVHpB4uyUQ=",
+			"size": 2029
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/impl/StringSetting.java",
+			"hash": "UMG0zBwV+btl3thTJi7o220gtMVkyWTZBzeMuDHTLZs=",
+			"size": 564
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/Setting.java",
+			"hash": "XtujZJz+2TtCM4BGJ/fzisg5QN+cMK67Srt9AlMq+8I=",
+			"size": 3446
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/SettingGroup.java",
+			"hash": "jhyrJbxBuGAxI8gtS2Di3hKgiKQ8ws9vBZAY4jrCvN4=",
+			"size": 2273
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/SettingHost.java",
+			"hash": "QBrgSfrh8ZqgWCdGR56q7RbOZrX4oJ/++Pl9nG0GWQs=",
+			"size": 10453
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/settings/SettingLayoutPlanner.java",
+			"hash": "ZGje2dH/6fISv8J5k0bDWkObTOjooIyNW80jk+QOHKA=",
+			"size": 11238
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/client/ClientPlatform.java",
+			"hash": "8sy/nfW1/J8v+CoJTrnHZjt7v6uW1GYNBYJ0SZXijQg=",
+			"size": 2459
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/client/ClientUtils.java",
+			"hash": "6zdmVH3xcVH1cpe+i+0aWSLjfnXmfZj6ZH4IN4HV2r0=",
+			"size": 492
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/client/ConfigFolderOpener.java",
+			"hash": "6MK0KbT2dZEoBrzG3mRouFdOaVYjypfz/PebhhGHVfQ=",
+			"size": 727
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/client/KeybindUtils.java",
+			"hash": "eq1qsE9rIwgFBFavOCftWIGlsaq6yc4ReYkBOs6xTzw=",
+			"size": 3140
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/client/PlatformRequirement.java",
+			"hash": "ZqmUa2PHMo1WI8Rd538ftdmFuzvXVzr10UDdOZhdTvE=",
+			"size": 1161
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/combat/DamageUtils.java",
+			"hash": "cyUQ8FwN0Ca9feaAwPs5n5MLt+EaHfY840B5eiwQk9E=",
+			"size": 16006
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/entity/ProjectileSimulator.java",
+			"hash": "xYk0hYFZgFfCA9OL5S+Wh+IkVPiAhFq+gRpBzeFTfhQ=",
+			"size": 13950
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/math/MathUtils.java",
+			"hash": "IvyWHr4FwKJNbgJ4rYI5S4hp+x+akgb7QHPCxENwBNY=",
+			"size": 1204
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/network/ClientIdentityHider.java",
+			"hash": "30euP4EPBu8othB/D6L9istJT2I7omkHDNnxaXhJ29Y=",
+			"size": 9571
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/network/Http.java",
+			"hash": "Ly4MA68jXu12+Me/ZQK7BhZvHv1U/xesycYVChHIsxU=",
+			"size": 7588
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/network/NetworkUtils.java",
+			"hash": "uI9Wi6DWdo4CdKkHgYUx+kjTjZ+We/YaFK70bi6/eAo=",
+			"size": 645
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/ChatUtils.java",
+			"hash": "2QTZPpJ8djISAiAYFnPQyUG5bKcoZIvXb08z8qycxFs=",
+			"size": 6633
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/ClickSlotUtils.java",
+			"hash": "4IHgVxENHEYTfi1Jlwhl9qT2uV82/Lw+T9JOJ7atfjA=",
+			"size": 3771
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/EnchantmentUtils.java",
+			"hash": "C5WIxx/nwr9gWQl++l/7a0uZs7HLt5I9/YX8tdoOd38=",
+			"size": 4146
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/FallingPlayer.java",
+			"hash": "kx+ZkYl7JSdWzmhq1h5SSnhLhUVrwjU1z2xcuPSW2BA=",
+			"size": 6207
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/FindItemResult.java",
+			"hash": "ZDdOrIvgBF0En3DlPHwxf2s7iQ8zpv+udMZZkFFTYQ4=",
+			"size": 1005
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/InvHelper.java",
+			"hash": "Xt4h7NPH93pJgoy0u2WUHpNJ4RQsr13i7IIzey2Vp88=",
+			"size": 33572
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/InvUtils.java",
+			"hash": "aJi7BCiYPU5X28ie9WS5nmJ+A/x/vE6szFWk8BAVBO0=",
+			"size": 5073
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/MoveUtils.java",
+			"hash": "gGOTbO/sPBhzwr/I7muBPIMNK0bqCqPL40KUgtU096I=",
+			"size": 1820
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/player/PlayerUtils.java",
+			"hash": "nygo4la9A5F2B/o3RmhqW5wbyTtPyjrBVrHz28Uytck=",
+			"size": 3249
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/animation/Animation.java",
+			"hash": "yqWfR44KF/vrU+uT5A4Uny9RbZ0ekCqB33WMvIxQR+c=",
+			"size": 4069
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/animation/Easing.java",
+			"hash": "eDFJdlnS/6EjN353dfpfxKoAYDZoMGF22lmFnI3+D14=",
+			"size": 2505
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/ColorUtils.java",
+			"hash": "GICYBWv9o9Np1KZSDaaeFKhHeo/YZEQbwkG95VLaxrM=",
+			"size": 967
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/EpsilonGuiRenderer.java",
+			"hash": "xXHo/7WOvGGu7u1/UbUZbm6+JWMe9cqxdA6uU/krruY=",
+			"size": 18573
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/esp/CaptureMarkESP.java",
+			"hash": "zFD0iAiouu2Cfk3BcxWqGGmE8/sasRV0Nb8s9hu3jsU=",
+			"size": 3877
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/esp/CircleESP.java",
+			"hash": "HkZCHRE/DfzzMs1BZLP+lC2R2G1JbRzvFAV1QurlkVw=",
+			"size": 6078
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/esp/DeobfESP.java",
+			"hash": "3rN0RMJg1KQvPDKIF0oKECFaKy8XAqtA+4r5+oe7JkU=",
+			"size": 11408
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/esp/FireflyESP.java",
+			"hash": "bThWB6W8IBraNNmfaNrnJaePZnltUwLbu0ypnasngAM=",
+			"size": 6535
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/ScissorUtils.java",
+			"hash": "lGX5YOly/OsL0ACeTLIqYCm0eGoGaMaR4nKg+0L7w5M=",
+			"size": 5685
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/WireframeEntityRenderer.java",
+			"hash": "6K4oQCpfRuEorESw0gmX5Z+GYkWGYyvMx/v6P5VAF7E=",
+			"size": 10431
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/render/WorldToScreen.java",
+			"hash": "tACxJ9okbFKehbElMCunxFHK0qEE8+B7ElcHqvlZXWk=",
+			"size": 4329
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/rotation/Priority.java",
+			"hash": "6itzVdgoKgqewyJJIvKJooYqoP7hDPZOjXPqS0n9XiY=",
+			"size": 251
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/rotation/RaytraceUtils.java",
+			"hash": "82ltG3AWCfxGQuo8069fMBKsxoNJ4Lc0ZO4uINGWz74=",
+			"size": 6696
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/rotation/Rot2f.java",
+			"hash": "a8idDD3+xpvN7FMeBYQeaYTRnRsOigye2oMIhdLrDkY=",
+			"size": 1413
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/rotation/RotationUtils.java",
+			"hash": "wUnFjGJQgpGPliyVb/Nee0oMJLY9DkfO4MUT2qgy8Dw=",
+			"size": 17158
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/timer/TimerUtils.java",
+			"hash": "OBm2qUosGHJazJKutb/kGgrlP2RYlrYjwembO2k9Qvw=",
+			"size": 2065
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/world/BlockRegistryUtils.java",
+			"hash": "9o56U4ok+f0p3PrqgLwcDFvv2ssCiJwsV5PBH5gnNOk=",
+			"size": 3347
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/world/BlockUtils.java",
+			"hash": "O4YflOwPyYcSWyA6XNOeeeoqGOPNiUhYM9p2gCzqows=",
+			"size": 3405
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/world/hole/Hole.java",
+			"hash": "Q4hq7TactHYSwAPE9DNc51iVriEJ2AnmYGPLtoeYNG4=",
+			"size": 1770
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/world/hole/HoleType.java",
+			"hash": "Ozo83Pv2E2NG5i2auj8Yu4JJmEkgztHljMiBTUPeiTc=",
+			"size": 131
+		},
+		{
+			"name": "/common/src/main/java/com/github/epsilon/utils/world/hole/HoleUtils.java",
+			"hash": "yCMNkyUCKilwsj7f4oc0+9mkPeeWz2SimKWE9vkBNQY=",
+			"size": 4704
+		},
+		{
+			"name": "/common/src/main/java/me/sofurry/smtc/SmtcNativeBridge.java",
+			"hash": "A8TGScj/+SL3vmP1Mld1I/Ikrzyb1GVuVnTKcVagkvE=",
+			"size": 3332
+		},
+		{
+			"name": "/common/src/main/java/me/sofurry/smtc/SmtcNativeResult.java",
+			"hash": "wURJXUCbhxYz0C5UOxWkLb/UWaC1QliCY/Y1dmlp7Kk=",
+			"size": 853
+		},
+		{
+			"name": "/common/src/main/java/me/sofurry/smtc/SmtcPlaybackStatus.java",
+			"hash": "+9gxGKYekNNwGXW5HU+FDt+trtARS1ZBJM0vykbjB/A=",
+			"size": 367
+		},
+		{
+			"name": "/common/src/main/java/me/sofurry/smtc/SmtcService.java",
+			"hash": "/8vBajDLTL9PK5oTU6dHrG2v/IqdnS4gof3ZkAajKug=",
+			"size": 2807
+		},
+		{
+			"name": "/common/src/main/java/me/sofurry/smtc/SmtcSnapshot.java",
+			"hash": "3MQM56XbJaEEHNA14NVhbvYRrpQgOVcNuYLzKfHvhyU=",
+			"size": 1254
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/autoban.txt",
+			"hash": "eAL+iAc3vBFSPRTkOJknrODUeTkcB9pbJ2E1J0NBAHw=",
+			"size": 668853
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/fonts/cinzeldecorative.ttf",
+			"hash": "2V2mjuxE9AqHHZO7WWtZrqMY6BWT2ciyGyXswor20Sg=",
+			"size": 60700
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/fonts/font.ttf",
+			"hash": "isvw89IZk/2lPHIAJA5H+4bYv6c11sq3dNtXYuPiQI0=",
+			"size": 10350240
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/fonts/icons.ttf",
+			"hash": "1ItmtHcNCHph6OSmthhg9g/shMzYJsVvSgAXP3Hq2bg=",
+			"size": 1374576
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/fonts/jura-light.ttf",
+			"hash": "xgf5/7JDVZXznNVa3BMmnpPgzuJLncbxsX0f3tHU5xA=",
+			"size": 154312
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/fonts/osakachips.ttf",
+			"hash": "wKcwGfs8YAifdZhexglPulpjnfh4laUqgdMc4I29VwU=",
+			"size": 24832
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/i18n/en_us.json",
+			"hash": "QwcwgrpicwG/m6Ly6R1Cfj2dXCY2KirjSKIYVGVkTuA=",
+			"size": 101749
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/i18n/zh_cn.json",
+			"hash": "lF2q2W87j9DtfSHIjKDrie1UL9VqBnCxlBZeAHSZOFI=",
+			"size": 103106
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/kouzi.txt",
+			"hash": "oBj/PbZqzBD16FMMpzj3WlFLFtRi+/aTj2nI6gh5HJg=",
+			"size": 384623
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/arc.fsh",
+			"hash": "k2QGDCMDKpONQZOgkg4nYiT98S3etPU6/IetNYl0xjI=",
+			"size": 1963
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/arc.vsh",
+			"hash": "5Do2Py1hiQKhMQCanrHIHcz5JNP/u7QfRvT250T5dcQ=",
+			"size": 836
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/blur.fsh",
+			"hash": "7MjHUxARn7xl5pKZGj5+MpAzYZ2vEytDnq/POnod6zU=",
+			"size": 2817
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/blur.vsh",
+			"hash": "f18tBVVpPfcxRAraeockRlbnZK/OA9MHJJBwyIQs8qw=",
+			"size": 293
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/blur_3d_box.fsh",
+			"hash": "20zrWf6YcKMM4Y31rmpg2LikX23xEG/nXyaSd/Wewhk=",
+			"size": 724
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/blur_3d_box.vsh",
+			"hash": "jv4FjDjAlEQ2uo/gfCTr6vTRhBDhSwXVrDO4mY3yeNU=",
+			"size": 257
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/custom_sky_cine.fsh",
+			"hash": "byNbSnFd7AOcp2xv+e7HQ82VnjoJMLQdeRF0XbQj7m0=",
+			"size": 9811
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/custom_sky_euabe.fsh",
+			"hash": "QHDoD4+Wp2WvbGPaIWHuEKn/rcOjSwTmSYIjBNqjY0M=",
+			"size": 2615
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/custom_sky_local.fsh",
+			"hash": "/kmAg15dcWJkNDFxO4rcRqNebmPpk4rCw17jVIwHySs=",
+			"size": 2115
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/filter.fsh",
+			"hash": "DVdbbs5qdsjWvowylPcnhhZ36dMFhF2zwHqgPo4ciFo=",
+			"size": 394
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/fxaa.fsh",
+			"hash": "pDqEOowWEQHbZxgv/ddHQq60J91/FTN6Yt/1OUtH1nY=",
+			"size": 2198
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/alien_terrain.fsh",
+			"hash": "czq24KtoBqExZjVNjGaG6AdLyXGOGgDIoJdLBImSFdc=",
+			"size": 8166
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/black_hole.fsh",
+			"hash": "UdiMUZ7eicsICDZEIrO/ZoogyXokoSyTswMe/SrncPg=",
+			"size": 6758
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/clouds.fsh",
+			"hash": "e17soE345prjeG3pJ0TBmB6E2xGfvdbNMzKvTamTPmk=",
+			"size": 7177
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/inferno.fsh",
+			"hash": "9XoCQ1/eimLNqittNHyOt6ab81UuHByC4piQQqkPsj8=",
+			"size": 4343
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/minecraft.fsh",
+			"hash": "lWwrZMcAAZ/sT6134ClRjESX3ZEusMPO4zAHJt8KaMw=",
+			"size": 5223
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/planet.fsh",
+			"hash": "CG0YCbE2JM5pYU2mDRKAj6zt9OowuM+EyBNT4B34xVs=",
+			"size": 44020
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/menu/sea_level.fsh",
+			"hash": "5aCyjzgYkdyegtZ1VX3ds36CTNTLD60vPaM+qXxhu9Y=",
+			"size": 1159
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/motion_blur.fsh",
+			"hash": "VAU7E1ihNisft9LN8NCgIRKb+hMJTacMJq7UCUsGJ5s=",
+			"size": 3010
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/rectangle.fsh",
+			"hash": "nQWBrGxrhUQfxcna/JTSQff8tOu+n2fkhQGp+V66ydo=",
+			"size": 136
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/rectangle.vsh",
+			"hash": "08b2nSreTMEiG0LuEC7mLItqkIzmj1nu3LukW/N0Nio=",
+			"size": 318
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/round_rectangle.fsh",
+			"hash": "hl3m1gBbYCfZLRp727EMMrWkqn35W/DPzvdbqTaZW8I=",
+			"size": 849
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/round_rectangle.vsh",
+			"hash": "sU8j7YNNi+cpBjzNjrKOq6FcyM0tTzmV+7pdgayanU0=",
+			"size": 604
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/round_rectangle_outline.fsh",
+			"hash": "wnrEglMXEcCtkcbEJv9ihZlGiKszcEy+7Vk84b6cDFE=",
+			"size": 1117
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/round_rectangle_outline.vsh",
+			"hash": "LOqSgZHnFKplVvt4zQ0UXCXPhA5deVnceQASRTRKF+8=",
+			"size": 729
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/segmented_shadow.fsh",
+			"hash": "Q70flzjPs859eYRbfNaTptATvy6b/ZnReO0yI8S8cPU=",
+			"size": 3649
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/segmented_shadow.vsh",
+			"hash": "CIyUlhIfnTA8HyacLk1CbhI+rAIGzGGD/k0b/Oepx/s=",
+			"size": 302
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_copy.fsh",
+			"hash": "u9TdlCEKuGSRNAKyhGB6rnWDr57UESpPq94As7BVxRw=",
+			"size": 307
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_fade.fsh",
+			"hash": "3/EL6TmJJLPIAybkpyCBm4PIwkJqmZps4lAo5b+yNgU=",
+			"size": 2917
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_glow.fsh",
+			"hash": "4G/KYjTFwqOCAfqyl4Ilux15Lrvue5Z3+UHuFZnRlaM=",
+			"size": 2536
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_glow_mask.fsh",
+			"hash": "uX4p3LVdVtnh3ftEB6+My9d/N18CAVHwhyLj/5OGWBE=",
+			"size": 199
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_gradient.fsh",
+			"hash": "feamo+J87OFxEEsuriNoyF3SsangG4IFTUJCaLaf/lA=",
+			"size": 4155
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_outline.fsh",
+			"hash": "4uNzgQPR4Nr3Sz9o7i8lMWb5RX2pH/j2UJRW/PIFUFw=",
+			"size": 2629
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_smoke.fsh",
+			"hash": "rrKVU2DzBfiPEHI/mnpFxtg+filA2/N0mx9LL8baqwU=",
+			"size": 4946
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shader_snow.fsh",
+			"hash": "Z5bac+Bp6xLQZAeExA6ix5ZIGEm0FUvTYuqIUonGoxk=",
+			"size": 2591
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shadow.fsh",
+			"hash": "oLOkQo35wEU55fhdDqCapWUduxNzvBDpk27pON2MD24=",
+			"size": 2881
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/shadow.vsh",
+			"hash": "q9S8Xrdi3WcxYX3bL4UiB59XGQvFmNMQGOv3N/rTvco=",
+			"size": 687
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/texture.fsh",
+			"hash": "bjyRBFN853d/kqQI4+MIqgq8Yf0dpSaq9qi52yIpIVY=",
+			"size": 1094
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/texture.vsh",
+			"hash": "pbfPhXTWu8dreaVUJrjtTO8l5QsXyxAXTnb43lTfW/o=",
+			"size": 722
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/triangle.fsh",
+			"hash": "z0cQq6ppoTbIFhBwMuZ1g/E1djJvhdmiLErghgpfBXY=",
+			"size": 351
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/triangle.vsh",
+			"hash": "M6smmrCKu7kEodwHLfKEhXXAAfY/EggaPXb/DGPbf70=",
+			"size": 540
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font.vsh",
+			"hash": "CdWU5tIAsW5HKtDrd7xyLkzqQVrJFPzD/4Y9CWPfSnc=",
+			"size": 416
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_aa.fsh",
+			"hash": "Aj4saiFKxoNMIXN5+KT8Ft6qBhh9302Nq0Fb6Y87I9c=",
+			"size": 1103
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_blur.fsh",
+			"hash": "gAeitTpbvEgibRu/uDPNKSZl1fy6EJ2CmYSQHTFNdxM=",
+			"size": 1763
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_blur.vsh",
+			"hash": "yzILpZTHCHFBNq7t2XHZuk1pg9mMhR+L+RX0pgTPcPc=",
+			"size": 545
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_glitch.fsh",
+			"hash": "YolaeQjJcX+mpQsgdekC4SXiILcmaEdD/31G/+fTydI=",
+			"size": 3575
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_glitch.vsh",
+			"hash": "Pr3NBSfklAuNsQAO+Ir3TlIyKA3UVb/qcEDPYBCWkKQ=",
+			"size": 544
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/shaders/ttf_font_no_aa.fsh",
+			"hash": "66Xvq146i5NkO2Cazii5bLmjPFd90LBQTww8Ti7hpr0=",
+			"size": 435
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds.json",
+			"hash": "Y2Uq1zuS/TglCga8qUx7IzRaOXOl2IEclVCp3HHXiVc=",
+			"size": 971
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/disable.ogg",
+			"hash": "YcIpPMyzgbZ/+ZxiBrTJeMiZrcC2InUap1wwby3FE7Y=",
+			"size": 15976
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/enable.ogg",
+			"hash": "7JAtO3a9NSfz0hIbr/pWtsHXNnJWU9YouIEUWF6Ifl8=",
+			"size": 17162
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/moan1.ogg",
+			"hash": "bithaWKPbCS9MBfLwKvIFdz7WIxxMeEt5dcCGwm4R60=",
+			"size": 9591
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/moan2.ogg",
+			"hash": "f63l+meBPdPD6+HLt3zjnRpDklQWhmPnmwb/WbFINj8=",
+			"size": 8754
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/moan3.ogg",
+			"hash": "Ct30HXc2xfOpu99E2Fedvx2Y61DJ24LgvIouCD3GAQw=",
+			"size": 12049
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/moan4.ogg",
+			"hash": "CH4dYQXKYcUU5gn77czL+OZC2oLN86CS1gHlUs7FZgQ=",
+			"size": 9426
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/nya.ogg",
+			"hash": "QnMaFxGO0zdSIdj4d6rytyihxqaG1stnxporTpSGRxY=",
+			"size": 17395
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/reisa/bye.ogg",
+			"hash": "ZzNaldRDaFloIwJ7ICQ0KHPdBI7b2PD18toeeBwmCp0=",
+			"size": 54873
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/reisa/welcome.ogg",
+			"hash": "h8ARn7WN2fq3P2JuCjNy8CdoWU4X26rNqSS1gRqCEhU=",
+			"size": 34855
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/settings-close.ogg",
+			"hash": "FH2rraVkSAtYq+nyQ3GtrfnkFdIaFGeIXHobP8P2yrg=",
+			"size": 8539
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/settings-open.ogg",
+			"hash": "fmiqnb4UUfeA8zZTbWD//VQAJiFwKW3Bbmttt5kxPUM=",
+			"size": 7749
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/shutdown.ogg",
+			"hash": "ik+Zs9n50iJ/43oFZkZkswqIMNSNAintC24hK2BfLa0=",
+			"size": 25039
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/sounds/uwu.ogg",
+			"hash": "bHwblkCM5evWeJxFk/zJkRIEjOgQf0p3/BrKrNehR/I=",
+			"size": 9543
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/esp/mengcha.png",
+			"hash": "6S2/WRFexeyWqS70fk6gku/np2x7SRuS4OJxj5ADTIM=",
+			"size": 469962
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/esp/niuren.png",
+			"hash": "kSrggsQkztsECAjrD7A9B0jzZRYvP0JsPT3V2QoyMjU=",
+			"size": 171483
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/gui/steve.png",
+			"hash": "Y6ZoCPDc4UZgiwEXtnuHEN2i9GFy9GEM+9PZSvBM1fE=",
+			"size": 350
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/endfield_16x16.png",
+			"hash": "ErKswPK7I1N4P4wEK35uq6TzZJPRVPBx5/r7dpJbFow=",
+			"size": 1023
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/endfield_32x32.png",
+			"hash": "obzqWU2e76ZWt93rfdRqXx8ZsZDBWAA68rDTwc2ZioM=",
+			"size": 3462
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/icon.png",
+			"hash": "zX6NJlowIu9YMM13UOwoq6DsyykjydXeCfx8B0Jph5c=",
+			"size": 747886
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/icon_16x16.png",
+			"hash": "my9Dof9j6Bkz2SrRjMkcLZuysit9NtOkIW8T7Q1eW4I=",
+			"size": 258
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/icon_32x32.png",
+			"hash": "IQpd3eT3TGXiO7ecYXIhEBdOpUzQ2HVJgD00I7k0hhk=",
+			"size": 331
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/table_16x16.png",
+			"hash": "bFHU7wQF9bfKXX7lBc5hYHg1iJJtzf+AmRaffisQFls=",
+			"size": 3665
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/icons/table_32x32.png",
+			"hash": "JJatyGMbs6tC6lpzfis5JC5qHKhqkIVffSBKCG3jX+k=",
+			"size": 5362
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/hud/elytra_icon.png",
+			"hash": "43ADjeDX21wexmc/rnQQ4Y/6ZE2QnkvbXgR07aj2swo=",
+			"size": 397
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/diamond_scrap_0.png",
+			"hash": "kwaC4fRUFsdYNFZ8bmVPQeNqWpJFZkwB++nRqd4TSII=",
+			"size": 437
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/diamond_scrap_1.png",
+			"hash": "sukkL8LOfoNUPemfLaPkGP7ODpDb36uEW58vXoG3Dp0=",
+			"size": 458
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/diamond_scrap_2.png",
+			"hash": "Cj4C6Nav6PFpu0cHa6YbiT1DACVCZfGrsrD1s5GbFMs=",
+			"size": 446
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/flash.png",
+			"hash": "ZkHdOpiAv9g1GBmIJYcQTrM/ckJu839GLiQznKVjzHg=",
+			"size": 3995
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/netherite_scrap_0.png",
+			"hash": "yX+SbEVV91dlXK55+ICEaDV6tX9k8RgAHBY7DQ+XyO0=",
+			"size": 432
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/netherite_scrap_1.png",
+			"hash": "d2cuQCqo0K5vtwY6AGK6IHHTsmCaLQqcr23+Cu8m1Vw=",
+			"size": 469
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/netherite_scrap_2.png",
+			"hash": "ca9UKSEizooZ/2NDdoHDDeR8w2lFj9qw3u81MbRAFAY=",
+			"size": 451
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_0.png",
+			"hash": "Maw5YD2KB/hPijokJSEFRQ7MBGHGH0pR/XXxOYSeLvI=",
+			"size": 1123
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_1.png",
+			"hash": "dzPlyefwHaCZM/UG0nVubGsUSk+kV1NhBHH9cb+wNxc=",
+			"size": 1167
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_2.png",
+			"hash": "4QZ6C34TbtVXxV64hN+6kYLcmvewsqsPnFGk4Z86+j0=",
+			"size": 1186
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_spark_0.png",
+			"hash": "CAggFzEihUKPsaXIX92UIft+Qv4Yen/MlCON39KmHVw=",
+			"size": 422
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_spark_1.png",
+			"hash": "Djkkg805Q5UKOM+fs+b3xxe/9evDHBJOjeAInEGkv5g=",
+			"size": 424
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_spark_2.png",
+			"hash": "Fa6rWagjoHBXG4xmIeV55sowng4BZyTwq3MWV0S2pLY=",
+			"size": 374
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_spark_3.png",
+			"hash": "6JMYQY/ONGX8RTNaU02W16c0k2MFTuuvI60GYA7/SfI=",
+			"size": 395
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/revive_spark_4.png",
+			"hash": "yL3MKKmaqwLX98xhfzrKBTHA9Y1HxNprJooXQLdusIs=",
+			"size": 388
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave.png",
+			"hash": "bQ42vIeqnhlDUiq4Zac1DJ4c8gF7ZdfSdUB0prQCHac=",
+			"size": 3486
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave_0.png",
+			"hash": "bQ42vIeqnhlDUiq4Zac1DJ4c8gF7ZdfSdUB0prQCHac=",
+			"size": 3486
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave_1.png",
+			"hash": "XAQydzsN0kYqaoVoCGAYKkdjE9OLkeXPpgyPkJN/iDg=",
+			"size": 3477
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave_2.png",
+			"hash": "yAtUQvrPKmnV06rourpWDzRTjoPRqthVJ+Ij5NglyEs=",
+			"size": 2761
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave_3.png",
+			"hash": "yAtUQvrPKmnV06rourpWDzRTjoPRqthVJ+Ij5NglyEs=",
+			"size": 2761
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/shockwave_4.png",
+			"hash": "HvdUloNJHvfxTIBnO6+SBhsKpUF+c5OuILqxcllUIA4=",
+			"size": 2417
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_0.png",
+			"hash": "ALE/EeNsSQoQ4FUHj7k4r4ozM6Xie2an062u4xHu5bU=",
+			"size": 412
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_1.png",
+			"hash": "P93iMDzFlHU/5SHLXtupfBT9NWi2hYFCvmFJ2OWwT+8=",
+			"size": 417
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_2.png",
+			"hash": "CoykrqqJ3tQNYpdYnHEbHGvFK7ioxvS1yNb/o9wujIc=",
+			"size": 427
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_3.png",
+			"hash": "yw5YjO2FAvFMokLJjAP0jB47KdtlLaF9mHolZSCcgKI=",
+			"size": 431
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_4.png",
+			"hash": "RTg1aFRk5IFxDndG6sl8lS7o98+AWenykH+rIbHlpQo=",
+			"size": 433
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/skull_5.png",
+			"hash": "BIzM4zk+m0+2prYsJ3cBFvfj/5mLxwjC4LO5yBFLeto=",
+			"size": 442
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/spark_0.png",
+			"hash": "AaLXgTJeCQiCUwWeOBqbRof3tgrCghx6D08WCEqZEd4=",
+			"size": 229
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/spark_1.png",
+			"hash": "9AAkj5DvdrVyHi8UNNj0Hzs89BkyooCW3rtiQRFlMO8=",
+			"size": 478
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/trail_0.png",
+			"hash": "wU75mHfvK/h71PvFx8B5EpqEerY7rlcaDKLo412YtAY=",
+			"size": 422
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/trail_1.png",
+			"hash": "fmtu533ieGgy+Jn/cfMKwGASzjGRLDoQTO4szPLQ9pc=",
+			"size": 420
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/trail_2.png",
+			"hash": "Zs0aDI+81m2Ttky2b67xZWwYtnvAsRdnKG9thPVJiB8=",
+			"size": 416
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/trail_3.png",
+			"hash": "v4hAfXIYEZBOpQ7y3ZPtZ/CxlWiXJzcVvJ0yVo4CQqM=",
+			"size": 419
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/vapor_0.png",
+			"hash": "1LXybT7hryD7UPzfbNgQGqM+foGm3jkiwH6n4SVG5Do=",
+			"size": 407
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/vapor_1.png",
+			"hash": "ao40JUZI5zCP+XyoCQ28NJBXzJkRzAE0LWF6hXc8EYk=",
+			"size": 401
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/vapor_2.png",
+			"hash": "Ltz9hnwU1sn2HIE1wSwUEL589skhqYJgpTNrUHo329c=",
+			"size": 399
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/vapor_3.png",
+			"hash": "YaiAOnX7mELmUW5uMxl97VBr4+XCeijlu+veV7rEZPU=",
+			"size": 396
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/windwave_0.png",
+			"hash": "re2TE5vjIAO+g1yzR3+EnoUNXAu4kPx32Hvl7iDgpAI=",
+			"size": 524
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/windwave_1.png",
+			"hash": "HsbomUpkh/CD7jAhHay54F09RU0jw2MMPnUKqJUVj3Q=",
+			"size": 498
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/maseffects/particle/windwave_2.png",
+			"hash": "fsyjcfY1rCUsocu8Nm+O82PBsGECXAmICSBEe/9yRwM=",
+			"size": 441
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/circle.png",
+			"hash": "yuIlKwlS4T2VAZ+4nXF5ayo85C3HB4gtyTypN62OT44=",
+			"size": 83614
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/dollar.png",
+			"hash": "TaTsVg4Rf3ofka3uLA8wDu5EINh7NaG8dkCtkkd+Pfo=",
+			"size": 27248
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/firefly.png",
+			"hash": "Z2lxESvI6czPmdJbobRGx/7CZXkQxYG2Tk4CFt7+zXE=",
+			"size": 19384
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/heart.png",
+			"hash": "B4o+15qHqfTH4Sip1PjPRFTpPo+/i89U4SC5tYUUJJ4=",
+			"size": 17353
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/hitbubble.png",
+			"hash": "9h58TkF/l/908YKWzARR1/teFaFszhRTqGxbJgzX1iY=",
+			"size": 202987
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/snowflake.png",
+			"hash": "RB+UpH9gB0WCLYeL91XfJByxsufsedA+rr05A77Qfe8=",
+			"size": 41446
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/star.png",
+			"hash": "3+uU1r7L4k7M4Q18tnMKTjP1jI775QQX8MNANtJ+uuA=",
+			"size": 18280
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/textures/particles/target.png",
+			"hash": "udxEDjJ7JYJwwy2mli0N1Ykz4KX6x2NHm5lrlUKudtM=",
+			"size": 343408
+		},
+		{
+			"name": "/common/src/main/resources/assets/epsilon/xinqueue_questions.json",
+			"hash": "Y1hIIp82PphLhJce0afUq8qG04eUk78QqQd5MA9XG0k=",
+			"size": 624
+		},
+		{
+			"name": "/common/src/main/resources/epsilon.accesswidener",
+			"hash": "NxToNAqePkl2ZGLOi9t7oGow9CBQKUNB3QrIHMsd8mQ=",
+			"size": 11328
+		},
+		{
+			"name": "/common/src/main/resources/epsilon.mixins.json",
+			"hash": "65iLueuOioYbnxPmZ+7kHgOguMLDwwLu7ApGxcrIWyw=",
+			"size": 2339
+		},
+		{
+			"name": "/common/src/main/resources/META-INF/accesstransformer.cfg",
+			"hash": "CIlnlXx+c7JCMbNRMM5EoxeQTZEQv7nJ5htGdwilnNQ=",
+			"size": 18903
+		},
+		{
+			"name": "/common/src/main/resources/natives/windows-x86_64/epsilon_smtc.dll",
+			"hash": "Ez3bJ/jgnFmDpXlXWIxvJklGcY1MxbUaoP+D6vn1PIw=",
+			"size": 182272
+		},
+		{
+			"name": "/docs/addon-development.md",
+			"hash": "m+4MFsr7QKqVDx5NlgUEl+05fbFg5I8XJwK6E0valDU=",
+			"size": 4844
+		},
+		{
+			"name": "/docs/architecture/lifecycle-and-components.md",
+			"hash": "3l+xF6+Nd7eAQk5yd9ON27Rsu/vqpAJa/d+kpfyhphs=",
+			"size": 3474
+		},
+		{
+			"name": "/docs/architecture/overview.md",
+			"hash": "9BjSCZCZShg9QRwwc49MVCvykGNfdHX1Uwapf70BY38=",
+			"size": 4186
+		},
+		{
+			"name": "/docs/development/build-and-versioning.md",
+			"hash": "gXeZ/W+dY3q2bNdSWo+L8FeEsVumDM4Dex4ZjX/2oJw=",
+			"size": 4097
+		},
+		{
+			"name": "/docs/development/configuration-and-rotation.md",
+			"hash": "E7fRux7Uflfz4JaPSVFfN5eUD8B2ISOUCwpPNrLA7Jo=",
+			"size": 3615
+		},
+		{
+			"name": "/docs/development/events-and-mixins.md",
+			"hash": "gQOEyd1ASC6h/rnKLpmZQBVrG6Rw3BH0PByrdYTan00=",
+			"size": 3965
+		},
+		{
+			"name": "/docs/development/internationalization.md",
+			"hash": "pz9J0aaHaKagB8vhcCZRrRnjXIJMolPAgVo+yLLYkos=",
+			"size": 4210
+		},
+		{
+			"name": "/docs/development/modules-and-addons.md",
+			"hash": "X6huBs99ojog9OlBVLcplSyxbbAcbQ5SohXbk2Jl22Q=",
+			"size": 4570
+		},
+		{
+			"name": "/docs/development/rendering.md",
+			"hash": "Wi+KZnS8U56TKk+vv/uC35bshey8an+2UNVVBIIxdVw=",
+			"size": 14747
+		},
+		{
+			"name": "/docs/development/runtime-assets.md",
+			"hash": "cZ+wFoRUc+qVphCFTAA5nvqYdu0NJEM3B1aAX7VrMpY=",
+			"size": 4694
+		},
+		{
+			"name": "/docs/gui.md",
+			"hash": "LLxVzDu1axTAcx33t1zNKypO+Neb6l6+X0FKOn07gzQ=",
+			"size": 5814
+		},
+		{
+			"name": "/docs/gui-library.md",
+			"hash": "sHgVC0CtDoDeK8nUoJLOl5yIKK0TSdnNH/jbMw6NnUc=",
+			"size": 8542
+		},
+		{
+			"name": "/docs/README.md",
+			"hash": "n5FqaLUKuxvIdv7+yPAjSsXgn+i51kNMasOo58L6m6E=",
+			"size": 2261
+		},
+		{
+			"name": "/fabric/build.gradle.kts",
+			"hash": "lw4kLE24aVA5fJlGSacmcMPHB4uzmIB0brdViE+Lk64=",
+			"size": 2314
+		},
+		{
+			"name": "/fabric/src/main/java/com/github/epsilon/fabric/EpsilonFabric.java",
+			"hash": "k1nddqC//LHAPmKuzq4rGyEqug4C7dcC4tMPxB8cFvI=",
+			"size": 1123
+		},
+		{
+			"name": "/fabric/src/main/java/com/github/epsilon/fabric/mixins/iris/MixinIrisHandRenderer.java",
+			"hash": "OjMmThgT+t0zKey2UWPeRKIwAn1NRWC5TSl4n/ZpWRY=",
+			"size": 1627
+		},
+		{
+			"name": "/fabric/src/main/java/com/github/epsilon/fabric/mixins/MixinMinecraftFabric.java",
+			"hash": "uV9pL3x9jXE6c9F8kVZ1j2a7oMNRtAM9B0fNOyjpOcA=",
+			"size": 615
+		},
+		{
+			"name": "/fabric/src/main/java/com/github/epsilon/fabric/mixins/sodium/MixinSodiumAbstractBlockRenderContext.java",
+			"hash": "Yvsp3U6cCa5JziBT1b1cExl5wp/lfEITr8QN8rvDgdM=",
+			"size": 1076
+		},
+		{
+			"name": "/fabric/src/main/resources/epsilon.fabric.mixins.json",
+			"hash": "3kekWZbIe5glzhfX8NUWj2JFQJNnRIF0KI0LlqZhDzc=",
+			"size": 285
+		},
+		{
+			"name": "/fabric/src/main/resources/fabric.mod.json",
+			"hash": "Hmb36mPWMD5PhxtxrtMw53pyui3idwTxQw+5sIwjCkQ=",
+			"size": 530
+		},
+		{
+			"name": "/gradle.properties",
+			"hash": "ob9PK3R4DHWEERNkmBHQ6QznZT6at4pW6LwS6b1eZjc=",
+			"size": 327
+		},
+		{
+			"name": "/gradle/libs.versions.toml",
+			"hash": "YqWyC7D3GyJEWvFgmzzSv0xlv/tQ06RzgrEYgGHqyoA=",
+			"size": 2062
+		},
+		{
+			"name": "/gradle/wrapper/gradle-wrapper.jar",
+			"hash": "fTpKxN4cMrWbxqTrjsuOYSzNDPGuHpn2aQLaZN8pYXI=",
+			"size": 43764
+		},
+		{
+			"name": "/gradle/wrapper/gradle-wrapper.properties",
+			"hash": "nv15SDWaaNnICqjV3xcXrxQVxEC1nUkwQNPPvROIU4M=",
+			"size": 252
+		},
+		{
+			"name": "/gradlew",
+			"hash": "sYe0xS50n1dgr91vrcMbKpitNfskm/Df8DtyZQ8yBAk=",
+			"size": 8733
+		},
+		{
+			"name": "/gradlew.bat",
+			"hash": "lBAnE+uPsi0DI5eSTA84qy2ng7pg0HBUM58RkKDE4s0=",
+			"size": 2843
+		},
+		{
+			"name": "/native/smtc/CMakeLists.txt",
+			"hash": "W7LmcglumgldsY2bv+jQZ8jGK+jedyX/xt/7XEmnEGw=",
+			"size": 1565
+		},
+		{
+			"name": "/native/smtc/README.md",
+			"hash": "XJgU/B/Um8eIduQtIs+e7SKJWCe2GZYeQYWip4BCUF0=",
+			"size": 732
+		},
+		{
+			"name": "/native/smtc/src/smtc_core.cpp",
+			"hash": "5CrE07+s9eDN2USlNUqAVdZx9WGj+7TkdHC6o2fmczk=",
+			"size": 6326
+		},
+		{
+			"name": "/native/smtc/src/smtc_core.hpp",
+			"hash": "R9oFqahWiMgTU7g8YtUTXhhyFsuY0ui441Z7J9YOO8k=",
+			"size": 490
+		},
+		{
+			"name": "/native/smtc/src/smtc_jni.cpp",
+			"hash": "ffRRkKgMKhQvGEk+Mq4p6aMHCMzSa2P+s6jMMmhy464=",
+			"size": 2594
+		},
+		{
+			"name": "/native/smtc/src/smtc_probe.cpp",
+			"hash": "EGvHUVzVTzTQ6nZ/KSd/X+WV6TOFKHFve18UQHTC5pg=",
+			"size": 1048
+		},
+		{
+			"name": "/neoforge/build.gradle.kts",
+			"hash": "N9Y2K388vA6hiWEd8MRQD4Ijx12BC8+YE0dXYW4szt8=",
+			"size": 8149
+		},
+		{
+			"name": "/neoforge/src/main/java/com/github/epsilon/neoforge/EpsilonNeoForge.java",
+			"hash": "TLzSA46c6fuhgdwQ1ogbQIAOSOHZZlKYQSDi5lZjCb0=",
+			"size": 654
+		},
+		{
+			"name": "/neoforge/src/main/java/com/github/epsilon/neoforge/mixins/iris/MixinIrisHandRenderer.java",
+			"hash": "MkKio4l+H1QzCmcGPPshmpopdej5taepEfcIVp53lOU=",
+			"size": 1629
+		},
+		{
+			"name": "/neoforge/src/main/java/com/github/epsilon/neoforge/mixins/MixinMinecraft.java",
+			"hash": "lfGen2QUIFVX++59A2ZInc9kqbq7u30fjCtjWjORIoI=",
+			"size": 605
+		},
+		{
+			"name": "/neoforge/src/main/java/com/github/epsilon/neoforge/mixins/sodium/MixinSodiumAbstractBlockRenderContext.java",
+			"hash": "E5g9AwIhXC31WHUQ83s9qj4fonQC5CIaABInn/I3QG8=",
+			"size": 1078
+		},
+		{
+			"name": "/neoforge/src/main/java/com/github/epsilon/neoforge/NeoForgeEventHandler.java",
+			"hash": "YFT8DU490KT8crTHli/l8ARcTtJM1eBnWiyVJFjsdUs=",
+			"size": 752
+		},
+		{
+			"name": "/neoforge/src/main/resources/epsilon.neoforge.mixins.json",
+			"hash": "QxNGUbf2hinSzJ7fFyil0xfL5esdEKt/5cbtVoXGFKI=",
+			"size": 281
+		},
+		{
+			"name": "/neoforge/src/main/resources/META-INF/neoforge.mods.toml",
+			"hash": "W4yBo67d3WANiCdry69W3NA4MYQJ2+keOqL5IWKusA8=",
+			"size": 641
+		},
+		{
+			"name": "/NOTICE.md",
+			"hash": "eVstOAcSCdiTHE6guBUwX0CITO3540DD+F0vsycy55I=",
+			"size": 3592
+		},
+		{
+			"name": "/README.md",
+			"hash": "fjy90Jk8daGei9R/pEbUkJegr+vOKCNT/t9P0M19iUg=",
+			"size": 2304
+		},
+		{
+			"name": "/README_zh.md",
+			"hash": "4P+u2flz1jUfVqR/jme6X9JqNMAZn3//6j2OhuP2tWY=",
+			"size": 2255
+		},
+		{
+			"name": "/scripts/complete_i18n.py",
+			"hash": "VTB1YvlBDbTEpu3zfBgnNf0Gl6U6a5UWKrrW868eZaY=",
+			"size": 13035
+		},
+		{
+			"name": "/settings.gradle.kts",
+			"hash": "6vGH02ExkSOmECB196kafk4d3zbaw/3ilSYbLuZhTPs=",
+			"size": 1280
+		}
+	],
+	"links": {
+		"stats": "https://data.jsdelivr.com/v1/stats/packages/gh/NekoyaHouse/Epsilon@26.3.x"
+	}
+}
