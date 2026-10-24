@@ -34,6 +34,8 @@
     "ClientPlayerEntityMixin",
     "KeyboardInputMixin",
     "ClientPlayNetworkHandlerAccessor",
+    "ClientWorldAccessor",
+    "FireworkRocketEntityAccessor",
     "PlayerListEntryAccessor",
     "FriendsMixin",
     "CommandsMixin",

@@ -1,6 +1,7 @@
 package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
+import com.example.addon.commands.TpCommand;
 import com.example.addon.gui.YuioGuiTheme;
 import com.example.addon.hud.FriendHud;
 import com.example.addon.hud.ImageHud;
@@ -26,6 +27,7 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.slf4j.Logger;
 
 import java.lang.invoke.MethodHandles;
+
 
 public class AddonTemplate extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
@@ -94,6 +96,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new RandomTp());
         Modules.get().add(new FriendOfAlcohol());
         Modules.get().add(new Repeater());
+        Modules.get().add(new FireworkElytraFly());
 
         // MaceMissAura依赖
         dev.sherii.yuio.predict.PredictEngine.init();
@@ -105,7 +108,7 @@ public class AddonTemplate extends MeteorAddon {
         GuiThemes.add(new YuioGuiTheme());
 
         //Commands
-        Commands.add(new CommandExample());
+        Commands.add(new TpCommand());
 
         // HUD
         Hud.get().register(YuioIsland.INFO);
