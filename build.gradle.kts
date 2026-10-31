@@ -41,6 +41,8 @@ dependencies {
     mappings("net.fabricmc:yarn:1.21.11+build.3:v2")
     modImplementation("net.fabricmc:fabric-loader:0.18.1")
     modImplementation("meteordevelopment:meteor-client:1.21.11-SNAPSHOT")
+    include("com.google.zxing:core:3.5.3")
+    implementation("com.google.zxing:core:3.5.3")
 }
 
 tasks {

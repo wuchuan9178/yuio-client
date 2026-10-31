@@ -133,6 +133,17 @@ public final class IslandRenderer {
         return renderer.textHeight(true, scale);
     }
 
+    // 中文走原版字体, 高度也得跟着原版算
+    public static double textHeight(HudRenderer renderer, String text, double scale) {
+        if (text != null && needsVanilla(text)) {
+            VanillaTextRenderer.INSTANCE.scaleIndividually = true;
+            VanillaTextRenderer.INSTANCE.scale = scale;
+            return VanillaTextRenderer.INSTANCE.getHeight(true);
+        }
+
+        return textHeight(renderer, scale);
+    }
+
     public static void item(HudRenderer renderer, ItemStack stack, double x, double y, double scale) {
         renderer.item(stack, (int) x, (int) y, (float) scale, true);
     }

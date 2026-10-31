@@ -1,12 +1,14 @@
 package com.example.addon.hud;
 
 import com.example.addon.AddonTemplate;
+import com.example.addon.gui.NeteaseLoginScreen;
 import com.example.addon.mixin.BarrelBlockEntityAccessor;
 import com.example.addon.mixin.ChestBlockEntityAccessor;
 import com.example.addon.music.CdpReader;
 import com.example.addon.music.CoverCache;
 import com.example.addon.music.MusicReader;
 import com.example.addon.music.NeteaseCache;
+import com.example.addon.music.NeteaseLogin;
 import com.example.addon.notify.AvatarCache;
 import com.example.addon.notify.NotifyMessage;
 import com.example.addon.notify.NotifyReader;
@@ -32,6 +34,7 @@ import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
+import meteordevelopment.meteorclient.utils.render.NametagUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.listeners.ConsumerListener;
@@ -48,8 +51,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import org.joml.Vector3d;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Locale;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -96,6 +105,7 @@ public class YuioIsland extends HudElement {
     private final SettingGroup sgTab = settings.createGroup("Tab");
     private final SettingGroup sgQq = settings.createGroup("QQ");
     private final SettingGroup sgMusic = settings.createGroup("Music");
+    private final SettingGroup sgLyric3D = settings.createGroup("3D Lyrics");
 
     private final Setting<Vector3d> positionOffset = sgPosition.add(new Vector3dSetting.Builder()
         .name("position-offset")
@@ -274,6 +284,83 @@ public class YuioIsland extends HudElement {
     private final Setting<SettingColor> musicLyricColor = sgMusic.add(new ColorSetting.Builder()
         .name("music-lyric-color").defaultValue(new SettingColor(120, 200, 255)).build());
 
+    public enum MusicSource {
+        Read, Login
+    }
+
+    private final Setting<MusicSource> musicSource = sgMusic.add(new EnumSetting.Builder<MusicSource>()
+        .name("music-source")
+        .description("Read the local NetEase window, or log in to NetEase with a QR code for translated lyrics and richer data.")
+        .defaultValue(MusicSource.Read)
+        .onChanged(source -> {
+            loginAttempted = false;
+            if (source == MusicSource.Login && !NeteaseLogin.loggedIn()) openLogin();
+        })
+        .build());
+
+    public enum MusicAction {
+        None, Relogin, AccountStatus
+    }
+
+    private final Setting<MusicAction> musicAction = sgMusic.add(new EnumSetting.Builder<MusicAction>()
+        .name("music-action")
+        .description("One-shot action: log in again, or print the account status to chat and the log.")
+        .defaultValue(MusicAction.None)
+        .onChanged(this::runMusicAction)
+        .build());
+
+    private final Setting<Boolean> lyric3d = sgLyric3D.add(new BoolSetting.Builder()
+        .name("3d-lyrics").description("Float lyric lines in front of you in the world.").defaultValue(true).build());
+
+    private final Setting<Integer> lyric3dSpread = sgLyric3D.add(new IntSetting.Builder()
+        .name("yaw-spread").description("Random yaw spread in degrees (always inside 180).").defaultValue(45)
+        .min(0).max(90).sliderRange(0, 90).build());
+
+    private final Setting<Double> lyric3dDistance = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("distance").defaultValue(8).min(2).sliderRange(2, 20).build());
+
+    private final Setting<Double> lyric3dHeight = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("height-offset").defaultValue(0).min(-3).max(3).sliderRange(-3, 3).build());
+
+    private final Setting<Boolean> lyric3dFollow = sgLyric3D.add(new BoolSetting.Builder()
+        .name("follow-view").description("Keep the lyric in front of the camera.").defaultValue(false).build());
+
+    private final Setting<Boolean> lyric3dRespawn = sgLyric3D.add(new BoolSetting.Builder()
+        .name("respawn-on-turn").description("Pick a new spot after turning too far.").defaultValue(false).build());
+
+    private final Setting<Double> lyric3dTurn = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("turn-threshold").defaultValue(30).min(5).max(180).sliderRange(5, 180).build());
+
+    private final Setting<Double> lyric3dWorldShake = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("world-shake").description("Jitter in the world, so the text floats in place.").defaultValue(0).min(0).sliderRange(0, 0.5).build());
+
+    private final Setting<Double> lyric3dShake = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("screen-shake").description("Jitter on screen.").defaultValue(0).min(0).sliderRange(0, 0.5).build());
+
+    private final Setting<Double> lyric3dShakeSpeed = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("shake-speed").defaultValue(2).min(0.1).sliderRange(0.1, 10).build());
+
+    private final Setting<Double> lyric3dScale = sgLyric3D.add(new DoubleSetting.Builder()
+        .name("text-scale").defaultValue(1.5).min(0.5).sliderRange(0.5, 3).build());
+
+    private final Setting<Boolean> lyric3dOriginal = sgLyric3D.add(new BoolSetting.Builder()
+        .name("show-original").defaultValue(true).build());
+
+    private final Setting<Boolean> lyric3dTranslation = sgLyric3D.add(new BoolSetting.Builder()
+        .name("show-translation").defaultValue(true).build());
+
+    private final Setting<SettingColor> lyric3dOriginalColor = sgLyric3D.add(new ColorSetting.Builder()
+        .name("original-color").defaultValue(new SettingColor(255, 255, 255)).build());
+
+    private final Setting<SettingColor> lyric3dTranslationColor = sgLyric3D.add(new ColorSetting.Builder()
+        .name("translation-color").defaultValue(new SettingColor(120, 200, 255)).build());
+
+    private final Setting<Boolean> lyric3dSeeThrough = sgLyric3D.add(new BoolSetting.Builder()
+        .name("see-through").description("Ignore blocks between you and the lyric.").defaultValue(true).build());
+
+    private final Setting<Boolean> lyric3dDebug = sgLyric3D.add(new BoolSetting.Builder()
+        .name("debug").description("Print the 3D lyric state on screen.").defaultValue(false).build());
+
     private final Setting<SettingColor> qqNameColor = sgQq.add(new ColorSetting.Builder()
         .name("qq-name-color")
         .description("Group / contact name colour. Default is light because black is unreadable on the dark glass.")
@@ -328,6 +415,18 @@ public class YuioIsland extends HudElement {
     private final Anim food = new Anim(0, 10);
     private final Anim lyricFade = new Anim(0, 12);
     private String lyricNow = "";
+    private String lyricTranslation = "";
+    private boolean restoredLogin;
+    private boolean loginAttempted;
+
+    private final Vector3d lyric3dPos = new Vector3d();
+    private final Vector3d lyric3dSmooth = new Vector3d();
+    private final Vector3d lyric3dShakePos = new Vector3d();
+    private boolean lyric3dAnchored;
+    private boolean lyric3dSmoothing;
+    private float lyric3dAnchorYaw;
+    private float lyric3dOffsetYaw;
+    private final double lyric3dPhase = Math.random() * Math.PI * 2;
     private String marqueeTitle = "";
     private String marqueeLyric = "";
     private double marqueeTitleScroll;
@@ -461,7 +560,7 @@ public class YuioIsland extends HudElement {
         if (text.isEmpty()) return;
 
         double textWidth = IslandRenderer.textWidth(renderer, text, scale);
-        double textHeight = IslandRenderer.textHeight(renderer, scale);
+        double textHeight = IslandRenderer.textHeight(renderer, text, scale);
         double y = centerY - textHeight * 0.5;
 
         if (scroll <= 0 || textWidth <= columnWidth) {
@@ -660,6 +759,7 @@ public class YuioIsland extends HudElement {
         updateFood(delta);
         updatePreview();
         updateLyric(delta);
+        ensureLogin();
 
         for (TimedContent notification : new ArrayList<>(notifications)) {
             if (notification.isExpired(now)) notifications.remove(notification);
@@ -677,6 +777,8 @@ public class YuioIsland extends HudElement {
         } else {
             renderCompactMode(renderer, delta, baseScale);
         }
+
+        renderLyric3D(renderer);
     }
 
 
@@ -1118,7 +1220,13 @@ public class YuioIsland extends HudElement {
     private void updateLyric(float delta) {
         if (!musicEnabled.get()) {
             lyricNow = "";
+            lyricTranslation = "";
             return;
+        }
+
+        if (!restoredLogin) {
+            restoredLogin = true;
+            NeteaseLogin.restore();
         }
 
         MusicReader.start();
@@ -1126,15 +1234,16 @@ public class YuioIsland extends HudElement {
         MusicReader.Track track = MusicReader.track();
         if (track.playing()) NeteaseCache.request(track.title(), track.artist());
 
+        boolean showLyric = musicLyrics.get();
         long elapsed = System.currentTimeMillis() - track.since() + musicOffset.get();
         String line = "";
 
         if (musicCdpPort.get() > 0) {
             CdpReader.port(musicCdpPort.get());
-            if (musicLyrics.get() && CdpReader.available()) line = CdpReader.line();
+            if (showLyric && CdpReader.available()) line = CdpReader.line();
         }
 
-        if (line.isEmpty() && track.playing() && musicLyrics.get() && elapsed >= 0) {
+        if (line.isEmpty() && track.playing() && showLyric && elapsed >= 0) {
             List<MusicReader.Line> netease = NeteaseCache.lines(track.title(), track.artist());
 
             if (netease.isEmpty()) {
@@ -1147,6 +1256,17 @@ public class YuioIsland extends HudElement {
             }
         }
 
+        String translation = "";
+
+        if (showLyric && !line.isEmpty() && track.playing() && elapsed >= 0) {
+            for (MusicReader.Line candidate : NeteaseCache.translatedLines(track.title(), track.artist())) {
+                if (candidate.time() > elapsed) break;
+                translation = candidate.text();
+            }
+        }
+
+        lyricTranslation = translation;
+
         if (!line.equals(lyricNow)) {
             lyricNow = line;
             lyricFade.reset(0.0);
@@ -1154,6 +1274,214 @@ public class YuioIsland extends HudElement {
 
         lyricFade.set(1.0);
         lyricFade.update(delta);
+    }
+
+    private void openLogin() {
+        mc.execute(() -> {
+            NeteaseLogin.start();
+            mc.setScreen(new NeteaseLoginScreen());
+        });
+    }
+
+    private void ensureLogin() {
+        if (loginAttempted || !musicEnabled.get()) return;
+        if (musicSource.get() != MusicSource.Login || NeteaseLogin.loggedIn()) return;
+
+        loginAttempted = true;
+        openLogin();
+    }
+
+    private void renderLyric3D(HudRenderer renderer) {
+        if (!lyric3d.get() || !musicEnabled.get()) {
+            logLyric3D("off 3d=" + lyric3d.get() + " music=" + musicEnabled.get() + " active=" + isActive());
+            return;
+        }
+
+        String original = lyricNow;
+        String translation = lyricTranslation;
+        if (original.isEmpty() && translation.isEmpty()) {
+            logLyric3D("no lyric line");
+            return;
+        }
+
+        float yaw = mc.player.getYaw();
+
+        if (!lyric3dAnchored) {
+            anchorLyric3D(yaw);
+        } else if (lyric3dFollow.get()) {
+            placeLyric3D(yaw);
+        } else if (lyric3dRespawn.get() && Math.abs(MathHelper.wrapDegrees(yaw - lyric3dAnchorYaw)) > lyric3dTurn.get()) {
+            anchorLyric3D(yaw);
+        }
+
+        double time = (System.currentTimeMillis() % 100000L) / 1000.0;
+
+        // 世界空间抖动: 字浮在原地晃, 而不是贴在屏幕上平移
+        lyric3dShakePos.set(lyric3dSmooth);
+        double worldShake = lyric3dWorldShake.get();
+        if (worldShake > 0) {
+            lyric3dShakePos.x += Math.sin(time * lyric3dShakeSpeed.get() + lyric3dPhase) * worldShake;
+            lyric3dShakePos.y += Math.sin(time * lyric3dShakeSpeed.get() * 0.7 + lyric3dPhase * 1.3) * worldShake;
+            lyric3dShakePos.z += Math.cos(time * lyric3dShakeSpeed.get() * 0.5 + lyric3dPhase * 0.7) * worldShake;
+        }
+
+        double[] screen = project3d(lyric3dShakePos);
+        if (screen == null) {
+            logLyric3D("behind camera " + fmt3d(lyric3dShakePos));
+            return;
+        }
+
+        float winWidth = mc.getWindow().getScaledWidth();
+        float winHeight = mc.getWindow().getScaledHeight();
+        double depth = screen[2];
+
+        if (screen[0] < -80 || screen[0] > winWidth + 80 || screen[1] < -40 || screen[1] > winHeight + 40) {
+            logLyric3D("offscreen " + fmt3d(lyric3dShakePos) + " screen=" + Math.round(screen[0]) + "," + Math.round(screen[1]));
+            return;
+        }
+
+        if (!lyric3dSeeThrough.get() && blocked3d(lyric3dShakePos)) {
+            logLyric3D("blocked " + fmt3d(lyric3dShakePos));
+            return;
+        }
+
+        // 近大远小, 才有浮在世界里的感觉
+        double perspective = MathHelper.clamp(lyric3dDistance.get() / depth, 0.6, 1.6);
+
+        double shakeX = Math.sin(time * lyric3dShakeSpeed.get() + lyric3dPhase) * lyric3dShake.get() * 24 * perspective;
+        double shakeY = Math.sin(time * lyric3dShakeSpeed.get() * 1.7 + lyric3dPhase) * lyric3dShake.get() * 14 * perspective;
+
+        double scale = lyric3dScale.get() * perspective;
+        double x = screen[0] + shakeX;
+        double y = screen[1] + shakeY;
+
+        if (lyric3dOriginal.get() && !original.isEmpty()) {
+            IslandRenderer.text(renderer, original, x - IslandRenderer.textWidth(renderer, original, scale) / 2, y,
+                lyric3dOriginalColor.get(), true, scale);
+            y += IslandRenderer.textHeight(renderer, scale) + 2;
+        }
+
+        if (lyric3dTranslation.get() && !translation.isEmpty()) {
+            IslandRenderer.text(renderer, translation, x - IslandRenderer.textWidth(renderer, translation, scale) / 2, y,
+                lyric3dTranslationColor.get(), true, scale);
+        }
+
+        logLyric3D("draw line='" + clip(original) + "' anchored=" + lyric3dAnchored
+            + " " + fmt3d(lyric3dShakePos)
+            + " player=" + fmt3d(new Vector3d(mc.player.getX(), mc.player.getY(), mc.player.getZ()))
+            + " yaw=" + String.format(Locale.ROOT, "%.0f", yaw)
+            + " depth=" + String.format(Locale.ROOT, "%.1f", depth)
+            + " screen=" + Math.round(x) + "," + Math.round(y) + " scale=" + String.format(Locale.ROOT, "%.2f", scale));
+    }
+
+    private long lyric3dLogAt;
+
+    private void logLyric3D(String message) {
+        if (!lyric3dDebug.get()) return;
+
+        long now = System.currentTimeMillis();
+        if (now - lyric3dLogAt < 2000) return;
+        lyric3dLogAt = now;
+
+        AddonTemplate.LOG.info("[yuio-lyric3d] {}", message);
+    }
+
+    private static String fmt3d(Vector3d pos) {
+        return String.format(Locale.ROOT, "pos=%.1f,%.1f,%.1f", pos.x, pos.y, pos.z);
+    }
+
+    private static String clip(String value) {
+        if (value == null || value.isBlank()) return "-";
+        return value.length() <= 24 ? value : value.substring(0, 24) + "...";
+    }
+
+    private void runMusicAction(MusicAction action) {
+        if (action == null || action == MusicAction.None) return;
+
+        if (action == MusicAction.Relogin) {
+            NeteaseLogin.logout();
+            loginAttempted = false;
+            openLogin();
+        } else {
+            reportAccountStatus();
+        }
+
+        musicAction.set(MusicAction.None);
+    }
+
+    private void reportAccountStatus() {
+        boolean loggedIn = NeteaseLogin.loggedIn();
+        String head = loggedIn ? "logged in as " + NeteaseLogin.nickname() : "not logged in";
+        String line = "status=" + NeteaseLogin.status()
+            + " code=" + NeteaseLogin.code()
+            + " nickname=" + blank(NeteaseLogin.nickname())
+            + " detail=" + blank(NeteaseLogin.detail());
+
+        if (mc.player != null) mc.player.sendMessage(Text.literal("[yuio] netease: " + head + " | " + line), false);
+
+        AddonTemplate.LOG.info("[yuio-music] account: {} | {} | cookie={}", head, line, NeteaseLogin.cookieInfo());
+    }
+
+    private static String blank(String value) {
+        return value == null || value.isBlank() ? "-" : value;
+    }
+
+    private void anchorLyric3D(float yaw) {
+        lyric3dOffsetYaw = (float) ((Math.random() * 2 - 1) * lyric3dSpread.get());
+        lyric3dAnchorYaw = yaw;
+        lyric3dAnchored = true;
+        placeLyric3D(yaw);
+        lyric3dSmooth.set(lyric3dPos);
+    }
+
+    private void placeLyric3D(float yaw) {
+        double rad = Math.toRadians(yaw + lyric3dOffsetYaw);
+        lyric3dPos.set(mc.player.getX() - Math.sin(rad) * lyric3dDistance.get(),
+            mc.player.getEyeY() + lyric3dHeight.get(),
+            mc.player.getZ() + Math.cos(rad) * lyric3dDistance.get());
+        lyric3dSmooth.lerp(lyric3dPos, 0.15);
+    }
+
+    // 世界坐标投到屏幕, 自己算省得依赖渲染阶段
+    private double[] project3d(Vector3d pos) {
+        net.minecraft.client.render.Camera camera = mc.gameRenderer.getCamera();
+        Vec3d cam = camera.getCameraPos();
+        double relX = pos.x - cam.x, relY = pos.y - cam.y, relZ = pos.z - cam.z;
+
+        double yawRad = Math.toRadians(camera.getYaw());
+        double pitchRad = Math.toRadians(camera.getPitch());
+
+        double fx = -Math.sin(yawRad) * Math.cos(pitchRad), fy = -Math.sin(pitchRad), fz = Math.cos(yawRad) * Math.cos(pitchRad);
+        double rx = -Math.cos(yawRad), rz = -Math.sin(yawRad);
+        double ux = -Math.sin(yawRad) * Math.sin(pitchRad), uy = Math.cos(pitchRad), uz = Math.cos(yawRad) * Math.sin(pitchRad);
+
+        double depth = relX * fx + relY * fy + relZ * fz;
+        if (depth < 0.05) return null;
+
+        double localX = relX * rx + relZ * rz;
+        double localY = relX * ux + relY * uy + relZ * uz;
+
+        double tan = Math.tan(Math.toRadians(mc.options.getFov().getValue()) / 2);
+        double width = mc.getWindow().getScaledWidth();
+        double height = mc.getWindow().getScaledHeight();
+        double aspect = width / height;
+
+        return new double[]{
+            width / 2 + (localX / depth) / (tan * aspect) * (width / 2),
+            height / 2 - (localY / depth) / tan * (height / 2),
+            depth
+        };
+    }
+
+    private boolean blocked3d(Vector3d pos) {
+        Vec3d camera = mc.gameRenderer.getCamera().getCameraPos();
+        Vec3d target = new Vec3d(pos.x, pos.y, pos.z);
+
+        BlockHitResult hit = mc.world.raycast(new RaycastContext(
+            camera, target, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+
+        return hit.getType() != HitResult.Type.MISS
+            && hit.getPos().squaredDistanceTo(camera) < camera.squaredDistanceTo(target) - 0.5;
     }
 
     private record MusicLayout(double width, double height, double padding, double ball, double gap,
@@ -1181,10 +1509,10 @@ public class YuioIsland extends HudElement {
         double lyricColumn = musicColumn(renderer, lyric, maxWidth, lyricScale);
         double textColumn = Math.max(titleColumn, Math.max(artistColumn, lyricColumn));
 
-        double textHeight = IslandRenderer.textHeight(renderer, titleScale) + 2 * baseScale
-            + IslandRenderer.textHeight(renderer, artistScale);
+        double textHeight = IslandRenderer.textHeight(renderer, title, titleScale) + 2 * baseScale
+            + IslandRenderer.textHeight(renderer, artist, artistScale);
 
-        if (!lyric.isEmpty()) textHeight += 4 * baseScale + IslandRenderer.textHeight(renderer, lyricScale);
+        if (!lyric.isEmpty()) textHeight += 4 * baseScale + IslandRenderer.textHeight(renderer, lyric, lyricScale);
 
         double width = padding * 2 + ball + gap + textColumn;
         double height = padding * 2 + Math.max(ball, textHeight);
@@ -1225,9 +1553,9 @@ public class YuioIsland extends HudElement {
 
         double x = ballX + layout.ball() + layout.gap();
 
-        double titleHeight = IslandRenderer.textHeight(renderer, layout.titleScale());
-        double artistHeight = IslandRenderer.textHeight(renderer, layout.artistScale());
-        double lyricHeight = IslandRenderer.textHeight(renderer, layout.lyricScale());
+        double titleHeight = IslandRenderer.textHeight(renderer, layout.title(), layout.titleScale());
+        double artistHeight = IslandRenderer.textHeight(renderer, layout.artist(), layout.artistScale());
+        double lyricHeight = IslandRenderer.textHeight(renderer, layout.lyric(), layout.lyricScale());
 
         double rowBlock = titleHeight + 2 * baseScale + artistHeight;
         double top = centerY - rowBlock * 0.5;

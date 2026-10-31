@@ -74,6 +74,16 @@ public final class NeteaseApi {
         }
     }
 
+    public static String translatedLyrics(long id) {
+        try {
+            JsonObject tlyric = field(get("https://music.163.com/api/song/lyric?id=" + id + "&lv=-1&tv=-1"), "tlyric");
+            String text = text(tlyric, "lyric");
+            return text == null || text.isBlank() ? null : text;
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
     private static String firstArtist(JsonObject song) {
         JsonArray artists = array(song, "artists");
         if (artists == null || artists.isEmpty()) return "";

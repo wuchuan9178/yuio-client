@@ -2,10 +2,12 @@ package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
 import com.example.addon.commands.TpCommand;
+import com.example.addon.gui.Yuio2GuiTheme;
 import com.example.addon.gui.YuioGuiTheme;
 import com.example.addon.hud.FriendHud;
 import com.example.addon.hud.ImageHud;
 import com.example.addon.hud.KeyListHud;
+import com.example.addon.hud.ModuleListHud;
 import com.example.addon.hud.NotifyHud;
 import com.example.addon.hud.RadarHud;
 import com.example.addon.hud.TargetHud;
@@ -79,6 +81,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new Animations());
         Modules.get().add(new HorizontalVClip());
         Modules.get().add(new CustomFonts());
+        Modules.get().add(new MeteorFont());
         Modules.get().add(new AutoKouzi());
         Modules.get().add(new TotemParticle());
         Modules.get().add(new SmoothCamera());
@@ -106,6 +109,7 @@ public class AddonTemplate extends MeteorAddon {
 
         //Theme
         GuiThemes.add(new YuioGuiTheme());
+        GuiThemes.add(new Yuio2GuiTheme());
 
         //Commands
         Commands.add(new TpCommand());
@@ -118,6 +122,7 @@ public class AddonTemplate extends MeteorAddon {
         Hud.get().register(KeyListHud.INFO);
         Hud.get().register(NotifyHud.INFO);
         Hud.get().register(TargetHud.INFO);
+        Hud.get().register(ModuleListHud.INFO);
 
     }
 

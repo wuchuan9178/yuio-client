@@ -29,6 +29,7 @@ public final class NeteaseCache {
     private static final class Entry {
         volatile String coverUrl;
         volatile List<MusicReader.Line> lines = List.of();
+        volatile List<MusicReader.Line> translated = List.of();
         volatile boolean done;
         volatile long failedAt;
     }
@@ -58,8 +59,10 @@ public final class NeteaseCache {
                 }
 
                 List<MusicReader.Line> parsed = parse(NeteaseApi.lyrics(song.id()));
+                List<MusicReader.Line> translated = parse(NeteaseApi.translatedLyrics(song.id()));
                 entry.coverUrl = song.coverUrl();
                 entry.lines = parsed;
+                entry.translated = translated;
                 entry.done = true;
                 entry.failedAt = 0;
 
@@ -80,6 +83,11 @@ public final class NeteaseCache {
     public static List<MusicReader.Line> lines(String title, String artist) {
         Entry entry = CACHE.get(key(title, artist));
         return entry == null ? List.of() : entry.lines;
+    }
+
+    public static List<MusicReader.Line> translatedLines(String title, String artist) {
+        Entry entry = CACHE.get(key(title, artist));
+        return entry == null ? List.of() : entry.translated;
     }
 
     private static String key(String title, String artist) {

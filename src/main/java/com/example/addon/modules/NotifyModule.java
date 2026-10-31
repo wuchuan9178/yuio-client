@@ -4,6 +4,7 @@ import com.example.addon.AddonTemplate;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
@@ -11,12 +12,15 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.friends.Friends;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityDamageS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.util.Locale;
@@ -24,12 +28,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NotifyModule extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgPop = settings.createGroup("Pop");
     private final SettingGroup sgRange = settings.createGroup("Render Range");
     private final SettingGroup sgArmor = settings.createGroup("Armor");
+    private final SettingGroup sgColors = settings.createGroup("Colors");
 
     private final Setting<Boolean> sendToChat = sgGeneral.add(new BoolSetting.Builder()
         .name("send-to-chat")
@@ -177,6 +184,32 @@ public class NotifyModule extends Module {
         .sliderRange(0.0, 60.0)
         .build());
 
+    private final Setting<SettingColor> prefixColor = sgColors.add(new ColorSetting.Builder()
+        .name("prefix-color").defaultValue(new SettingColor(150, 156, 170)).build());
+    private final Setting<SettingColor> textColor = sgColors.add(new ColorSetting.Builder()
+        .name("text-color").defaultValue(new SettingColor(230, 230, 230)).build());
+    private final Setting<SettingColor> playerColor = sgColors.add(new ColorSetting.Builder()
+        .name("player-color").description("Color of {player}.")
+        .defaultValue(new SettingColor(255, 216, 102)).build());
+    private final Setting<SettingColor> causerColor = sgColors.add(new ColorSetting.Builder()
+        .name("causer-color").description("Color of {causer}.")
+        .defaultValue(new SettingColor(102, 178, 255)).build());
+    private final Setting<SettingColor> countColor = sgColors.add(new ColorSetting.Builder()
+        .name("count-color").description("Color of {count}.")
+        .defaultValue(new SettingColor(255, 154, 60)).build());
+    private final Setting<SettingColor> distanceColor = sgColors.add(new ColorSetting.Builder()
+        .name("distance-color").description("Color of {distance}.")
+        .defaultValue(new SettingColor(170, 170, 170)).build());
+    private final Setting<SettingColor> armorColor = sgColors.add(new ColorSetting.Builder()
+        .name("armor-color").description("Color of {armor}.")
+        .defaultValue(new SettingColor(255, 85, 85)).build());
+    private final Setting<SettingColor> thresholdColor = sgColors.add(new ColorSetting.Builder()
+        .name("threshold-color").description("Color of {threshold}.")
+        .defaultValue(new SettingColor(255, 170, 85)).build());
+
+    private static final Pattern PLACEHOLDER =
+        Pattern.compile("\\{(player|causer|count|distance|armor|threshold)}");
+
     private record Attack(String attacker, long time) {
     }
 
@@ -187,7 +220,7 @@ public class NotifyModule extends Module {
     private final Map<String, Long> rangeSeen = new ConcurrentHashMap<>();
     private final Set<String> lowArmor = ConcurrentHashMap.newKeySet();
     private final Map<String, Long> armorSeen = new ConcurrentHashMap<>();
-    private final ConcurrentLinkedQueue<String> pending = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Text> pending = new ConcurrentLinkedQueue<>();
 
     public NotifyModule() {
         super(AddonTemplate.OTHER, "notifications", "Chat notifications for pops, nearby players and low armor.");
@@ -348,18 +381,56 @@ public class NotifyModule extends Module {
     }
 
     private void emit(String template, String player, String causer, int count, double distance, int armor) {
-        String text = template
-            .replace("{player}", player)
-            .replace("{causer}", causer)
-            .replace("{count}", String.valueOf(count))
-            .replace("{distance}", String.format(Locale.ROOT, "%.1f", distance))
-            .replace("{armor}", String.valueOf(armor))
-            .replace("{threshold}", String.valueOf(armorThreshold.get()));
+        MutableText line = Text.empty()
+            .append(Text.literal(prefix.get()).setStyle(Style.EMPTY.withColor(prefixColor.get().getPacked())));
 
-        emitLine(prefix.get() + text);
+        Matcher matcher = PLACEHOLDER.matcher(template);
+        int last = 0;
+        while (matcher.find()) {
+            if (matcher.start() > last) {
+                line.append(Text.literal(template.substring(last, matcher.start()))
+                    .setStyle(Style.EMPTY.withColor(textColor.get().getPacked())));
+            }
+            String key = matcher.group(1);
+            line.append(Text.literal(placeholderValue(key, player, causer, count, distance, armor))
+                .setStyle(Style.EMPTY.withColor(placeholderColor(key))));
+            last = matcher.end();
+        }
+        if (last < template.length()) {
+            line.append(Text.literal(template.substring(last))
+                .setStyle(Style.EMPTY.withColor(textColor.get().getPacked())));
+        }
+
+        emitLine(line);
+    }
+
+    private String placeholderValue(String key, String player, String causer, int count, double distance, int armor) {
+        return switch (key) {
+            case "player" -> player;
+            case "causer" -> causer;
+            case "count" -> String.valueOf(count);
+            case "distance" -> String.format(Locale.ROOT, "%.1f", distance);
+            case "armor" -> String.valueOf(armor);
+            default -> String.valueOf(armorThreshold.get());
+        };
+    }
+
+    private int placeholderColor(String key) {
+        return switch (key) {
+            case "player" -> playerColor.get().getPacked();
+            case "causer" -> causerColor.get().getPacked();
+            case "count" -> countColor.get().getPacked();
+            case "distance" -> distanceColor.get().getPacked();
+            case "armor" -> armorColor.get().getPacked();
+            default -> thresholdColor.get().getPacked();
+        };
     }
 
     private void emitLine(String line) {
+        emitLine(Text.literal(line).setStyle(Style.EMPTY.withColor(textColor.get().getPacked())));
+    }
+
+    private void emitLine(Text line) {
         if (!sendToChat.get()) return;
         pending.add(line);
     }
@@ -367,10 +438,10 @@ public class NotifyModule extends Module {
     private void flush() {
         if (pending.isEmpty()) return;
 
-        String line;
+        Text line;
         while ((line = pending.poll()) != null) {
             if (mc.inGameHud == null) continue;
-            mc.inGameHud.getChatHud().addMessage(Text.literal(line));
+            mc.inGameHud.getChatHud().addMessage(line);
         }
     }
 }

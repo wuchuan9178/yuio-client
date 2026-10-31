@@ -2,10 +2,14 @@ package com.example.addon.modules;
 
 import com.example.addon.AddonTemplate;
 import com.example.addon.utils.VClipUtils;
+import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.renderer.ShapeMode;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Random;
@@ -57,8 +61,25 @@ public class RandomTp extends Module {
         .sliderRange(1.0, 32.0)
         .build());
 
+    private final Setting<Boolean> fixedCenter = sg.add(new BoolSetting.Builder()
+        .name("fixed-center")
+        .description("Lock the center point when the module is enabled.")
+        .defaultValue(true)
+        .build());
+
+    private final Setting<Boolean> renderCenter = sg.add(new BoolSetting.Builder()
+        .name("render-center")
+        .description("Render the locked center point.")
+        .defaultValue(true)
+        .visible(fixedCenter::get)
+        .build());
+
+    private final Color sideColor = new Color(120, 200, 255, 50);
+    private final Color lineColor = new Color(120, 200, 255, 255);
+
     private final Random random = new Random();
     private int timer;
+    private Vec3d center;
 
     public RandomTp() {
         super(AddonTemplate.ASSIST, "random-tp", "Randomly vclips around you to dodge predictions.");
@@ -67,6 +88,7 @@ public class RandomTp extends Module {
     @Override
     public void onActivate() {
         timer = 0;
+        center = mc.player != null ? mc.player.getEntityPos() : null;
     }
 
     @EventHandler
@@ -76,7 +98,9 @@ public class RandomTp extends Module {
         if (++timer < delay.get()) return;
         timer = 0;
 
-        Vec3d pos = new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ());
+        Vec3d pos = fixedCenter.get() && center != null
+            ? center
+            : new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ());
         double dy = (random.nextDouble() * 2.0 - 1.0) * heightRange.get();
 
         Vec3d target;
@@ -89,5 +113,13 @@ public class RandomTp extends Module {
         }
 
         VClipUtils.teleport(target, clipStep.get());
+    }
+
+    @EventHandler
+    private void onRender(Render3DEvent event) {
+        if (!renderCenter.get() || center == null) return;
+        Box box = new Box(center.x - 0.5, center.y - 0.5, center.z - 0.5,
+            center.x + 0.5, center.y + 0.5, center.z + 0.5);
+        event.renderer.box(box, sideColor, lineColor, ShapeMode.Both, 0);
     }
 }
