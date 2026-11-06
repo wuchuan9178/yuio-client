@@ -82,6 +82,7 @@ public class AddonTemplate extends MeteorAddon {
         Modules.get().add(new HorizontalVClip());
         Modules.get().add(new CustomFonts());
         Modules.get().add(new MeteorFont());
+        Modules.get().add(new AntiAliasing());
         Modules.get().add(new AutoKouzi());
         Modules.get().add(new TotemParticle());
         Modules.get().add(new SmoothCamera());

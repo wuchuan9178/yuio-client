@@ -1,6 +1,7 @@
 package com.example.addon.hud;
 
 import com.example.addon.utils.BlurRenderer;
+import com.example.addon.utils.RoundRectRenderer;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.ColorSetting;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
@@ -19,7 +20,13 @@ public abstract class GlassHud extends HudElement {
         .name("scale").defaultValue(1).min(0.5).sliderRange(0.5, 2).build());
 
     protected final Setting<Double> radius = sgAppearance.add(new DoubleSetting.Builder()
-        .name("radius").defaultValue(12).min(0).sliderRange(0, 30).build());
+        .name("radius").defaultValue(12).min(0).sliderRange(0, 40).build());
+
+    protected final Setting<Boolean> capsule = sgAppearance.add(new BoolSetting.Builder()
+        .name("capsule")
+        .description("Use half of the height as radius for a pill shape.")
+        .defaultValue(false)
+        .build());
 
     protected final Setting<Integer> blurStrength = sgAppearance.add(new IntSetting.Builder()
         .name("blur-strength").description("Frosted glass blur radius: 1 = 3 pixels (default 12 = 36px). 0 disables the frosted glass.").defaultValue(12).min(0).max(30).sliderRange(0, 30).build());
@@ -31,7 +38,7 @@ public abstract class GlassHud extends HudElement {
         .name("tint-strength").defaultValue(170).min(0).sliderRange(0, 255).build());
 
     protected final Setting<Boolean> border = sgAppearance.add(new BoolSetting.Builder()
-        .name("border").defaultValue(true).build());
+        .name("border").description("White glow around the panel.").defaultValue(true).build());
 
     protected final Setting<Integer> dividerAlpha = sgAppearance.add(new IntSetting.Builder()
         .name("divider-alpha").defaultValue(46).min(0).sliderRange(0, 255).build());
@@ -54,14 +61,19 @@ public abstract class GlassHud extends HudElement {
         return 10 * unit();
     }
 
+    protected double panelRadius(double w, double h) {
+        if (capsule.get() || RoundRectRenderer.capsuleAll) return Math.min(w, h) * 0.5;
+        return radius.get() * unit();
+    }
+
     protected void panel(double x, double y, double w, double h) {
         IslandRenderer.beginFrame();
         BlurRenderer.init();
         BlurRenderer.request();
 
-        IslandRenderer.shadow(x, y, w, h, radius.get() * unit(), 1.0);
-        IslandRenderer.glass(x, y, w, h, radius.get() * unit(),
-            blurStrength.get(), backgroundAlpha.get(), tintStrength.get(), border.get(), true);
+        double r = panelRadius(w, h);
+        IslandRenderer.glass(x, y, w, h, r,
+            blurStrength.get(), backgroundAlpha.get(), tintStrength.get(), false, false);
     }
 
     protected void divider(double x, double y, double w) {

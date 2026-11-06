@@ -12,6 +12,7 @@ layout (std140) uniform RoundedData {
     vec4 u_Fill2;   // gradient bottom, 纹理/玻璃模式下 .a 是面板不透明度
     vec4 u_Uv;      // u1, v1, u2, v2
     vec4 u_Params;  // strokeWidth 或模糊半径(texel), mode, 旋转(rad) 或 texelU, 0 或 texelV
+    vec4 u_Aa;      // x: 抗锯齿强度(0=关闭), y: 边缘曲线(0 linear, 1 smooth, 2 soft)
 };
 
 // mode: 0 solid, 1 stroke, 2 gradient, 3 textured, 4 glass, 5/6 模糊通道(水平/垂直)
@@ -65,12 +66,22 @@ void main() {
     // 抗锯齿宽度取屏幕空间导数: 恰好 1 帧缓冲像素, 与当前坐标系无关。
     // 写死 0.5(旧写法)时, 一单位=2 像素的 GUI 空间里过渡只有半个像素, 圆角就会出锯齿。
     float aa = max(fwidth(d), 1.0e-4);
-    float edge = aa * 0.5;
+    float strength = max(u_Aa.x, 0.0);
+    float edge = aa * 0.5 * strength;
 
     float alpha;
     if (u_Params.y == MODE_STROKE) {
         float halfStroke = max(u_Params.x, 1.0) * 0.5;
-        alpha = 1.0 - smoothstep(halfStroke - edge, halfStroke + edge, abs(d));
+        alpha = edge <= 0.0 ? step(abs(d), halfStroke)
+                            : 1.0 - smoothstep(halfStroke - edge, halfStroke + edge, abs(d));
+    } else if (edge <= 0.0) {
+        alpha = step(d, 0.0);
+    } else if (u_Aa.y < 0.5) {
+        alpha = clamp(0.5 - d / (2.0 * edge), 0.0, 1.0);
+    } else if (u_Aa.y > 1.5) {
+        float w = max(aa * strength, 1.0e-4);
+        alpha = clamp(0.5 - d / w, 0.0, 1.0);
+        alpha = alpha * alpha * (3.0 - 2.0 * alpha);
     } else {
         alpha = 1.0 - smoothstep(-edge, edge, d);
     }

@@ -151,7 +151,7 @@ public class YuioIsland extends HudElement {
     }
 
     private final Setting<Boolean> highlight = sgAppearance.add(new BoolSetting.Builder()
-        .name("highlight").defaultValue(true).build()
+        .name("highlight").description("Unused.").defaultValue(false).build()
     );
 
     private final Setting<SettingColor> accentColor = sgAppearance.add(new ColorSetting.Builder()
@@ -159,7 +159,7 @@ public class YuioIsland extends HudElement {
     );
 
     private final Setting<Boolean> border = sgAppearance.add(new BoolSetting.Builder()
-        .name("border").defaultValue(true).build()
+        .name("border").description("Unused.").defaultValue(false).build()
     );
 
     private final Setting<Double> animationSpeed = sgAnimation.add(new DoubleSetting.Builder()
@@ -841,10 +841,9 @@ public class YuioIsland extends HudElement {
         double panelY = originY + (centerY - originY) * progress;
 
         if (!stacked) {
-            IslandRenderer.shadow(panelX, panelY, panelWidth, panelHeight, radius, 1.0);
             IslandRenderer.glass(panelX, panelY, panelWidth, panelHeight, radius,
                 blurStrength.get(), backgroundAlpha.get(), tintStrength.get(),
-                border.get(), highlight.get());
+                false, false);
             if (musicIdle()) drawMusicIdle(renderer, panelX, panelY, panelWidth, panelHeight, baseScale);
             else drawIdle(renderer, panelX, panelY, panelWidth, panelHeight, baseScale);
         } else {
@@ -856,10 +855,9 @@ public class YuioIsland extends HudElement {
                 double cardHeight = card.height + padding * 2;
                 double cardRadius = Math.min(14 * baseScale, cardHeight * 0.5);
 
-                IslandRenderer.shadow(panelX, cursorY, cardWidth, cardHeight, cardRadius, 1.0);
                 IslandRenderer.glass(panelX, cursorY, cardWidth, cardHeight, cardRadius,
                     blurStrength.get(), backgroundAlpha.get(), tintStrength.get(),
-                    border.get(), highlight.get());
+                    false, false);
                 card.render().draw(renderer, panelX + padding, cursorY + padding, alpha);
 
                 cursorY += cardHeight + gap;
@@ -1003,7 +1001,7 @@ public class YuioIsland extends HudElement {
             IslandRenderer.glass(originX, originY, cardWidth, cardHeight,
                 Math.min(14 * baseScale, cardHeight * 0.5),
                 blurStrength.get(), Math.max(backgroundAlpha.get(), 150), tintStrength.get(),
-                border.get(), false);
+                false, false);
             card.render().draw(renderer, originX + padding, originY + padding, notification.fade());
 
             originY += cardHeight + 5 * baseScale;
@@ -1737,10 +1735,9 @@ public class YuioIsland extends HudElement {
         double panelX = originX + (centerX - originX) * progress;
         double panelY = originY + (centerY - originY) * progress;
 
-        IslandRenderer.shadow(panelX, panelY, panelWidth, panelHeight, radius, 1.0);
         IslandRenderer.glass(panelX, panelY, panelWidth, panelHeight, radius,
             blurStrength.get(), Math.max(backgroundAlpha.get(), 170), tintStrength.get(),
-            border.get(), highlight.get());
+            false, false);
 
         double alpha = Math.min(1.0, progress * 1.5);
         double cursorY = panelY + padding;

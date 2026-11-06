@@ -16,6 +16,7 @@ layout (std140) uniform RoundedData {
     vec4 u_Fill2;
     vec4 u_Uv;
     vec4 u_Params;
+    vec4 u_Aa;
 };
 
 out vec2 v_Pos;

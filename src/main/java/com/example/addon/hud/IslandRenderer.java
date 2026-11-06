@@ -75,6 +75,13 @@ public final class IslandRenderer {
         RoundRectRenderer.glow(x, y, width, height, radius, 7.0, new Color(0, 0, 0, alpha));
     }
 
+    /** 白色外泛光: 两层不同半径叠出衰减, 代替原来那圈透明描边。 */
+    public static void glow(double x, double y, double width, double height, double radius) {
+        if (width <= 0 || height <= 0) return;
+        RoundRectRenderer.glow(x, y, width, height, radius, 4.0, new Color(255, 255, 255, 44));
+        RoundRectRenderer.glow(x, y, width, height, radius, 10.0, new Color(255, 255, 255, 18));
+    }
+
     public static void innerGlow(double x, double y, double width, double height,
                                  double radius, Color glow, double thickness) {
         RoundRectRenderer.rim(x, y, width, height, radius, thickness, glow);

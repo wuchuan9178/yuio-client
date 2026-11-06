@@ -3,6 +3,7 @@ package com.example.addon.mixin;
 import com.example.addon.modules.UiBlur;
 import com.example.addon.render.ChatBackendWrapper;
 import com.example.addon.render.ChatPanel;
+import com.example.addon.utils.YuioTag;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -45,9 +46,10 @@ public class ChatHudMixin {
     @Unique
     private static Text yuio$withCopyButton(Text message) {
         if (message == null) return null;
+        message = YuioTag.decorate(message);
         if (yuio$hasCopyButton(message)) return message;
 
-        String plain = message.getString();
+        String plain = YuioTag.strip(message.getString());
         if (plain.isEmpty()) return message;
 
         String copy = plain.replaceAll(" \\([0-9]{1,9}\\)$", "");

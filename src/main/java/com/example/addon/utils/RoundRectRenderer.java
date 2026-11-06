@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
 
 public final class RoundRectRenderer {
     private static final int UNIFORM_SIZE = new Std140SizeCalculator()
-        .putVec4().putVec4().putVec4().putVec4().putVec4().putVec4()
+        .putVec4().putVec4().putVec4().putVec4().putVec4().putVec4().putVec4()
         .get();
 
     private static final int UNIFORM_BASE_CAPACITY = 256;
@@ -42,6 +42,19 @@ public final class RoundRectRenderer {
     private static GpuTextureView whiteTexture;
     private static boolean unavailable;
     private static boolean clearedThisFrame;
+
+    /** 抗锯齿总开关与当前强度, 由 AntiAliasing 模块每帧写入。 */
+    public static boolean aaEnabled = true;
+    public static float aaStrength = 2.5f;
+    public static int aaEdgeMode = 1;
+    /** 目标过滤: 返回 false 的上下文按关闭处理; null 表示全部允许。 */
+    public static java.util.function.Predicate<String> aaFilter;
+
+    /** 强制所有圆角走胶囊半径(取短边一半), 由 AntiAliasing 模块开关。 */
+    public static boolean capsuleAll;
+
+    private static String context = "";
+    private static long contextTime;
 
     private RoundRectRenderer() {
     }
@@ -211,12 +224,15 @@ public final class RoundRectRenderer {
             mesh.quad(i1, i2, i3, i4);
             mesh.end();
 
+            boolean aa = aaEnabled && (aaFilter == null || aaFilter.test(aaContext()));
+
             RectData data = new RectData(
                 (float) (x + w * 0.5), (float) (y + h * 0.5), (float) (w * 0.5), (float) (h * 0.5),
                 (float) topLeft, (float) topRight, (float) bottomRight, (float) bottomLeft,
                 primary, secondary,
                 (float) u1, (float) v1, (float) u2, (float) v2,
-                (float) stroke, mode, (float) rotation, 0f
+                (float) stroke, mode, (float) rotation, 0f,
+                aa ? aaStrength : 0f, aa ? aaEdgeMode : 0f
             );
 
             GpuBufferSlice slice = uniforms().write(data);
@@ -288,7 +304,8 @@ public final class RoundRectRenderer {
                 0.0F, 1.0F, 1.0F, 0.0F,
                 radiusTexels,
                 horizontal ? YuioPipelines.MODE_BLUR_H : YuioPipelines.MODE_BLUR_V,
-                texelU, texelV
+                texelU, texelV,
+                0f, 0f
             );
 
             GpuBufferSlice slice = uniforms().write(data);
@@ -323,6 +340,28 @@ public final class RoundRectRenderer {
 
     private static double clamp(double value, double min, double max) {
         return value < min ? min : Math.min(value, max);
+    }
+
+    /** 找出当前绘制方所属的 HUD 类名; 只在 Selected 过滤模式下才会被调用。 */
+    private static String aaContext() {
+        long now = System.nanoTime();
+        if (now - contextTime < 1_000_000L) return context;
+        contextTime = now;
+
+        String found = "";
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            String name = element.getClassName();
+            if (!name.startsWith("com.example.addon.hud.")) continue;
+
+            String simple = name.substring(name.lastIndexOf('.') + 1);
+            if (simple.equals("GlassHud") || simple.equals("IslandRenderer") || simple.equals("HudRenderer")) continue;
+
+            found = simple;
+            break;
+        }
+
+        context = found;
+        return found;
     }
 
     public static float uiWidth() {
@@ -413,7 +452,8 @@ public final class RoundRectRenderer {
         float topLeft, float topRight, float bottomRight, float bottomLeft,
         Color primary, Color secondary,
         float u1, float v1, float u2, float v2,
-        float stroke, int mode, float unusedA, float unusedB
+        float stroke, int mode, float unusedA, float unusedB,
+        float aaStrength, float aaEdgeMode
     ) implements DynamicUniformStorage.Uploadable {
         @Override
         public void write(ByteBuffer buffer) {
@@ -424,6 +464,7 @@ public final class RoundRectRenderer {
             builder.putVec4(secondary.r / 255f, secondary.g / 255f, secondary.b / 255f, secondary.a / 255f);
             builder.putVec4(u1, v1, u2, v2);
             builder.putVec4(stroke, mode, unusedA, unusedB);
+            builder.putVec4(aaStrength, aaEdgeMode, 0f, 0f);
         }
     }
 }

@@ -9,6 +9,7 @@
     "ChestBlockEntityAccessor",
     "BarrelBlockEntityAccessor",
     "ChatHudMixin",
+    "ChatTagMixin",
     "ChatHudForwarderMixin",
     "ChatHudInvoker",
     "InGameHudMixin",
