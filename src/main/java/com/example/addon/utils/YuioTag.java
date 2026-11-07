@@ -1,7 +1,11 @@
 package com.example.addon.utils;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class YuioTag {
     // 可见小标记, 服务器不会当成隐藏字符清洗掉
@@ -13,11 +17,36 @@ public final class YuioTag {
     private static final int[] GOLD = {255, 206, 84};
     private static final int[] GOLD_END = {255, 146, 26};
 
+    private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("yuio").resolve("chat-tag.txt");
+    private static boolean suffixEnabled = read();
+
     private YuioTag() {
     }
 
+    public static boolean isSuffixEnabled() {
+        return suffixEnabled;
+    }
+
+    public static void setSuffixEnabled(boolean value) {
+        suffixEnabled = value;
+        try {
+            Files.createDirectories(FILE.getParent());
+            Files.writeString(FILE, value ? "on" : "off");
+        } catch (Exception ignored) {
+        }
+    }
+
     public static String mark(String message) {
+        if (!suffixEnabled) return message;
         return message.endsWith(MARKER) ? message : message + MARKER;
+    }
+
+    private static boolean read() {
+        try {
+            return !Files.exists(FILE) || !"off".equals(Files.readString(FILE).trim());
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     public static String strip(String raw) {

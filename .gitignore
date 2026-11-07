@@ -31,3 +31,6 @@ bin/
 # fabric
 
 run/
+
+# third-party client reference
+MelaHack-main/

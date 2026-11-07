@@ -2,6 +2,7 @@ package com.example.addon;
 
 import com.example.addon.commands.CommandExample;
 import com.example.addon.commands.TpCommand;
+import com.example.addon.commands.YuioTagCommand;
 import com.example.addon.gui.Yuio2GuiTheme;
 import com.example.addon.gui.YuioGuiTheme;
 import com.example.addon.hud.FriendHud;
@@ -114,6 +115,7 @@ public class AddonTemplate extends MeteorAddon {
 
         //Commands
         Commands.add(new TpCommand());
+        Commands.add(new YuioTagCommand());
 
         // HUD
         Hud.get().register(YuioIsland.INFO);
